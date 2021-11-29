@@ -1,4 +1,4 @@
 <template lang="pug">
 div.container
-    div hello
+    div serverMenu
 </template>
