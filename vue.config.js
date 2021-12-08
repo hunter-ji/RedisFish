@@ -17,5 +17,12 @@ module.exports = {
         resolvers: [ElementPlusResolver()]
       })
     ]
+  },
+  pluginOptions: {
+    electronBuilder: {
+      nodeIntegration: true,
+      disableMainProcessTypescript: false,
+      mainProcessTypeChecking: false
+    }
   }
 }

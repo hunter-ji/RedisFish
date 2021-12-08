@@ -10,6 +10,13 @@ div.container
 <script setup>
 import serverMenu from '../serverMenu/index.vue'
 import keyTab from '../keyTab/index.vue'
+import { onMounted } from 'vue'
+import { useStore } from 'vuex'
+
+onMounted(() => {
+  const store = useStore()
+  store.commit('initServerList')
+})
 
 </script>
 
