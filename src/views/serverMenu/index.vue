@@ -1,7 +1,7 @@
 <template>
     <div id="serverMenu">
         <div class="menu-list">
-            <div v-for="(item, index) in serverList" :key="index" @click="clickServer(item.name)">
+            <div v-for="(item, index) in serverList" :key="index" @click="clickServer(item, index)">
                 <div class="menu-list-item flex flex-row items-center rounded p-1 cursor-default">
                     <img src="@/assets/right.png"
                          alt="icon"
@@ -9,11 +9,13 @@
                          height="12"
                          :class="{'icon': currentServerName === item.name}" />
                     <div class="ml-2">{{ item.name }}</div>
-                    <div class="menu-content flex flex-col ml-6">
-                        <div class="menu-content-item p-1 rounded cursor-default"
-                             v-for="(childItem, childIndex) in item.children"
-                             :key="childIndex">{{ childItem }}
-                        </div>
+                </div>
+
+                <div class="menu-content flex flex-col ml-6" v-show="currentServerName === item.name">
+                    <div class="menu-content-item p-1 rounded cursor-default"
+                         v-for="(childItem, childIndex) in item.children"
+                         :key="childIndex">
+                        {{ childItem }}
                     </div>
                 </div>
             </div>
@@ -30,8 +32,41 @@ import { getStore } from '@/utils/store'
 const serverList = ref([])
 const currentServerName = ref('')
 
-const clickServer = (serverName) => {
-  currentServerName.value = serverName
+const clickServer = (server, index) => {
+  if (currentServerName.value === server.name) {
+    console.log('收起')
+    currentServerName.value = ''
+  } else {
+    console.log('展开')
+    currentServerName.value = server.name
+    splitServerType(server, index)
+  }
+}
+
+const splitServerType = async (server, serverListIndex) => {
+  const client = getClient(server)
+  client.on('error', (err) => console.log('Redis Client Error', err))
+
+  await client.connect()
+  const keyspaceInfo = await client.sendCommand(['INFO', 'keyspace'])
+  const keySpaceArr = keyspaceInfo.split('\r\n')
+  const children = []
+  keySpaceArr.forEach((item, index) => {
+    const dbName = item.split(':')[0]
+    if (index && dbName) {
+      children.push(dbName)
+    }
+  })
+
+  serverList.value[serverListIndex].children = children
+
+  console.log(serverList.value)
+
+  /*
+     # Keyspace
+     db0:keys=1,expires=0,avg_ttl=0
+     db1:keys=1,expires=0,avg_ttl=0
+     */
 }
 
 onMounted(async () => {
@@ -40,8 +75,6 @@ onMounted(async () => {
   await store.commit('initServerList')
 
   serverList.value = store.state.serverList
-
-  console.log(serverList.value)
 })
 </script>
 
