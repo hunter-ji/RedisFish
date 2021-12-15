@@ -1,22 +1,20 @@
 import { createStore } from 'vuex'
-import { serverType, setStore, getStore } from '@/utils/store'
+import getters from '@/store/getters'
 
-export default createStore({
-  state: {
-    serverList: []
-  },
-  mutations: {
-    initServerList (state) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      state.serverList = getStore()
-    },
-    setServerList (state) {
-      setStore(state.serverList)
-    }
-  },
-  actions: {
-  },
-  modules: {
-  }
+const modulesFiles = require.context('./modules', true, /\.ts$/)
+
+const modules = modulesFiles.keys().reduce((modules, modulePath) => {
+  const moduleName = modulePath.replace(/^\.\/(.*)\.\w+$/, '$1')
+  const value = modulesFiles(modulePath)
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  modules[moduleName] = value.default
+  return modules
+}, {})
+
+const store = createStore({
+  getters,
+  modules
 })
+
+export default store

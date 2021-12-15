@@ -1,4 +1,13 @@
-<template lang="pug">
-div.container
-    div hello
+<template>
+  <div class="container">
+
+  </div>
 </template>
+
+<script setup>
+
+</script>
+
+<style scoped>
+
+</style>
