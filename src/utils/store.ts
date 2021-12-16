@@ -10,6 +10,7 @@ export interface serverType {
   host: string
   port: number
   password: string
+  children?: string[]
 }
 
 export const getStore = (): serverType[] => {

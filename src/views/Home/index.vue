@@ -4,12 +4,13 @@ div.container
 
     divider
 
-    key-tab
+    server-tab
 </template>
 
-<script setup>
+<script setup lang="ts">
 import serverMenu from '../serverMenu/index.vue'
 import keyTab from '../keyTab/index.vue'
+import serverTab from '../serverTab/index.vue'
 </script>
 
 <style scoped>
