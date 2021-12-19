@@ -62,13 +62,6 @@ const getValue = async (e: { label: string, value: number }) => {
   const { label } = e
 
   await addTab(label)
-
-  await client.sendCommand(['select', props.serverTab.db.slice(-1)])
-  const keyType: string = await client.sendCommand(['type', 'e'])
-  console.log('keyType : ', keyType)
-
-  const redisValue: string = await client.sendCommand(['get', label])
-  console.log('redisValue : ', redisValue)
 }
 const addTab = async (targetName: string) => {
   await store.dispatch('keyList/add', {

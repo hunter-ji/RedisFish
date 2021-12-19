@@ -15,7 +15,7 @@
         :name="item"
         :closable="state.closable"
       >
-        eeeee
+        <value-content :target-key="item" :server-tab="props.serverTab" />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -26,6 +26,7 @@ import { useStore } from 'vuex'
 import { computed, ComputedRef, defineProps, PropType, reactive, watch } from 'vue'
 import { serverTabType } from '@/store/modules/serverList'
 import { keyTabType } from '@/store/modules/keyList'
+import ValueContent from '@/views/valueContent/index.vue'
 
 const props = defineProps({
   serverTab: {
