@@ -1,10 +1,10 @@
 <template lang="pug">
-div.container
-    server-menu(class="w-1/3")
+div.container.w-full
+    server-menu.server-menu
 
     divider
 
-    server-tab
+    server-tab.w-full
 </template>
 
 <script setup lang="ts">
@@ -17,5 +17,9 @@ import serverTab from '../serverTab/index.vue'
 .container {
     display: flex;
     flex-direction: row;
+}
+
+.server-menu {
+  width: 250px;
 }
 </style>

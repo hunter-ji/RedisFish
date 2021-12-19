@@ -7,3 +7,13 @@ body {
     margin: 0;
     background-color: #ffffff;
 }
+
+.el-tabs__nav-scroll {
+    width: 100%;
+}
+
+.container {
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+}
