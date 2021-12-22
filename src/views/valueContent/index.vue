@@ -1,7 +1,7 @@
 <template>
-  <div class="py-2 px-6">
-    <string-type :key-name="props.targetKey" :values="state.values" v-if="state.keyType === 'string'" />
-    <hash-type :key-name="props.targetKey" :values="state.values" v-else-if="state.keyType === 'hash'" />
+  <div class="value-content-container py-2 px-6">
+    <string-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData" v-if="state.keyType === 'string'" />
+    <hash-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData" v-else-if="state.keyType === 'hash'" />
   </div>
 </template>
 
@@ -50,6 +50,8 @@ const fetchData = async () => {
   } else {
     state.values.push('未知类型')
   }
+
+  await client.disconnect()
 }
 
 onMounted(() => {
@@ -58,5 +60,8 @@ onMounted(() => {
 </script>
 
 <style scoped>
-
+.value-content-container {
+  height: 100vh;
+  overflow-y: auto;
+}
 </style>

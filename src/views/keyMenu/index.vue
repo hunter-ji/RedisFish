@@ -1,10 +1,10 @@
 <template>
-  <div class="container flex flex-row justify-between">
+  <div class="key-menu-container flex flex-row justify-between">
 
     <!--key-menu-->
     <div class="key-menu h-full overflow-y-auto">
       <el-table :data="data" style="width: 100%;" :show-header="state.showHeader" stripe @cell-click="getValue">
-        <el-table-column prop="label" label="Keys" width="300"/>
+        <el-table-column prop="label" label="Keys" width="400"/>
       </el-table>
       <div class="flex flex-row justify-end" v-show="state.keysList.length >= state.pageSize">
         <el-pagination layout="prev, pager, next" :page-size="state.pageSize" :total="state.keysList.length"
@@ -13,7 +13,7 @@
     </div>
 
     <!--key-tab-->
-    <key-tab class="h-full w-full" :server-tab="props.serverTab" :target-key="state.targetKey"/>
+    <key-tab class="key-tab h-full w-full" :server-tab="props.serverTab" :target-key="state.targetKey"/>
   </div>
 </template>
 
@@ -79,13 +79,14 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.container {
+.key-menu-container {
   height: calc(100vh - 60px);
   width: 100%;
   overflow-y: hidden;
 }
 
 .key-menu {
-  width: 300px;
+  width: 400px;
+  min-width: 400px;
 }
 </style>
