@@ -19,7 +19,8 @@ export interface listTableValueType {
 export interface setTableValueType {
   id: number
   value: string
-  isEdit: boolean
+  oldValue: string
+  type: string
 }
 
 export interface zsetTableValueType {

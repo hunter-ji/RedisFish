@@ -68,8 +68,4 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.value-content-container {
-  height: 100vh;
-  overflow-y: auto;
-}
 </style>

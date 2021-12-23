@@ -2,7 +2,8 @@
   <div class="list-type-container">
     <top-tab :key-name="props.keyName" key-type="set" class="mb-4"/>
     <div class="w-full flex flex-row justify-between mb-4">
-      <div :class="state.search.length !== 0 ? 'w-4/5 transition-width duration-500 ease-in-out' : 'w-2/5 transition-width duration-500 ease-in-out'">
+      <div
+        :class="state.search.length !== 0 ? 'w-4/5 transition-width duration-500 ease-in-out' : 'w-2/5 transition-width duration-500 ease-in-out'">
         <el-input v-model="state.search" size="small" placeholder="Search" :prefix-icon="Search" clearable/>
       </div>
       <div class="w-1/8 flex flex-row justify-between">
@@ -10,27 +11,37 @@
         <el-button type="danger" size="small" :icon="Delete" round class="flex flex-row items-center" v-else>
           ({{ state.multipleSelection.length }})
         </el-button>
-        <el-button type="info" size="small" :icon="RefreshRight" circle @click="refresh" :disabled="state.search.length !== 0"/>
-        <el-button type="primary" size="small" :icon="Plus" circle :disabled="state.search.length !== 0"/>
-        <el-button type="success" size="small" :icon="Check" circle/>
+        <el-button type="info" size="small" :icon="RefreshRight" circle @click="refresh"/>
+        <el-button type="primary" size="small" circle @click="addRow" :icon="Plus" />
+        <el-button type="success" size="small" :icon="Check" circle @click="submit"/>
       </div>
     </div>
-    <el-table :data="data" size="small" border stripe @selection-change="handleSelectionChange"
-              style="min-width: 900px;max-width: calc(100% - 750px);">
+    <el-table
+      :data="state.values"
+      height="700"
+      size="mini" border stripe @selection-change="handleSelectionChange"
+      @cell-dblclick="edit"
+      style="min-width: 900px;max-width: calc(100% - 750px);">
       <el-table-column type="selection" width="40"/>
-      <el-table-column prop="value" label="Value"/>
+      <el-table-column type="index" width="50"/>
+      <el-table-column prop="value" label="Value">
+        <template #default="scope">
+          <div v-if="scope.row.id === state.targetID">
+            <el-input size="mini" v-model="scope.row.value" @blur="blurInput" placeholder="value..." @change="inputChange(scope.row)" />
+          </div>
+          <div v-else>
+            <div v-if="scope.row.value.length">{{ scope.row.value }}</div>
+            <div class="text-gray-400 italic" v-else>null</div>
+          </div>
+        </template>
+      </el-table-column>
     </el-table>
-    <div class="w-full flex flex-row justify-end"
-         v-show="state.values.length >= tableConfig.pageSize && !state.search.length">
-      <el-pagination layout="prev, pager, next" :page-size="tableConfig.pageSize" :total="state.values.length"
-                     @current-change="changeCurrent" class="p-2"/>
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ComputedRef, defineEmits, defineProps, PropType, reactive, watch } from 'vue'
-import { hashTableValueType, setTableValueType } from '@/views/valueContent/index'
+import { defineEmits, defineProps, PropType, reactive, watch } from 'vue'
+import { setTableValueType } from '@/views/valueContent/index'
 import TopTab from './topTab.vue'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -47,51 +58,59 @@ const props = defineProps({
     required: true
   }
 })
-const state: { search: string, values: setTableValueType[], multipleSelection: setTableValueType[] } = reactive({
+const state: { search: string, values: setTableValueType[], multipleSelection: setTableValueType[], targetID: number, commands: any } = reactive({
   search: '',
   values: [],
-  multipleSelection: []
-})
-const tableConfig: { currentPage: number, pageSize: number, search: string } = reactive({
-  currentPage: 1,
-  pageSize: 12,
-  search: ''
-})
-const changeCurrent = (current: number) => {
-  tableConfig.currentPage = current
-}
-const data: ComputedRef<setTableValueType[]> = computed(() => {
-  if (state.search) {
-    return state.values.filter((item: setTableValueType) => {
-      return Object.keys(item).some((key: string) => {
-        return (
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          String(item[key])
-            .toLowerCase()
-            .indexOf(state.search) > -1
-        )
-      })
-    })
-  }
-  return state.values.slice(
-    (tableConfig.currentPage - 1) * tableConfig.pageSize,
-    tableConfig.currentPage * tableConfig.pageSize
-  )
+  multipleSelection: [],
+  targetID: 0,
+  commands: []
 })
 const refresh = () => {
+  state.values = []
   emit('refresh', true)
 }
-const handleSelectionChange = (val: hashTableValueType[]) => {
+const handleSelectionChange = (val: setTableValueType[]) => {
   state.multipleSelection = val
+}
+const edit = (e: setTableValueType) => {
+  state.targetID = e.id
+}
+const blurInput = () => {
+  state.targetID = 0
+}
+const addRow = () => {
+  state.values.unshift({
+    id: state.values.length + 1,
+    value: '',
+    oldValue: '',
+    type: 'add'
+  })
+}
+const inputChange = (row: setTableValueType) => {
+  if (row.type === 'normal') {
+    row.type = 'edit'
+  }
+}
+const submit = () => {
+  state.commands = []
+  state.values.forEach((item: setTableValueType) => {
+    if (item.type === 'add') {
+      state.commands.push(['SADD', props.keyName, item.value])
+    } else if (item.type === 'edit') {
+      state.commands.push(['SREM', props.keyName, item.oldValue])
+      state.commands.push(['SADD', props.keyName, item.value])
+    }
+  })
+  console.log(state.commands)
 }
 
 watch(props, () => {
   props.values.forEach((item: string, index: number) => {
     state.values.push({
-      id: index,
+      id: index + 1,
       value: item,
-      isEdit: false
+      oldValue: item,
+      type: 'normal'
     })
   })
 })
