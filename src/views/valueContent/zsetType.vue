@@ -11,19 +11,15 @@
           ({{ state.multipleSelection.length }})
         </el-button>
         <el-button type="info" size="small" :icon="RefreshRight" circle @click="refresh" :disabled="state.search.length"/>
-        <el-button type="primary" size="small" :icon="Plus" :disabled="state.search.length" circle/>
+        <el-button type="primary" size="small" :icon="Plus" circle :disabled="state.search.length"/>
         <el-button type="success" size="small" :icon="Check" circle/>
       </div>
     </div>
     <el-table :data="data" size="small" border stripe @selection-change="handleSelectionChange"
               style="min-width: 900px;max-width: calc(100% - 750px);">
       <el-table-column type="selection" width="40"/>
-      <el-table-column label="Field">
-        <template #default="scope">
-          <div v-if="!scope.row.isEdit">{{ scope.row.field }}</div>
-        </template>
-      </el-table-column>
-      <el-table-column prop="value" label="Value"/>
+      <el-table-column prop="field" label="Field" />
+      <el-table-column prop="score" label="score"/>
     </el-table>
     <div class="w-full flex flex-row justify-end"
          v-show="state.values.length >= tableConfig.pageSize && !state.search.length">
@@ -36,7 +32,7 @@
 <script setup lang="ts">
 import TopTab from './topTab.vue'
 import { computed, ComputedRef, defineEmits, defineProps, PropType, reactive, watch } from 'vue'
-import { hashTableValueType } from '.'
+import { zsetTableValueType } from '.'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { Check, Delete, Plus, RefreshRight, Search } from '@element-plus/icons-vue'
@@ -52,7 +48,7 @@ const props = defineProps({
     required: true
   }
 })
-const state: { search: string, values: hashTableValueType[], multipleSelection: hashTableValueType[] } = reactive({
+const state: { search: string, values: zsetTableValueType[], multipleSelection: zsetTableValueType[] } = reactive({
   search: '',
   values: [],
   multipleSelection: []
@@ -65,9 +61,9 @@ const tableConfig: { currentPage: number, pageSize: number, search: string } = r
 const changeCurrent = (current: number) => {
   tableConfig.currentPage = current
 }
-const data: ComputedRef<hashTableValueType[]> = computed(() => {
+const data: ComputedRef<zsetTableValueType[]> = computed(() => {
   if (state.search) {
-    return state.values.filter((item: hashTableValueType) => {
+    return state.values.filter((item: zsetTableValueType) => {
       return Object.keys(item).some((key: string) => {
         return (
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -87,7 +83,7 @@ const data: ComputedRef<hashTableValueType[]> = computed(() => {
 const refresh = () => {
   emit('refresh', true)
 }
-const handleSelectionChange = (val: hashTableValueType[]) => {
+const handleSelectionChange = (val: zsetTableValueType[]) => {
   state.multipleSelection = val
 }
 
@@ -97,7 +93,7 @@ watch(props, () => {
     state.values.push({
       id: n,
       field: props.values[i],
-      value: props.values[i + 1],
+      score: Number(props.values[i + 1]),
       isEdit: false
     })
     n += 1

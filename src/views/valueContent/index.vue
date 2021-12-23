@@ -2,6 +2,9 @@
   <div class="value-content-container py-2 px-6">
     <string-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData" v-if="state.keyType === 'string'" />
     <hash-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData" v-else-if="state.keyType === 'hash'" />
+    <list-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData" v-else-if="state.keyType === 'list'" />
+    <set-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData" v-else-if="state.keyType === 'set'" />
+    <z-set-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData" v-else-if="state.keyType === 'zset'" />
   </div>
 </template>
 
@@ -11,6 +14,9 @@ import { serverTabType } from '@/store/modules/serverList'
 import { getClient } from '@/utils/redis'
 import StringType from './stringType.vue'
 import HashType from './hashType.vue'
+import ListType from './listType.vue'
+import SetType from './setType.vue'
+import ZSetType from './zsetType.vue'
 
 const props = defineProps({
   serverTab: {
@@ -47,6 +53,8 @@ const fetchData = async () => {
     state.values = await client.sendCommand(['lrange', props.targetKey, '0', '-1'])
   } else if (state.keyType === 'set') {
     state.values = await client.sendCommand(['smembers', props.targetKey])
+  } else if (state.keyType === 'zset') {
+    state.values = await client.sendCommand(['zrange', props.targetKey, '0', '-1', 'withscores'])
   } else {
     state.values.push('未知类型')
   }

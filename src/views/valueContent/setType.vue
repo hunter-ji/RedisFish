@@ -1,6 +1,6 @@
 <template>
-  <div class="hash-type-container flex flex-col items-center pb-4">
-    <top-tab :key-name="props.keyName" key-type="hash" class="mb-4"/>
+  <div class="list-type-container">
+    <top-tab :key-name="props.keyName" key-type="set" class="mb-4"/>
     <div class="w-full flex flex-row justify-between mb-4">
       <div :class="state.search.length !== 0 ? 'w-4/5 transition-width duration-500 ease-in-out' : 'w-2/5 transition-width duration-500 ease-in-out'">
         <el-input v-model="state.search" size="small" placeholder="Search" :prefix-icon="Search" clearable/>
@@ -10,19 +10,14 @@
         <el-button type="danger" size="small" :icon="Delete" round class="flex flex-row items-center" v-else>
           ({{ state.multipleSelection.length }})
         </el-button>
-        <el-button type="info" size="small" :icon="RefreshRight" circle @click="refresh" :disabled="state.search.length"/>
-        <el-button type="primary" size="small" :icon="Plus" :disabled="state.search.length" circle/>
+        <el-button type="info" size="small" :icon="RefreshRight" circle @click="refresh" :disabled="state.search.length !== 0"/>
+        <el-button type="primary" size="small" :icon="Plus" circle :disabled="state.search.length !== 0"/>
         <el-button type="success" size="small" :icon="Check" circle/>
       </div>
     </div>
     <el-table :data="data" size="small" border stripe @selection-change="handleSelectionChange"
               style="min-width: 900px;max-width: calc(100% - 750px);">
       <el-table-column type="selection" width="40"/>
-      <el-table-column label="Field">
-        <template #default="scope">
-          <div v-if="!scope.row.isEdit">{{ scope.row.field }}</div>
-        </template>
-      </el-table-column>
       <el-table-column prop="value" label="Value"/>
     </el-table>
     <div class="w-full flex flex-row justify-end"
@@ -34,9 +29,9 @@
 </template>
 
 <script setup lang="ts">
-import TopTab from './topTab.vue'
 import { computed, ComputedRef, defineEmits, defineProps, PropType, reactive, watch } from 'vue'
-import { hashTableValueType } from '.'
+import { hashTableValueType, setTableValueType } from '@/views/valueContent/index'
+import TopTab from './topTab.vue'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { Check, Delete, Plus, RefreshRight, Search } from '@element-plus/icons-vue'
@@ -52,7 +47,7 @@ const props = defineProps({
     required: true
   }
 })
-const state: { search: string, values: hashTableValueType[], multipleSelection: hashTableValueType[] } = reactive({
+const state: { search: string, values: setTableValueType[], multipleSelection: setTableValueType[] } = reactive({
   search: '',
   values: [],
   multipleSelection: []
@@ -65,9 +60,9 @@ const tableConfig: { currentPage: number, pageSize: number, search: string } = r
 const changeCurrent = (current: number) => {
   tableConfig.currentPage = current
 }
-const data: ComputedRef<hashTableValueType[]> = computed(() => {
+const data: ComputedRef<setTableValueType[]> = computed(() => {
   if (state.search) {
-    return state.values.filter((item: hashTableValueType) => {
+    return state.values.filter((item: setTableValueType) => {
       return Object.keys(item).some((key: string) => {
         return (
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -92,26 +87,12 @@ const handleSelectionChange = (val: hashTableValueType[]) => {
 }
 
 watch(props, () => {
-  let n = 0
-  for (let i = 0; i < props.values.length - 1; i += 2) {
+  props.values.forEach((item: string, index: number) => {
     state.values.push({
-      id: n,
-      field: props.values[i],
-      value: props.values[i + 1],
+      id: index,
+      value: item,
       isEdit: false
     })
-    n += 1
-  }
+  })
 })
 </script>
-
-<style scoped>
-</style>
-
-<style>
-.el-button {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-</style>
