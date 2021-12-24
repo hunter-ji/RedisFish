@@ -50,7 +50,7 @@ import { getClient } from '@/utils/redis'
 import { useStore } from 'vuex'
 import { Delete, Plus, RefreshRight, Search } from '@element-plus/icons-vue'
 import KeyTab from '@/views/keyTab/index.vue'
-import { keyMenuType } from '.'
+import { keyMenuType } from '@/views/valueContent/index'
 
 const props = defineProps({
   serverTab: {
@@ -69,7 +69,6 @@ const state: { keysList: keyMenuType[], currentPage: number, pageSize: number, t
   search: '',
   multipleSelection: []
 })
-
 const fetchData = async () => {
   client.on('error', (err: string) => console.log('Redis Client Error', err))
   await client.connect()
@@ -83,11 +82,9 @@ const fetchData = async () => {
   })
   await client.disconnect()
 }
-
 const changeCurrent = (current: number) => {
   state.currentPage = current
 }
-
 const getValue = async (e: { label: string, value: number }) => {
   const { label } = e
 
@@ -100,7 +97,6 @@ const addTab = async (targetName: string) => {
   })
   state.targetKey = targetName
 }
-
 const data: ComputedRef<{ label: string, value: number }[]> = computed(() => {
   if (state.search) {
     return state.keysList.filter((item: keyMenuType) => {

@@ -2,7 +2,8 @@
   <div class="list-type-container">
     <top-tab :key-name="props.keyName" key-type="list" class="mb-4"/>
     <div class="w-full flex flex-row justify-between mb-4">
-      <div :class="state.search.length !== 0 ? 'w-4/5 transition-width duration-500 ease-in-out' : 'w-2/5 transition-width duration-500 ease-in-out'">
+      <div
+        :class="state.search.length !== 0 ? 'w-4/5 transition-width duration-500 ease-in-out' : 'w-2/5 transition-width duration-500 ease-in-out'">
         <el-input v-model="state.search" size="small" placeholder="Search" :prefix-icon="Search" clearable/>
       </div>
       <div class="w-1/8 flex flex-row justify-between">
@@ -10,7 +11,8 @@
         <el-button type="danger" size="small" :icon="Delete" round class="flex flex-row items-center" v-else>
           ({{ state.multipleSelection.length }})
         </el-button>
-        <el-button type="info" size="small" :icon="RefreshRight" circle @click="refresh" :disabled="state.search.length"/>
+        <el-button type="info" size="small" :icon="RefreshRight" circle @click="refresh"
+                   :disabled="state.search.length"/>
         <el-button type="primary" size="small" :icon="Plus" circle :disabled="state.search.length"/>
         <el-button type="success" size="small" :icon="Check" circle/>
       </div>
@@ -30,7 +32,7 @@
 
 <script setup lang="ts">
 import { computed, ComputedRef, defineEmits, defineProps, PropType, reactive, watch } from 'vue'
-import { hashTableValueType, listTableValueType } from '@/views/valueContent/index'
+import { listTableValueType } from '@/views/valueContent/index'
 import TopTab from './topTab.vue'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -82,7 +84,7 @@ const data: ComputedRef<listTableValueType[]> = computed(() => {
 const refresh = () => {
   emit('refresh', true)
 }
-const handleSelectionChange = (val: hashTableValueType[]) => {
+const handleSelectionChange = (val: listTableValueType[]) => {
   state.multipleSelection = val
 }
 

@@ -3,8 +3,21 @@
     <string-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData" v-if="state.keyType === 'string'" />
     <hash-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData" v-else-if="state.keyType === 'hash'" />
     <list-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData" v-else-if="state.keyType === 'list'" />
-    <set-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData" v-else-if="state.keyType === 'set'" />
+    <set-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData" @delete="handleCommand" @submit="handleCommand" v-else-if="state.keyType === 'set'" />
     <z-set-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData" v-else-if="state.keyType === 'zset'" />
+
+    <el-dialog v-model="dialog.show" title="提示" width="50%" center>
+      <div>将要执行如下命令：</div>
+      <div class="h-80 overflow-y-auto flex flex-col justify-start p-2 bg-gray-300 mt-2">
+        <div class="p-2" v-for="(item, index) in state.commands" :key="index">{{ item.command.join(' ') }}</div>
+      </div>
+      <template #footer>
+      <span class="flex flex-row items-center justify-end">
+        <el-button @click="dialog.show = false">取消</el-button>
+        <el-button type="primary">执行</el-button>
+      </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -17,6 +30,7 @@ import HashType from './hashType.vue'
 import ListType from './listType.vue'
 import SetType from './setType.vue'
 import ZSetType from './zsetType.vue'
+import { commandObjectType } from '@/views/valueContent/index'
 
 const props = defineProps({
   serverTab: {
@@ -29,9 +43,13 @@ const props = defineProps({
   }
 })
 
-const state: { keyType: string, values: string[] } = reactive({
+const state: { keyType: string, values: string[], commands: commandObjectType[] } = reactive({
   keyType: '',
-  values: []
+  values: [],
+  commands: []
+})
+const dialog = reactive({
+  show: false
 })
 const client = getClient(props.serverTab)
 const fetchData = async () => {
@@ -60,6 +78,11 @@ const fetchData = async () => {
   }
 
   await client.disconnect()
+}
+const handleCommand = (commands: commandObjectType[]) => {
+  state.commands = []
+  state.commands = commands
+  dialog.show = true
 }
 
 onMounted(() => {

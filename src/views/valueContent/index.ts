@@ -3,6 +3,10 @@ export interface keyMenuType {
   value: number
 }
 
+export interface commandObjectType {
+  command: string[]
+}
+
 export interface hashTableValueType {
   id: number
   field: string
