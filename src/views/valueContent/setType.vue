@@ -2,16 +2,16 @@
   <div class="list-type-container">
     <top-tab :key-name="props.keyName" key-type="set" class="mb-4"/>
     <div class="w-full flex flex-row justify-between mb-4">
+      <div class="w-1/5 flex flex-row items-center">
+        <div class="text-sm mr-1">TTL(s)</div>
+        <el-input-number v-model="state.ttl" size="mini" controls-position="right" :min="-1" />
+      </div>
       <div
-        :class="searchState.search.length !== 0 ? 'w-4/5 transition-width duration-1000 ease-in-out' : 'w-2/5 transition-width duration-500 ease-in-out'">
+        :class="searchState.search.length !== 0 ? 'w-3/5 transition-width duration-1000 ease-in-out delay-100' : 'w-2/5 transition-width duration-500 ease-in-out'">
         <el-input v-model="searchState.search" size="small" placeholder="回车查询搜索结果" :prefix-icon="Search" clearable
                   @keyup.enter="search"/>
       </div>
-      <div class="w-1/8 flex flex-row justify-between transition-width duration-200 ease-in delay-75">
-        <el-button type="danger" size="small" disabled :icon="Delete" circle v-if="!state.multipleSelection.length"/>
-        <el-button type="danger" size="small" :icon="Delete" round class="flex flex-row items-center" @click="del" v-else>
-          ({{ state.multipleSelection.length }})
-        </el-button>
+      <div class="w-1/5 flex flex-row justify-end transition-width duration-200 ease-in delay-75">
         <transition name="slide-fade">
           <el-button type="info" size="small" :icon="RefreshRight" circle @click="refresh"
                      v-if="!searchState.search.length"/>
@@ -19,6 +19,10 @@
         <transition name="slide-fade">
           <el-button type="primary" size="small" circle @click="addRow" :icon="Plus" v-if="!searchState.search.length"/>
         </transition>
+        <el-button type="danger" size="small" disabled :icon="Delete" circle v-if="!state.multipleSelection.length"/>
+        <el-button type="danger" size="small" :icon="Delete" round class="flex flex-row items-center" @click="del" v-else>
+          ({{ state.multipleSelection.length }})
+        </el-button>
         <el-button type="success" size="small" :icon="Check" circle @click="submit"/>
       </div>
     </div>
@@ -37,7 +41,7 @@
                       @change="inputChange(scope.row)"/>
           </div>
           <div v-else>
-            <div v-if="scope.row.value.length" :style="'color:' + SwitchColorWithType(scope.row.type)">
+            <div v-if="scope.row.value.length" :style="'color:' + SwitchColorWithRepeat(scope.row.isRepeat, scope.row.type)">
               {{ scope.row.value }}
             </div>
             <div class="text-gray-400 italic" v-else>null</div>
@@ -52,7 +56,7 @@
 import { defineEmits, defineProps, PropType, reactive, watch } from 'vue'
 import { commandObjectType, setTableValueType } from '@/views/valueContent/index'
 import TopTab from './topTab.vue'
-import { SwitchColorWithType } from '@/utils/switchColorWithType'
+import { SwitchColorWithRepeat } from '@/utils/switchColorWithType'
 import { ElNotification } from 'element-plus'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -67,10 +71,16 @@ const props = defineProps({
   keyName: {
     type: String,
     required: true
+  },
+  ttl: {
+    type: Number,
+    required: true
   }
 })
-const state: { values: setTableValueType[], multipleSelection: setTableValueType[], targetID: number, commands: commandObjectType[] } = reactive({
+const state: { values: setTableValueType[], ttl: number, oldTTL: number, multipleSelection: setTableValueType[], targetID: number, commands: commandObjectType[] } = reactive({
   values: [],
+  ttl: 0,
+  oldTTL: 0,
   multipleSelection: [],
   targetID: 0,
   commands: []
@@ -98,7 +108,8 @@ const addRow = () => {
     id: state.values.length + 1,
     value: '',
     oldValue: '',
-    type: 'add'
+    type: 'add',
+    isRepeat: false
   })
 }
 const search = () => {
@@ -115,6 +126,16 @@ const inputChange = (row: setTableValueType) => {
   } else if (row.type === 'edit' && row.value === row.oldValue) {
     row.type = 'normal'
   }
+
+  if (props.values.includes(row.value)) {
+    row.isRepeat = true
+    ElNotification({
+      title: '数据重复',
+      message: `${row.value && row.value.length > 6 ? row.value.slice(0, 6) + '...' : row.value}与现有数据重复`,
+      showClose: false,
+      duration: 5000
+    })
+  }
 }
 const del = () => {
   state.commands = []
@@ -125,6 +146,13 @@ const del = () => {
 }
 const submit = () => {
   state.commands = []
+
+  // ttl
+  if (state.ttl !== 0 && state.ttl !== state.oldTTL) {
+    state.commands.push({ command: ['expire', props.keyName, String(state.ttl)] })
+  }
+
+  // command
   state.values.forEach((item: setTableValueType) => {
     if (item.type === 'add' && item.value.trim().length) {
       state.commands.push({ command: ['SADD', props.keyName, item.value] })
@@ -150,12 +178,15 @@ watch(searchState, () => {
   if (!searchState.search.length) searchState.isSearching = false
 })
 watch(props, () => {
+  state.ttl = props.ttl
+  state.oldTTL = props.ttl
   props.values.forEach((item: string, index: number) => {
     state.values.push({
       id: index + 1,
       value: item,
       oldValue: item,
-      type: 'normal'
+      type: 'normal',
+      isRepeat: false
     })
   })
 })

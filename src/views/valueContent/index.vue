@@ -1,10 +1,15 @@
 <template>
   <div class="value-content-container py-2 px-6">
-    <string-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData" v-if="state.keyType === 'string'" />
-    <hash-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData" v-else-if="state.keyType === 'hash'" />
-    <list-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData" v-else-if="state.keyType === 'list'" />
-    <set-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData" @delete="handleCommand" @submit="handleCommand" v-else-if="state.keyType === 'set'" />
-    <z-set-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData" v-else-if="state.keyType === 'zset'" />
+    <string-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData"
+                 v-if="state.keyType === 'string'"/>
+    <hash-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData"
+               v-else-if="state.keyType === 'hash'"/>
+    <list-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData"
+               v-else-if="state.keyType === 'list'"/>
+    <set-type :key-name="props.targetKey" :values="state.values" :ttl="state.ttl" @refresh="fetchData" @delete="handleCommand"
+              @submit="handleCommand" v-else-if="state.keyType === 'set'"/>
+    <z-set-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData"
+                v-else-if="state.keyType === 'zset'"/>
 
     <el-dialog v-model="dialog.show" title="提示" width="50%" center>
       <div>将要执行如下命令：</div>
@@ -43,9 +48,10 @@ const props = defineProps({
   }
 })
 
-const state: { keyType: string, values: string[], commands: commandObjectType[] } = reactive({
+const state: { keyType: string, values: string[], ttl: number, commands: commandObjectType[] } = reactive({
   keyType: '',
   values: [],
+  ttl: 0,
   commands: []
 })
 const dialog = reactive({
@@ -76,6 +82,8 @@ const fetchData = async () => {
   } else {
     state.values.push('未知类型')
   }
+
+  state.ttl = await client.ttl(props.targetKey)
 
   await client.disconnect()
 }

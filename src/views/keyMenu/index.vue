@@ -5,37 +5,31 @@
       <div class="key-menu-tool p-2 flex flex-row is-text justify-between">
         <!--search-->
         <div
-          :class="state.search.length ? 'w-full transition-width duration-1000 ease-in-out delay-200' : 'w-3/5 transition-width duration-1000 ease-in-out'">
-          <el-input v-model="state.search" size="small" placeholder="Search" clearable :prefix-icon="Search"/>
+          :class="searchState.search.length ? 'w-3/4 transition-width duration-1000 ease-in-out delay-200' : 'w-2/4 transition-width duration-1000 ease-in-out'">
+          <el-input v-model="searchState.search" size="small" placeholder="回车查询搜索结果" clearable :prefix-icon="Search" @keyup.enter="search"/>
         </div>
 
         <!--btn group-->
-        <div class="flex flex-row items-center justify-end ml-5">
+        <div class="flex flex-row items-center justify-end w-1/4">
+          <transition name="slide-fade">
+            <el-button type="info" size="mini" :icon="RefreshRight" circle @click="fetchData"
+                       v-if="!searchState.search.length"/>
+          </transition>
+          <transition name="slide-fade">
+            <el-button type="primary" size="mini" :icon="Plus" circle v-if="!searchState.search.length"/>
+          </transition>
           <el-button type="danger" size="mini" disabled :icon="Delete" circle v-if="!state.multipleSelection.length"/>
           <el-button type="danger" size="mini" :icon="Delete" round class="flex flex-row items-center" v-else>
             ({{ state.multipleSelection.length }})
           </el-button>
-          <transition name="slide-fade">
-            <el-button type="info" size="mini" :icon="RefreshRight" circle @click="fetchData"
-                       v-if="!state.search.length"/>
-          </transition>
-          <transition name="slide-fade">
-            <el-button type="primary" size="mini" :icon="Plus" circle v-if="!state.search.length"/>
-          </transition>
         </div>
       </div>
 
-      <div class="key-menu overflow-y-auto">
-        <el-table :data="data" size="mini" style="width: 100%;" stripe @cell-dblclick="getValue"
-                  @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="50"/>
-          <el-table-column prop="label" label="Keys" width="350"/>
-        </el-table>
-        <div class="flex flex-row justify-end" v-show="state.keysList.length >= state.pageSize">
-          <el-pagination layout="prev, pager, next" :page-size="state.pageSize" :total="state.keysList.length"
-                         @current-change="changeCurrent" class="p-2"/>
-        </div>
-      </div>
+      <el-table :data="searchState.isSearching ? searchState.keysList : state.keysList" size="mini" height="850" style="width: 100%;" stripe @cell-dblclick="getValue"
+                @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="50"/>
+        <el-table-column prop="label" label="Keys" width="350"/>
+      </el-table>
     </div>
 
     <!--key-tab-->
@@ -44,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ComputedRef, defineProps, onMounted, PropType, reactive } from 'vue'
+import { defineProps, onMounted, PropType, reactive, watch } from 'vue'
 import { serverTabType } from '@/store/modules/serverList'
 import { getClient } from '@/utils/redis'
 import { useStore } from 'vuex'
@@ -61,13 +55,15 @@ const props = defineProps({
 
 const store = useStore()
 const client = getClient(props.serverTab)
-const state: { keysList: keyMenuType[], currentPage: number, pageSize: number, targetKey: string, search: string, multipleSelection: string[] } = reactive({
+const state: { keysList: keyMenuType[], targetKey: string, multipleSelection: string[] } = reactive({
   keysList: [],
-  currentPage: 1,
-  pageSize: 20,
   targetKey: '',
-  search: '',
   multipleSelection: []
+})
+const searchState: {keysList: keyMenuType[], search: string, isSearching: boolean} = reactive({
+  keysList: [],
+  search: '',
+  isSearching: false
 })
 const fetchData = async () => {
   client.on('error', (err: string) => console.log('Redis Client Error', err))
@@ -82,9 +78,6 @@ const fetchData = async () => {
   })
   await client.disconnect()
 }
-const changeCurrent = (current: number) => {
-  state.currentPage = current
-}
 const getValue = async (e: { label: string, value: number }) => {
   const { label } = e
 
@@ -97,20 +90,33 @@ const addTab = async (targetName: string) => {
   })
   state.targetKey = targetName
 }
-const data: ComputedRef<{ label: string, value: number }[]> = computed(() => {
-  if (state.search) {
-    return state.keysList.filter((item: keyMenuType) => {
-      return item.label.toLowerCase().indexOf(state.search.toLowerCase()) > -1
-    })
-  }
-  return state.keysList.slice((state.currentPage - 1) * state.pageSize, state.currentPage * state.pageSize)
-})
 const handleSelectionChange = (val: string[]) => {
   state.multipleSelection = val
+}
+const search = async () => {
+  searchState.isSearching = true
+  searchState.keysList = []
+  await client.connect()
+  await client.sendCommand(['select', props.serverTab.db.slice(-1)])
+  const keys: string[] = await client.sendCommand(['keys', `*${searchState.search}*`])
+  keys.forEach((item: string, index: number) => {
+    searchState.keysList.push({
+      label: item,
+      value: index
+    })
+  })
+  await client.disconnect()
 }
 
 onMounted(() => {
   fetchData()
+})
+
+watch(searchState, () => {
+  if (!searchState.search.length) {
+    searchState.isSearching = false
+    searchState.keysList = []
+  }
 })
 </script>
 
@@ -137,7 +143,7 @@ onMounted(() => {
 
 .slide-fade-enter-from,
 .slide-fade-leave-to {
-  transform: translateX(20px) rotate(45deg);
+  transform: translateY(20px) rotate(45deg);
   opacity: 0;
 }
 </style>

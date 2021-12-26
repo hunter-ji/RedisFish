@@ -17,14 +17,16 @@ export interface hashTableValueType {
 export interface listTableValueType {
   id: number
   value: string
-  isEdit: boolean
+  oldValue: string
+  type: string
 }
 
 export interface setTableValueType {
   id: number
   value: string
   oldValue: string
-  type: string
+  type: string,
+  isRepeat: boolean
 }
 
 export interface zsetTableValueType {
