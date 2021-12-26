@@ -1,6 +1,6 @@
 import { Switch } from '@element-plus/icons-vue'
 
-export const SwitchColorWithType = (type: string): string => {
+export const SwitchColor = (type: string): string => {
   let color: string
   switch (type) {
     case 'edit':
@@ -17,5 +17,5 @@ export const SwitchColorWithType = (type: string): string => {
 
 export const SwitchColorWithRepeat = (isRepeat: boolean, type: string): string => {
   if (isRepeat) return '#F56C6C'
-  return SwitchColorWithType(type)
+  return SwitchColor(type)
 }

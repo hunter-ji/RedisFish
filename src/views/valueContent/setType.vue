@@ -13,17 +13,24 @@
       </div>
       <div class="w-1/5 flex flex-row justify-end transition-width duration-200 ease-in delay-75">
         <transition name="slide-fade">
-          <el-button type="info" size="small" :icon="RefreshRight" circle @click="refresh"
-                     v-if="!searchState.search.length"/>
+          <div class="flex flex-row items-center" style="margin-right: 10px;" v-if="!searchState.search.length">
+            <el-tooltip effect="light" content="刷新" placement="bottom" :show-after="delayNumber">
+              <el-button type="info" size="small" :icon="RefreshRight" circle @click="refresh" />
+            </el-tooltip>
+            <el-tooltip effect="light" content="添加" placement="bottom" :show-after="delayNumber">
+              <el-button type="primary" size="small" circle @click="addRow" :icon="Plus" />
+            </el-tooltip>
+          </div>
         </transition>
-        <transition name="slide-fade">
-          <el-button type="primary" size="small" circle @click="addRow" :icon="Plus" v-if="!searchState.search.length"/>
-        </transition>
-        <el-button type="danger" size="small" disabled :icon="Delete" circle v-if="!state.multipleSelection.length"/>
-        <el-button type="danger" size="small" :icon="Delete" round class="flex flex-row items-center" @click="del" v-else>
+        <el-tooltip effect="light" content="删除" placement="bottom" :show-after="delayNumber">
+          <el-button type="danger" size="small" disabled :icon="Delete" circle v-if="!state.multipleSelection.length"/>
+          <el-button type="danger" size="small" :icon="Delete" round class="flex flex-row items-center" @click="del" v-else>
           ({{ state.multipleSelection.length }})
         </el-button>
-        <el-button type="success" size="small" :icon="Check" circle @click="submit"/>
+        </el-tooltip>
+        <el-tooltip effect="light" content="提交操作" placement="bottom" :show-after="delayNumber">
+          <el-button type="success" size="small" :icon="Check" circle @click="submit"/>
+        </el-tooltip>
       </div>
     </div>
     <el-table
@@ -53,10 +60,10 @@
 </template>
 
 <script setup lang="ts">
-import { defineEmits, defineProps, PropType, reactive, watch } from 'vue'
+import { defineEmits, defineProps, PropType, reactive, ref, watch } from 'vue'
 import { commandObjectType, setTableValueType } from '@/views/valueContent/index'
 import TopTab from './topTab.vue'
-import { SwitchColorWithRepeat } from '@/utils/switchColorWithType'
+import { SwitchColorWithRepeat } from '@/utils/switchColor'
 import { ElNotification } from 'element-plus'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -77,6 +84,7 @@ const props = defineProps({
     required: true
   }
 })
+const delayNumber = ref(1000)
 const state: { values: setTableValueType[], ttl: number, oldTTL: number, multipleSelection: setTableValueType[], targetID: number, commands: commandObjectType[] } = reactive({
   values: [],
   ttl: 0,
@@ -149,7 +157,7 @@ const submit = () => {
 
   // ttl
   if (state.ttl !== 0 && state.ttl !== state.oldTTL) {
-    state.commands.push({ command: ['expire', props.keyName, String(state.ttl)] })
+    state.commands.push({ command: ['EXPIRE', props.keyName, String(state.ttl)] })
   }
 
   // command
@@ -203,7 +211,7 @@ watch(props, () => {
 
 .slide-fade-enter-from,
 .slide-fade-leave-to {
-  transform: translateY(20px) rotate(45deg);
+  transform: translateY(20px);
   opacity: 0;
 }
 </style>

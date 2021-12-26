@@ -1,11 +1,11 @@
 <template>
   <div class="value-content-container py-2 px-6">
-    <string-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData"
+    <string-type :key-name="props.targetKey" :values="state.values" :ttl="state.ttl" @refresh="fetchData" @submit="handleCommand"
                  v-if="state.keyType === 'string'"/>
     <hash-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData"
                v-else-if="state.keyType === 'hash'"/>
-    <list-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData"
-               v-else-if="state.keyType === 'list'"/>
+    <list-type :key-name="props.targetKey" :values="state.values" :ttl="state.ttl" @refresh="fetchData" @delete="handleCommand"
+               @submit="handleCommand" v-else-if="state.keyType === 'list'"/>
     <set-type :key-name="props.targetKey" :values="state.values" :ttl="state.ttl" @refresh="fetchData" @delete="handleCommand"
               @submit="handleCommand" v-else-if="state.keyType === 'set'"/>
     <z-set-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData"

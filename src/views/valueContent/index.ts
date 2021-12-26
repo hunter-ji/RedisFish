@@ -18,7 +18,8 @@ export interface listTableValueType {
   id: number
   value: string
   oldValue: string
-  type: string
+  type: string,
+  isFront: boolean
 }
 
 export interface setTableValueType {

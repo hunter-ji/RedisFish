@@ -12,16 +12,21 @@
         <!--btn group-->
         <div class="flex flex-row items-center justify-end w-1/4">
           <transition name="slide-fade">
-            <el-button type="info" size="mini" :icon="RefreshRight" circle @click="fetchData"
-                       v-if="!searchState.search.length"/>
+            <div class="flex flex-row items-center justify-end" v-if="!searchState.search.length" style="margin-right: 10px;">
+              <el-tooltip effect="light" content="刷新" placement="bottom" :show-after="delayNumber">
+                <el-button type="info" size="mini" :icon="RefreshRight" circle @click="fetchData"/>
+              </el-tooltip>
+              <el-tooltip effect="light" content="新增" placement="bottom" :show-after="delayNumber">
+                <el-button type="primary" size="mini" :icon="Plus" circle/>
+              </el-tooltip>
+            </div>
           </transition>
-          <transition name="slide-fade">
-            <el-button type="primary" size="mini" :icon="Plus" circle v-if="!searchState.search.length"/>
-          </transition>
-          <el-button type="danger" size="mini" disabled :icon="Delete" circle v-if="!state.multipleSelection.length"/>
-          <el-button type="danger" size="mini" :icon="Delete" round class="flex flex-row items-center" v-else>
-            ({{ state.multipleSelection.length }})
-          </el-button>
+          <el-tooltip effect="light" content="删除" placement="bottom" :show-after="delayNumber">
+            <el-button type="danger" size="mini" disabled :icon="Delete" circle v-if="!state.multipleSelection.length"/>
+            <el-button type="danger" size="mini" :icon="Delete" round class="flex flex-row items-center" v-else>
+              ({{ state.multipleSelection.length }})
+            </el-button>
+          </el-tooltip>
         </div>
       </div>
 
@@ -38,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, onMounted, PropType, reactive, watch } from 'vue'
+import { defineProps, onMounted, PropType, reactive, ref, watch } from 'vue'
 import { serverTabType } from '@/store/modules/serverList'
 import { getClient } from '@/utils/redis'
 import { useStore } from 'vuex'
@@ -55,6 +60,7 @@ const props = defineProps({
 
 const store = useStore()
 const client = getClient(props.serverTab)
+const delayNumber = ref(1000)
 const state: { keysList: keyMenuType[], targetKey: string, multipleSelection: string[] } = reactive({
   keysList: [],
   targetKey: '',
@@ -143,7 +149,7 @@ watch(searchState, () => {
 
 .slide-fade-enter-from,
 .slide-fade-leave-to {
-  transform: translateY(20px) rotate(45deg);
+  transform: translateY(20px);
   opacity: 0;
 }
 </style>

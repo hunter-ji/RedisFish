@@ -2,33 +2,51 @@
   <div class="list-type-container">
     <top-tab :key-name="props.keyName" key-type="list" class="mb-4"/>
     <div class="w-full flex flex-row justify-between mb-4">
+      <div class="w-1/5 flex flex-row items-center">
+        <div class="text-sm mr-1">TTL(s)</div>
+        <el-input-number v-model="state.ttl" size="mini" controls-position="right" :min="-1"/>
+      </div>
       <div
-        :class="searchState.search.length !== 0 ? 'w-4/5 transition-width duration-1000 ease-in-out' : 'w-2/5 transition-width duration-500 ease-in-out'">
+        :class="searchState.search.length !== 0 ? 'w-2/4 transition-width duration-1000 ease-in-out delay-100' : 'w-1/4 transition-width duration-500 ease-in-out'">
         <el-input v-model="searchState.search" size="small" placeholder="回车查询搜索结果" :prefix-icon="Search" clearable
                   @keyup.enter="search"/>
       </div>
-      <div class="w-1/8 flex flex-row justify-between transition-width duration-200 ease-in delay-75">
-        <el-button type="danger" size="small" disabled :icon="Delete" circle v-if="!state.multipleSelection.length"/>
-        <el-button type="danger" size="small" :icon="Delete" round class="flex flex-row items-center" @click="del" v-else>
-          ({{ state.multipleSelection.length }})
-        </el-button>
+      <div class="w-64 flex flex-row items-center justify-end">
         <transition name="slide-fade">
-          <el-button type="info" size="small" :icon="RefreshRight" circle @click="refresh"
-                     v-if="!searchState.search.length"/>
+          <div v-if="!searchState.search.length" class="w-full flex flex-row items-center justify-end mr-2">
+            <el-tooltip effect="light" content="刷新" placement="bottom" :show-after="delayNumber">
+              <el-button type="info" size="small" :icon="RefreshRight" circle @click="refresh"/>
+            </el-tooltip>
+            <el-tooltip effect="light" content="头部添加" placement="bottom" :show-after="delayNumber">
+              <img src="@/assets/add_up.png" height="34" width="34" alt="add_up"
+                   class="hover:opacity-70 cursor-pointer ml-2" @click="addRow(true)"/>
+            </el-tooltip>
+            <el-tooltip effect="light" content="尾部添加" placement="bottom" :show-after="delayNumber">
+              <img src="@/assets/add_down.png" height="34" width="34" alt="add_down"
+                   class="hover:opacity-70 cursor-pointer ml-2" @click="addRow(false)"/>
+            </el-tooltip>
+            <el-tooltip effect="light" content="头部移出" placement="bottom" :show-after="delayNumber">
+              <img src="@/assets/del_up.png" height="34" width="34" alt="del_up"
+                   class="hover:opacity-70 cursor-pointer ml-2" @click="del(true)"/>
+            </el-tooltip>
+            <el-tooltip effect="light" content="尾部移出" placement="bottom" :show-after="delayNumber">
+              <img src="@/assets/del_down.png" height="34" width="34" alt="del_down"
+                   class="hover:opacity-70 cursor-pointer ml-2" @click="del(false)"/>
+            </el-tooltip>
+          </div>
         </transition>
-        <transition name="slide-fade">
-          <el-button type="primary" size="small" circle @click="addRow" :icon="Plus" v-if="!searchState.search.length"/>
-        </transition>
-        <el-button type="success" size="small" :icon="Check" circle @click="submit"/>
+        <el-tooltip effect="light" content="提交操作" placement="bottom" :show-after="delayNumber">
+          <el-button type="success" size="small" :icon="Check" circle @click="submit" class="ml-2"/>
+        </el-tooltip>
       </div>
     </div>
     <el-table
       :data="searchState.isSearching ? searchState.values : state.values"
+      v-loading="state.loading"
       height="700"
-      size="mini" border stripe @selection-change="handleSelectionChange"
+      size="mini" border stripe
       @cell-dblclick="edit"
       style="min-width: 900px;max-width: calc(100% - 750px);">
-      <el-table-column type="selection" width="40"/>
       <el-table-column type="index" width="50"/>
       <el-table-column prop="value" label="Value">
         <template #default="scope">
@@ -37,7 +55,8 @@
                       @change="inputChange(scope.row)"/>
           </div>
           <div v-else>
-            <div v-if="scope.row.value.length" :style="'color:' + SwitchColorWithType(scope.row.type)">
+            <div v-if="scope.row.value.length"
+                 :style="'color:' + SwitchColor(scope.row.type)">
               {{ scope.row.value }}
             </div>
             <div class="text-gray-400 italic" v-else>null</div>
@@ -49,14 +68,14 @@
 </template>
 
 <script setup lang="ts">
-import { defineEmits, defineProps, PropType, reactive, watch } from 'vue'
+import { defineEmits, defineProps, PropType, reactive, watch, ref } from 'vue'
 import { commandObjectType, listTableValueType } from '@/views/valueContent/index'
 import TopTab from './topTab.vue'
-import { SwitchColorWithType } from '@/utils/switchColorWithType'
+import { SwitchColor } from '@/utils/switchColor'
 import { ElNotification } from 'element-plus'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { Check, Delete, Plus, RefreshRight, Search } from '@element-plus/icons-vue'
+import { Check, RefreshRight, Search } from '@element-plus/icons-vue'
 
 const emit = defineEmits(['refresh', 'delete', 'submit'])
 const props = defineProps({
@@ -67,13 +86,20 @@ const props = defineProps({
   keyName: {
     type: String,
     required: true
+  },
+  ttl: {
+    type: Number,
+    required: true
   }
 })
-const state: { values: listTableValueType[], multipleSelection: listTableValueType[], targetID: number, commands: commandObjectType[] } = reactive({
+const delayNumber = ref(1000)
+const state: { values: listTableValueType[], ttl: number, oldTTL: number, targetID: number, commands: commandObjectType[], loading: boolean } = reactive({
   values: [],
-  multipleSelection: [],
+  ttl: 0,
+  oldTTL: 0,
   targetID: 0,
-  commands: []
+  commands: [],
+  loading: false
 })
 const searchState: { search: string, isSearching: boolean, values: listTableValueType[] } = reactive({
   search: '',
@@ -81,11 +107,9 @@ const searchState: { search: string, isSearching: boolean, values: listTableValu
   values: []
 })
 const refresh = () => {
+  state.loading = true
   state.values = []
   emit('refresh', true)
-}
-const handleSelectionChange = (val: listTableValueType[]) => {
-  state.multipleSelection = val
 }
 const edit = (e: listTableValueType) => {
   state.targetID = e.id
@@ -93,13 +117,24 @@ const edit = (e: listTableValueType) => {
 const blurInput = () => {
   state.targetID = 0
 }
-const addRow = () => {
-  state.values.unshift({
-    id: state.values.length + 1,
-    value: '',
-    oldValue: '',
-    type: 'add'
-  })
+const addRow = (isFront: boolean) => {
+  if (isFront) {
+    state.values.unshift({
+      id: state.values.length + 1,
+      value: '',
+      oldValue: '',
+      type: 'add',
+      isFront: isFront
+    })
+  } else {
+    state.values.push({
+      id: state.values.length + 1,
+      value: '',
+      oldValue: '',
+      type: 'add',
+      isFront: isFront
+    })
+  }
 }
 const search = () => {
   searchState.isSearching = true
@@ -116,21 +151,33 @@ const inputChange = (row: listTableValueType) => {
     row.type = 'normal'
   }
 }
-const del = () => {
+const del = (isFront: boolean) => {
   state.commands = []
-  state.multipleSelection.forEach((item: listTableValueType) => {
-    state.commands.push({ command: ['SREM', props.keyName, item.value] })
-  })
+  if (isFront) {
+    state.commands.push({ command: ['LPOP', props.keyName] })
+  } else {
+    state.commands.push({ command: ['RPOP', props.keyName] })
+  }
   emit('delete', state.commands)
 }
 const submit = () => {
   state.commands = []
+
+  // ttl
+  if (state.ttl !== 0 && state.ttl !== state.oldTTL) {
+    state.commands.push({ command: ['EXPIRE', props.keyName, String(state.ttl)] })
+  }
+
+  // command
   state.values.forEach((item: listTableValueType) => {
     if (item.type === 'add' && item.value.trim().length) {
-      state.commands.push({ command: ['LPUSH', props.keyName, item.value] })
+      if (item.isFront) {
+        state.commands.push({ command: ['LPUSH', props.keyName, item.value] })
+      } else {
+        state.commands.push({ command: ['RPUSH', props.keyName, item.value] })
+      }
     } else if (item.type === 'edit' && item.value.trim().length) {
-      state.commands.push({ command: ['LPUSH', props.keyName, item.oldValue] })
-      state.commands.push({ command: ['LPUSH', props.keyName, item.value] })
+      state.commands.push({ command: ['LSET', props.keyName, String(item.id - 1), item.value] })
     }
   })
 
@@ -150,14 +197,18 @@ watch(searchState, () => {
   if (!searchState.search.length) searchState.isSearching = false
 })
 watch(props, () => {
+  state.ttl = props.ttl
+  state.oldTTL = props.ttl
   props.values.forEach((item: string, index: number) => {
     state.values.push({
       id: index + 1,
       value: item,
       oldValue: item,
-      type: 'normal'
+      type: 'normal',
+      isFront: false
     })
   })
+  state.loading = false
 })
 </script>
 
@@ -172,7 +223,7 @@ watch(props, () => {
 
 .slide-fade-enter-from,
 .slide-fade-leave-to {
-  transform: translateY(20px) rotate(45deg);
+  transform: translateY(20px);
   opacity: 0;
 }
 </style>
