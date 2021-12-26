@@ -1,5 +1,3 @@
-import { Switch } from '@element-plus/icons-vue'
-
 export const SwitchColor = (type: string): string => {
   let color: string
   switch (type) {

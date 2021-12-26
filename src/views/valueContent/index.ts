@@ -10,8 +10,10 @@ export interface commandObjectType {
 export interface hashTableValueType {
   id: number
   field: string
+  oldField: string
   value: string
-  isEdit: boolean
+  oldValue: string
+  type: string
 }
 
 export interface listTableValueType {

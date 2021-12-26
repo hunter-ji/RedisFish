@@ -51,7 +51,7 @@
       <el-table-column prop="value" label="Value">
         <template #default="scope">
           <div v-if="scope.row.id === state.targetID">
-            <el-input size="mini" v-model="scope.row.value" @blur="blurInput" placeholder="null"
+            <el-input size="mini" v-model="scope.row.value" @blur="blurInput" placeholder="null" :rows="3" type="textarea"
                       @change="inputChange(scope.row)"/>
           </div>
           <div v-else>
@@ -199,6 +199,7 @@ watch(searchState, () => {
 watch(props, () => {
   state.ttl = props.ttl
   state.oldTTL = props.ttl
+  state.values = []
   props.values.forEach((item: string, index: number) => {
     state.values.push({
       id: index + 1,
@@ -211,19 +212,3 @@ watch(props, () => {
   state.loading = false
 })
 </script>
-
-<style scoped>
-.slide-fade-enter-active {
-  transition: all 500ms ease-in;
-}
-
-.slide-fade-leave-active {
-  transition: all 500ms ease-in;
-}
-
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-  transform: translateY(20px);
-  opacity: 0;
-}
-</style>

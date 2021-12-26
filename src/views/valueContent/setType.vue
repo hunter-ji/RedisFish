@@ -36,6 +36,7 @@
     <el-table
       :data="searchState.isSearching ? searchState.values : state.values"
       height="700"
+      v-loading="state.loading"
       size="mini" border stripe @selection-change="handleSelectionChange"
       @cell-dblclick="edit"
       style="min-width: 900px;max-width: calc(100% - 750px);">
@@ -44,7 +45,7 @@
       <el-table-column prop="value" label="Value">
         <template #default="scope">
           <div v-if="scope.row.id === state.targetID">
-            <el-input size="mini" v-model="scope.row.value" @blur="blurInput" placeholder="null"
+            <el-input size="mini" v-model="scope.row.value" @blur="blurInput" placeholder="null" :rows="3" type="textarea"
                       @change="inputChange(scope.row)"/>
           </div>
           <div v-else>
@@ -85,13 +86,14 @@ const props = defineProps({
   }
 })
 const delayNumber = ref(1000)
-const state: { values: setTableValueType[], ttl: number, oldTTL: number, multipleSelection: setTableValueType[], targetID: number, commands: commandObjectType[] } = reactive({
+const state: { values: setTableValueType[], ttl: number, oldTTL: number, multipleSelection: setTableValueType[], targetID: number, commands: commandObjectType[], loading: boolean } = reactive({
   values: [],
   ttl: 0,
   oldTTL: 0,
   multipleSelection: [],
-  targetID: 0,
-  commands: []
+  targetID: -1,
+  commands: [],
+  loading: false
 })
 const searchState: { search: string, isSearching: boolean, values: setTableValueType[] } = reactive({
   search: '',
@@ -99,6 +101,7 @@ const searchState: { search: string, isSearching: boolean, values: setTableValue
   values: []
 })
 const refresh = () => {
+  state.loading = true
   state.values = []
   emit('refresh', true)
 }
@@ -109,7 +112,7 @@ const edit = (e: setTableValueType) => {
   state.targetID = e.id
 }
 const blurInput = () => {
-  state.targetID = 0
+  state.targetID = -1
 }
 const addRow = () => {
   state.values.unshift({
@@ -188,6 +191,7 @@ watch(searchState, () => {
 watch(props, () => {
   state.ttl = props.ttl
   state.oldTTL = props.ttl
+  state.values = []
   props.values.forEach((item: string, index: number) => {
     state.values.push({
       id: index + 1,
@@ -197,21 +201,6 @@ watch(props, () => {
       isRepeat: false
     })
   })
+  state.loading = false
 })
 </script>
-
-<style scoped>
-.slide-fade-enter-active {
-  transition: all 500ms ease-in;
-}
-
-.slide-fade-leave-active {
-  transition: all 500ms ease-in;
-}
-
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-  transform: translateY(20px);
-  opacity: 0;
-}
-</style>

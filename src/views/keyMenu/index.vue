@@ -126,7 +126,7 @@ watch(searchState, () => {
 })
 </script>
 
-<style scoped>
+<style>
 .key-menu-container {
   height: calc(100vh - 60px);
   width: 100%;
