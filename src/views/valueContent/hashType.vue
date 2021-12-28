@@ -44,12 +44,12 @@
       <el-table-column type="index" width="50"/>
       <el-table-column label="Field">
         <template #default="scope">
-          <div v-if="scope.row.id === state.targetID">
-            <el-input size="mini" v-model="scope.row.field" placeholder="null"
-                      @change="inputChange(scope.row)"/>
+          <div v-if="scope.row.id === state.targetID && state.targetLabel === 'Field'">
+            <el-input size="mini" v-model="scope.row.field" @blur="blurInput" placeholder="null"
+                      @change="inputChange(scope.row, true)"/>
           </div>
           <div v-else>
-            <div v-if="scope.row.value.length" :style="'color:' + SwitchColor(scope.row.type)">
+            <div v-if="scope.row.value.length" :style="'color:' + SwitchColorWithRepeat(scope.row.isRepeat, scope.row.type)">
               {{ scope.row.field }}
             </div>
             <div class="text-gray-400 italic" v-else>null</div>
@@ -58,9 +58,9 @@
       </el-table-column>
       <el-table-column label="Value">
         <template #default="scope">
-          <div v-if="scope.row.id === state.targetID">
+          <div v-if="scope.row.id === state.targetID && state.targetLabel === 'Value'">
             <el-input size="mini" v-model="scope.row.value" @blur="blurInput" placeholder="null" :rows="3" type="textarea"
-                      @change="inputChange(scope.row)"/>
+                      @change="inputChange(scope.row, false)"/>
           </div>
           <div v-else>
             <div v-if="scope.row.value.length" :style="'color:' + SwitchColor(scope.row.type)">
@@ -78,7 +78,7 @@
 import { defineEmits, defineProps, PropType, reactive, ref, watch } from 'vue'
 import { commandObjectType, hashTableValueType } from '@/views/valueContent/index'
 import TopTab from './topTab.vue'
-import { SwitchColor } from '@/utils/switchColor'
+import { SwitchColorWithRepeat, SwitchColor } from '@/utils/switchColor'
 import { ElNotification } from 'element-plus'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -100,12 +100,13 @@ const props = defineProps({
   }
 })
 const delayNumber = ref(1000)
-const state: { values: hashTableValueType[], ttl: number, oldTTL: number, multipleSelection: hashTableValueType[], targetID: number, commands: commandObjectType[], loading: boolean } = reactive({
+const state: { values: hashTableValueType[], ttl: number, oldTTL: number, multipleSelection: hashTableValueType[], targetID: number, targetLabel: string, commands: commandObjectType[], loading: boolean } = reactive({
   values: [],
   ttl: 0,
   oldTTL: 0,
   multipleSelection: [],
   targetID: -1,
+  targetLabel: '',
   commands: [],
   loading: false
 })
@@ -122,8 +123,9 @@ const refresh = () => {
 const handleSelectionChange = (val: hashTableValueType[]) => {
   state.multipleSelection = val
 }
-const edit = (e: hashTableValueType) => {
+const edit = (e: hashTableValueType, cell: { label: string }) => {
   state.targetID = e.id
+  state.targetLabel = cell.label
 }
 const blurInput = () => {
   state.targetID = -1
@@ -135,7 +137,8 @@ const addRow = () => {
     oldField: '',
     value: '',
     oldValue: '',
-    type: 'add'
+    type: 'add',
+    isRepeat: false
   })
 }
 const search = () => {
@@ -150,11 +153,24 @@ const search = () => {
     })
   })
 }
-const inputChange = (row: hashTableValueType) => {
+const inputChange = (row: hashTableValueType, isField: boolean) => {
   if (row.type === 'normal') {
     row.type = 'edit'
   } else if (row.type === 'edit' && row.field === row.oldField && row.value === row.oldValue) {
     row.type = 'normal'
+  }
+
+  if (isField) {
+    const index = state.values.findIndex((item: hashTableValueType) => item.field === row.field && item.id !== row.id)
+    if (index > -1) {
+      row.isRepeat = true
+      ElNotification({
+        title: '数据重复',
+        message: `${row.field && row.field.length > 6 ? row.field.slice(0, 6) + '...' : row.field}与现有Field重复`,
+        showClose: false,
+        duration: 5000
+      })
+    }
   }
 }
 const del = () => {
@@ -213,7 +229,8 @@ watch(props, () => {
       oldField: props.values[i],
       value: props.values[i + 1],
       oldValue: props.values[i + 1],
-      type: 'normal'
+      type: 'normal',
+      isRepeat: false
     })
     n += 1
   }

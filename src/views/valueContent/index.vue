@@ -8,8 +8,8 @@
                @submit="handleCommand" v-else-if="state.keyType === 'list'"/>
     <set-type :key-name="props.targetKey" :values="state.values" :ttl="state.ttl" @refresh="fetchData" @delete="handleCommand"
               @submit="handleCommand" v-else-if="state.keyType === 'set'"/>
-    <z-set-type :key-name="props.targetKey" :values="state.values" @refresh="fetchData"
-                v-else-if="state.keyType === 'zset'"/>
+    <z-set-type :key-name="props.targetKey" :values="state.values" :ttl="state.ttl" @refresh="fetchData" @delete="handleCommand"
+                @submit="handleCommand" v-else-if="state.keyType === 'zset'"/>
 
     <el-dialog v-model="dialog.show" title="提示" width="50%" center>
       <div>将要执行如下命令：</div>

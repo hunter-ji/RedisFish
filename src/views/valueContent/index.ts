@@ -13,7 +13,8 @@ export interface hashTableValueType {
   oldField: string
   value: string
   oldValue: string
-  type: string
+  type: string,
+  isRepeat: boolean
 }
 
 export interface listTableValueType {
@@ -35,6 +36,9 @@ export interface setTableValueType {
 export interface zsetTableValueType {
   id: number
   field: string
-  score: number
-  isEdit: boolean
+  oldField: string
+  value: string
+  oldValue: string
+  type: string,
+  isRepeat: boolean
 }
