@@ -98,5 +98,10 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
+<style>
+.el-button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
 </style>

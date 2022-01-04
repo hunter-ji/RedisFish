@@ -220,6 +220,7 @@ watch(searchState, () => {
 watch(props, () => {
   state.ttl = props.ttl
   state.oldTTL = props.ttl
+  state.values = []
 
   let n = 0
   for (let i = 0; i < props.values.length - 1; i += 2) {
