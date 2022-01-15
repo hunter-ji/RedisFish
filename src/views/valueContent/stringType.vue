@@ -10,6 +10,9 @@
         <el-tooltip effect="light" content="刷新" placement="bottom" :show-after="delayNumber">
           <el-button type="info" size="small" :icon="RefreshRight" circle @click="refresh"/>
         </el-tooltip>
+        <el-tooltip effect="light" content="JSON格式化" placement="bottom" :show-after="delayNumber">
+          <el-button type="warning" size="small" :icon="Brush" circle @click="stringFormat"/>
+        </el-tooltip>
         <el-tooltip effect="light" content="提交操作" placement="bottom" :show-after="delayNumber">
           <el-button type="success" size="small" :icon="Check" circle @click="submit"/>
         </el-tooltip>
@@ -24,7 +27,7 @@ import { defineEmits, defineProps, PropType, reactive, ref, watch } from 'vue'
 import TopTab from './topTab.vue'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { Check, RefreshRight } from '@element-plus/icons-vue'
+import { Check, RefreshRight, Brush } from '@element-plus/icons-vue'
 import { commandObjectType } from '@/views/valueContent/index'
 import { ElNotification } from 'element-plus'
 
@@ -53,6 +56,14 @@ const state: { val: string, oldVal: string, ttl: number, oldTTL: number, command
 })
 const refresh = () => {
   emit('refresh', true)
+}
+const stringFormat = () => {
+  try {
+    const jsonData = JSON.parse(state.val)
+    state.val = JSON.stringify(jsonData, null, '\t')
+  } catch (error) {
+    console.log('json格式化错误')
+  }
 }
 const submit = () => {
   state.commands = []

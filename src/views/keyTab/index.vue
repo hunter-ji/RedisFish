@@ -6,7 +6,7 @@
       @tab-remove="removeTab"
     >
       <el-tab-pane label="Console" name="Console" :closable="state.consoleClosable">
-        hello
+        <command-pane />
       </el-tab-pane>
       <el-tab-pane
         v-for="item in data"
@@ -27,6 +27,7 @@ import { computed, ComputedRef, defineProps, PropType, reactive, watch } from 'v
 import { serverTabType } from '@/store/modules/serverList'
 import { keyTabType } from '@/store/modules/keyList'
 import ValueContent from '@/views/valueContent/index.vue'
+import CommandPane from '@/views/consolePane/index.vue'
 
 const props = defineProps({
   serverTab: {
