@@ -6,7 +6,7 @@
       @tab-remove="removeTab"
     >
       <el-tab-pane label="Console" name="Console" :closable="state.consoleClosable">
-        <command-pane />
+        <command-pane :server-tab="props.serverTab" />
       </el-tab-pane>
       <el-tab-pane
         v-for="item in data"
