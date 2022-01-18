@@ -23,7 +23,7 @@
       <el-tab-pane
         v-for="(item, index) in outputState.outputTabs"
         :key="index"
-        :label="`result${index+1}`"
+        :label="`执行结果${index+1}`"
         :name="`result${index+1}`"
         :closable="outputState.outputClosable"
       >
