@@ -4,7 +4,7 @@
     <div class="w-full flex flex-row justify-between mb-4">
       <div class="w-1/5 flex flex-row items-center">
         <div class="text-sm mr-1">TTL(s)</div>
-        <el-input-number v-model="state.ttl" size="mini" controls-position="right" :min="-1" />
+        <el-input-number v-model="state.ttl" size="mini" controls-position="right" :min="-1"/>
       </div>
       <div
         :class="searchState.search.length !== 0 ? 'w-3/5 transition-width duration-1000 ease-in-out delay-100' : 'w-2/5 transition-width duration-500 ease-in-out'">
@@ -15,16 +15,17 @@
         <transition name="slide-fade">
           <div class="flex flex-row items-center" style="margin-right: 10px;" v-if="!searchState.search.length">
             <el-tooltip effect="light" content="刷新" placement="bottom" :show-after="delayNumber">
-              <el-button type="info" size="small" :icon="RefreshRight" circle @click="refresh" />
+              <el-button type="info" size="small" :icon="RefreshRight" circle @click="refresh"/>
             </el-tooltip>
             <el-tooltip effect="light" content="添加" placement="bottom" :show-after="delayNumber">
-              <el-button type="primary" size="small" circle @click="addRow" :icon="Plus" />
+              <el-button type="primary" size="small" circle @click="addRow" :icon="Plus"/>
             </el-tooltip>
           </div>
         </transition>
         <el-tooltip effect="light" content="删除" placement="bottom" :show-after="delayNumber">
           <el-button type="danger" size="small" disabled :icon="Delete" circle v-if="!state.multipleSelection.length"/>
-          <el-button type="danger" size="small" :icon="Delete" round class="flex flex-row items-center" @click="del" v-else>
+          <el-button type="danger" size="small" :icon="Delete" round class="flex flex-row items-center" @click="del"
+                     v-else>
             ({{ state.multipleSelection.length }})
           </el-button>
         </el-tooltip>
@@ -49,7 +50,8 @@
                       @change="inputChange(scope.row, true)"/>
           </div>
           <div v-else>
-            <div v-if="scope.row.value.length" :style="'color:' + SwitchColorWithRepeat(scope.row.isRepeat, scope.row.type)">
+            <div v-if="scope.row.field.length"
+                 :style="'color:' + SwitchColorWithRepeat(scope.row.isRepeat, scope.row.type)">
               {{ scope.row.field }}
             </div>
             <div class="text-gray-400 italic" v-else>null</div>
@@ -59,7 +61,8 @@
       <el-table-column label="Value">
         <template #default="scope">
           <div v-if="scope.row.id === state.targetID && state.targetLabel === 'Value'">
-            <el-input size="mini" v-model="scope.row.value" @blur="blurInput" placeholder="null" :rows="3" type="textarea"
+            <el-input size="mini" v-model="scope.row.value" @blur="blurInput" placeholder="null" :rows="3"
+                      type="textarea"
                       @change="inputChange(scope.row, false)"/>
           </div>
           <div v-else>
@@ -78,7 +81,7 @@
 import { defineEmits, defineProps, PropType, reactive, ref, watch } from 'vue'
 import { commandObjectType, hashTableValueType } from '@/views/valueContent/index'
 import TopTab from './topTab.vue'
-import { SwitchColorWithRepeat, SwitchColor } from '@/utils/switchColor'
+import { SwitchColor, SwitchColorWithRepeat } from '@/utils/switchColor'
 import { ElNotification } from 'element-plus'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore

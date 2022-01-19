@@ -17,6 +17,6 @@ export const getStore = (): serverType[] => {
   return JSON.parse(readFile(storeFilePath))
 }
 
-export const setStore = (content: serverType[]): void => {
+export const setStore = async (content: serverType[]): Promise<void> => {
   writeFile(storeFilePath, JSON.stringify(content))
 }

@@ -1,13 +1,22 @@
 <template>
   <div id="serverMenu">
+    <!-- menu header -->
+    <div class="flex flex-row items-center justify-between mb-2">
+      <div class="font-bold">数据库列表</div>
+      <el-tooltip effect="light" content="添加数据库" placement="bottom" :show-after="1000">
+        <plus class="w-5 h-5 p-1 rounded cursor-pointer hover:text-white hover:bg-gray-300" @click="dialogState.addFormDialog = true" />
+      </el-tooltip>
+    </div>
+
+    <!-- menu list -->
     <div class="menu-list">
       <div v-for="(item, index) in state.serverList" :key="index">
-        <div class="menu-list-item flex flex-row items-center rounded p-1 cursor-default">
+        <div class="menu-list-item flex flex-row items-center rounded p-1 cursor-default" @click="clickServer(item, index)">
 
           <!-- server menu server name -->
           <div class="flex flex-row items-center justify-between w-full">
             <!-- label 点击展开/关闭 -->
-            <div class="flex flex-row items-center" @click="clickServer(item, index)">
+            <div class="flex flex-row items-center">
               <img src="@/assets/right.png"
                    alt="icon"
                    width="12"
@@ -16,7 +25,7 @@
               <div class="ml-2">{{ item.name }}</div>
             </div>
             <!-- server操作按钮 -->
-            <setting class="w-5 h-5 cursor-pointer hover:text-blue-400" @click="openEditFormDialog(item)" />
+            <setting class="w-4 h-4 cursor-pointer hover:text-white opacity-70" @click.stop="openEditFormDialog(item)" />
           </div>
         </div>
         <!-- server menu server name end -->
@@ -38,13 +47,13 @@
 
     <!-- addFormDialog -->
     <el-dialog title="新增" v-model="dialogState.addFormDialog">
-      <add-form />
+      <add-form :server-list="state.serverList" @cancel="handleAddFormDialogEvent" @submit="handleAddFormDialogEvent" />
     </el-dialog>
     <!-- addFormDialog end -->
 
     <!-- editFormDialog -->
     <el-dialog title="编辑" v-model="dialogState.editFormDialog">
-      <edit-form :form="dialogState.currentServerForm" @delete="handleEditFormDialogEvent" @cancel="handleEditFormDialogEvent" @submit="handleEditFormDialogEvent" />
+      <edit-form :form="dialogState.currentServerForm" @delete="handleEditFormDialogEventDel" @cancel="handleEditFormDialogEventCancel" @submit="handleEditFormDialogEventSubmit" />
     </el-dialog>
     <!-- editFormDialog end -->
   </div>
@@ -55,14 +64,15 @@ import { useStore } from 'vuex'
 import { onMounted, reactive } from 'vue'
 import { getClient } from '@/utils/redis'
 import { serverType } from '@/utils/store'
-import { Setting } from '@element-plus/icons-vue'
+import { Setting, Plus } from '@element-plus/icons-vue'
 import AddForm from './addForm.vue'
 import EditForm from './editForm.vue'
 
 const store = useStore()
-const state: { serverList: serverType[], currentServerName: string } = reactive({
+const state: { serverList: serverType[], currentServerName: string, search: string } = reactive({
   serverList: [],
-  currentServerName: ''
+  currentServerName: '',
+  search: ''
 })
 const dialogState: { addFormDialog: boolean, editFormDialog: boolean, currentServerForm: serverType } = reactive({
   addFormDialog: false,
@@ -127,10 +137,25 @@ const openEditFormDialog = (form: serverType) => {
   dialogState.currentServerForm = form
   dialogState.editFormDialog = true
 }
-const handleEditFormDialogEvent = (eventName: string) => {
+const handleEditFormDialogEventCancel = () => {
   dialogState.editFormDialog = false
-  if (eventName === 'delete' || eventName === 'submit') {
-    fetchData()
+}
+const delServer = async (serverID: number) => {
+  state.serverList = state.serverList.filter((item: serverType) => item.id !== serverID)
+}
+const handleEditFormDialogEventDel = async (serverID: number) => {
+  await delServer(serverID)
+  await store.dispatch('serverList/updateServer', state.serverList)
+  await store.dispatch('serverList/setServer')
+  await fetchData()
+  dialogState.editFormDialog = false
+}
+const handleEditFormDialogEventSubmit = async (eventName: string) => {
+  await store.dispatch('serverList/updateServer', state.serverList)
+  await store.dispatch('serverList/setServer')
+  dialogState.editFormDialog = false
+  if (eventName === 'submit') {
+    await fetchData()
   }
 }
 

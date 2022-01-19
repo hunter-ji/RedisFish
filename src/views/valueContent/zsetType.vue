@@ -49,7 +49,7 @@
                       @change="inputChange(scope.row, true)"/>
           </div>
           <div v-else>
-            <div v-if="scope.row.value.length" :style="'color:' + SwitchColorWithRepeat(scope.row.isRepeat, scope.row.type)">
+            <div v-if="scope.row.field.length" :style="'color:' + SwitchColorWithRepeat(scope.row.isRepeat, scope.row.type)">
               {{ scope.row.field }}
             </div>
             <div class="text-gray-400 italic" v-else>null</div>

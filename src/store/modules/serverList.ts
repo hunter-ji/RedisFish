@@ -24,6 +24,9 @@ const mutations = {
   setServerList (state: stateType): void {
     setStore(state.serverList)
   },
+  updateServer (state: stateType, serverList: serverType[]): void {
+    state.serverList = serverList
+  },
   setServerTabList (state: stateType, serverTab: serverTabType): void {
     if (state.serverTabList.findIndex((item: serverTabType) => `${item.db} ${item.name}` === `${serverTab.db} ${serverTab.name}`) === -1) {
       state.serverTabList.push(serverTab)
@@ -38,11 +41,11 @@ const mutations = {
 }
 
 const actions = {
-  addTab ({ commit }: { commit: Commit }, serverTab: serverTabType) {
+  addTab ({ commit }: { commit: Commit }, serverTab: serverTabType): void {
     commit('setCurrentServerTab', `${serverTab.db} ${serverTab.name}`)
     commit('setServerTabList', serverTab)
   },
-  delTab ({ commit }: { commit: Commit }, targetName: string) {
+  delTab ({ commit }: { commit: Commit }, targetName: string): void {
     commit('delServerTabList', targetName)
 
     if (state.serverTabList.length && targetName === state.currentServerTab) {
@@ -51,6 +54,12 @@ const actions = {
     } else if (!state.serverTabList.length) {
       commit('setCurrentServerTab', '')
     }
+  },
+  setServer ({ commit }: { commit: Commit }): void {
+    commit('setServerList')
+  },
+  updateServer ({ commit }: { commit: Commit }, server: serverType): void {
+    commit('updateServer', server)
   }
 }
 

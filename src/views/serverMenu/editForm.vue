@@ -14,12 +14,10 @@
         <el-input v-model="state.form.password" placeholder="username:password"/>
       </el-form-item>
       <el-form-item>
-        <div class="flex flex-row items-center justify-between">
-          <el-button type="danger" @click="handleDel">删除</el-button>
-          <div class="flex flex-row items-center justify-end">
-            <el-button @click="handleCancel">取消</el-button>
-            <el-button type="primary" @click="handleSubmit">保存</el-button>
-          </div>
+        <div class="flex flex-row items-center justify-end">
+          <el-button @click="handleCancel()">取消</el-button>
+          <el-button type="danger" @click="handleDel()">删除</el-button>
+          <el-button type="primary" @click="handleSubmit()">保存</el-button>
         </div>
       </el-form-item>
     </el-form>
@@ -46,18 +44,17 @@ const state: { form: serverType } = reactive({
     password: ''
   }
 })
-const handleDel = () => {
-  emit('delete', 'delete')
+const handleDel = async () => {
+  emit('delete', state.form.id)
 }
 const handleCancel = () => {
   emit('cancel', 'cancel')
 }
-const handleSubmit = () => {
+const handleSubmit = async () => {
   emit('submit', 'submit')
 }
 
 watch(props, () => {
-  // state.form = JSON.parse(JSON.stringify(props.form))
   state.form = props.form
 })
 
