@@ -14,3 +14,11 @@ export const readFile = (path: string): string => {
     flag: 'r'
   })
 }
+
+export const existsFile = async (path: string): Promise<boolean> => {
+  return fs.existsSync(path)
+}
+
+export const mkdirFolder = async (path: string): Promise<void> => {
+  fs.mkdirSync(path)
+}
