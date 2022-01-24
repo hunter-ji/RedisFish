@@ -38,7 +38,7 @@
     </div>
 
     <!--key-tab-->
-    <key-tab class="key-tab h-full w-full" :server-tab="props.serverTab" :target-key="state.targetKey"/>
+    <key-tab class="key-tab h-full w-full" :server-tab="props.serverTab" :target-key="state.targetKey" style="width: 950px"/>
   </div>
 </template>
 
