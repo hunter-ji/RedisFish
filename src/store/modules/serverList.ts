@@ -37,6 +37,13 @@ const mutations = {
   delServerTabList (state: stateType, targetName: string): void {
     state.serverTabList = state.serverTabList.filter((item: serverTabType) => `${item.db} ${item.name}` !== targetName)
   },
+  delServerTabListWithServerName (state: stateType, serverName: string): void {
+    state.serverTabList = state.serverTabList.filter((item: serverTabType) => {
+      console.log('item.name : ', item.name)
+      console.log('serverName : ', serverName)
+      return item.name !== serverName
+    })
+  },
   setCurrentServerTab (state: stateType, serverTab: string): void {
     state.currentServerTab = serverTab
   }
@@ -56,6 +63,9 @@ const actions = {
     } else if (!state.serverTabList.length) {
       commit('setCurrentServerTab', '')
     }
+  },
+  delTabWithServerName ({ commit }: { commit: Commit }, serverName: string): void {
+    commit('delServerTabListWithServerName', serverName)
   },
   setServer ({ commit }: { commit: Commit }): void {
     commit('setServerList')

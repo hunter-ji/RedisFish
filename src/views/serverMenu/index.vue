@@ -9,7 +9,7 @@
     </div>
 
     <!-- menu list -->
-    <div class="menu-list">
+    <div class="menu-list" v-if="state.serverList.length">
       <div v-for="(item, index) in state.serverList" :key="index">
         <div class="menu-list-item flex flex-row items-center rounded p-1 cursor-default" @click="clickServer(item, index)">
 
@@ -31,17 +31,22 @@
         <!-- server menu server name end -->
 
         <!-- server db list -->
-        <div class="menu-content flex flex-col ml-6" v-show="state.currentServerName === item.name">
-          <div class="menu-content-item p-1 rounded cursor-default"
-               v-for="(childItem, childIndex) in item.children"
-               :key="childIndex"
-               @click="handleChildItemClick(item, childItem)"
-          >
-            {{ childItem }}
+          <div class="menu-content flex flex-col ml-6" v-show="state.currentServerName === item.name">
+            <div class="menu-content-item p-1 rounded cursor-default"
+                 v-for="(childItem, childIndex) in item.children"
+                 :key="childIndex"
+                 @click="handleChildItemClick(item, childItem)"
+            >
+              {{ childItem }}
+            </div>
           </div>
-        </div>
         <!-- server db list end -->
 
+      </div>
+    </div>
+    <div v-else class="flex flex-col justify-center">
+      <div  class="text-center mt-6" style="color: #909399;">
+        数据为空，点击数据库列表列右上角+按钮进行添加
       </div>
     </div>
 

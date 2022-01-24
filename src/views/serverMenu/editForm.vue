@@ -40,7 +40,9 @@ import { defineEmits, defineProps, onMounted, PropType, reactive, watch } from '
 import { serverType } from '@/utils/store'
 import { getClient } from '@/utils/redis'
 import { CloseBold, Check } from '@element-plus/icons-vue'
+import { useStore } from 'vuex'
 
+const store = useStore()
 const props = defineProps({
   form: {
     type: Object as PropType<serverType>,
@@ -59,6 +61,8 @@ const state: { checkStatus: number, form: serverType } = reactive({
   }
 })
 const handleDel = async () => {
+  console.log('props.form.name : ', props.form.name)
+  await store.dispatch('serverList/delTabWithServerName', props.form.name)
   emit('delete', state.form.id)
 }
 const handleCancel = () => {

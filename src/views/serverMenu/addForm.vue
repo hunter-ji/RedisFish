@@ -11,7 +11,7 @@
         <el-input type="number" v-model="state.form.port" placeholder="6379"/>
       </el-form-item>
       <el-form-item label="密码" required>
-        <el-input type="password" v-model="state.form.password" placeholder="username:password"/>
+        <el-input type="text" v-model="state.form.password" placeholder="username:password"/>
       </el-form-item>
       <el-form-item>
         <div class="flex flex-row items-center justify-between">
@@ -56,10 +56,10 @@ const state: { checkStatus: number, form: serverType } = reactive({
   checkStatus: 0,
   form: {
     id: 0,
-    name: 'hello',
-    host: '127.0.0.1',
+    name: '',
+    host: '',
     port: 6379,
-    password: '1234567890'
+    password: ''
   }
 })
 const store = useStore()
