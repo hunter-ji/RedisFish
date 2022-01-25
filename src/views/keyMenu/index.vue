@@ -1,7 +1,7 @@
 <template>
   <div class="key-menu-container flex flex-row justify-between">
     <!--key-menu-->
-    <div>
+    <div class="flex flex-col items-center">
       <div class="key-menu-tool p-2 flex flex-row is-text justify-between">
         <!--search-->
         <div
@@ -13,15 +13,15 @@
         <div class="flex flex-row items-center justify-end w-1/4">
           <transition name="slide-fade">
             <div class="flex flex-row items-center justify-end" v-if="!searchState.search.length" style="margin-right: 10px;">
-              <el-tooltip effect="light" content="刷新" placement="bottom" :show-after="delayNumber">
+              <el-tooltip effect="light" content="刷新" placement="bottom" :show-after="1000">
                 <el-button type="info" size="mini" :icon="RefreshRight" circle @click="fetchData"/>
               </el-tooltip>
-              <el-tooltip effect="light" content="新增" placement="bottom" :show-after="delayNumber">
+              <el-tooltip effect="light" content="新增" placement="bottom" :show-after="1000">
                 <el-button type="primary" size="mini" :icon="Plus" circle/>
               </el-tooltip>
             </div>
           </transition>
-          <el-tooltip effect="light" content="删除" placement="bottom" :show-after="delayNumber">
+          <el-tooltip effect="light" content="删除" placement="bottom" :show-after="1000">
             <el-button type="danger" size="mini" disabled :icon="Delete" circle v-if="!state.multipleSelection.length"/>
             <el-button type="danger" size="mini" :icon="Delete" round class="flex flex-row items-center" v-else>
               ({{ state.multipleSelection.length }})
@@ -30,20 +30,20 @@
         </div>
       </div>
 
-      <el-table :data="searchState.isSearching ? searchState.keysList : state.keysList" size="mini" height="850" style="width: 100%;" stripe @cell-dblclick="getValue"
-                @selection-change="handleSelectionChange">
+      <el-table :data="searchState.isSearching ? searchState.keysList : state.keysList" size="mini" height="100%" style="width: 100%;" stripe @cell-dblclick="getValue"
+                @selection-change="handleSelectionChange" class="pb-4">
         <el-table-column type="selection" width="50"/>
         <el-table-column prop="label" label="Keys" width="350"/>
       </el-table>
     </div>
 
     <!--key-tab-->
-    <key-tab class="key-tab h-full w-full" :server-tab="props.serverTab" :target-key="state.targetKey" style="width: 950px"/>
+    <key-tab class="key-tab h-full w-full" :server-tab="props.serverTab" :target-key="state.targetKey"/>
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps, onMounted, PropType, reactive, ref, watch } from 'vue'
+import { computed, defineProps, nextTick, onMounted, PropType, reactive, watch, ref } from 'vue'
 import { serverTabType } from '@/store/modules/serverList'
 import { getClient } from '@/utils/redis'
 import { useStore } from 'vuex'
@@ -60,7 +60,6 @@ const props = defineProps({
 
 const store = useStore()
 const client = getClient(props.serverTab)
-const delayNumber = ref(1000)
 const state: { keysList: keyMenuType[], targetKey: string, multipleSelection: string[] } = reactive({
   keysList: [],
   targetKey: '',
@@ -113,6 +112,11 @@ const search = async () => {
   })
   await client.disconnect()
 }
+const tableHeight = ref(850)
+
+nextTick(() => {
+  tableHeight.value = window.innerHeight - 90
+})
 
 onMounted(() => {
   fetchData()

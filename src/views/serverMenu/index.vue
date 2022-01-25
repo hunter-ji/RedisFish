@@ -68,7 +68,7 @@
 import { useStore } from 'vuex'
 import { onMounted, reactive } from 'vue'
 import { getClient } from '@/utils/redis'
-import { serverType } from '@/utils/store'
+import { serverType, initStoreFile } from '@/utils/store'
 import { Setting, Plus } from '@element-plus/icons-vue'
 import AddForm from './addForm.vue'
 import EditForm from './editForm.vue'
@@ -128,6 +128,7 @@ const handleChildItemClick = (server: serverType, db: string): void => {
   })
 }
 const fetchData = async () => {
+  await initStoreFile()
   await store.commit('serverList/initServerList')
 
   state.serverList = store.getters.serverList

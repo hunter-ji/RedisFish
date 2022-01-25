@@ -19,9 +19,7 @@ const state = {
 
 const mutations = {
   initServerList (state: stateType): void {
-    getStore().then(res => {
-      state.serverList = res
-    })
+    state.serverList = getStore()
   },
   setServerList (state: stateType): void {
     setStore(state.serverList)

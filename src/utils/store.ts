@@ -14,13 +14,16 @@ export interface serverType {
   children?: string[]
 }
 
-export const getStore = async (): Promise<serverType[]> => {
+export const getStore = (): serverType[] => {
+  return JSON.parse(readFile(storeFilePath))
+}
+
+export const initStoreFile = async (): Promise<void> => {
   const isFileExists = await existsFile(storeFilePath)
   if (!isFileExists) {
     await mkdirFolder(storeFolderPath)
     await writeFile(storeFilePath, JSON.stringify({}))
   }
-  return JSON.parse(readFile(storeFilePath))
 }
 
 export const setStore = async (content: serverType[]): Promise<void> => {
