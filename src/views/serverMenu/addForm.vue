@@ -8,7 +8,7 @@
         <el-input v-model="state.form.host" placeholder="192.168.1.10"/>
       </el-form-item>
       <el-form-item label="端口" required>
-        <el-input type="number" v-model="state.form.port" placeholder="6379"/>
+        <el-input type="number" v-model="state.form.port" placeholder="6379" class="clear-number-input"/>
       </el-form-item>
       <el-form-item label="密码" required>
         <el-input type="text" v-model="state.form.password" placeholder="username:password"/>
@@ -44,6 +44,7 @@ import { serverType } from '@/utils/store'
 import { useStore } from 'vuex'
 import { getClient } from '@/utils/redis'
 import { CloseBold, Check, Paperclip } from '@element-plus/icons-vue'
+import { ElNotification } from 'element-plus'
 
 const emit = defineEmits(['cancel', 'submit'])
 const props = defineProps({
@@ -64,14 +65,16 @@ const state: { checkStatus: number, form: serverType } = reactive({
 })
 const store = useStore()
 const clearFrom = async () => {
-  state.checkStatus = 0
-  state.form = {
-    id: 0,
-    name: '',
-    host: '',
-    port: 6379,
-    password: ''
-  }
+  setTimeout(() => {
+    state.checkStatus = 0
+    state.form = {
+      id: 0,
+      name: '',
+      host: '',
+      port: 6379,
+      password: ''
+    }
+  }, 1000)
 }
 const cancel = async () => {
   emit('cancel', 'cancel')
@@ -87,7 +90,12 @@ const submit = async () => {
   // 检测name是否重复
   const serverIndex = props.serverList.findIndex((item: serverType) => item.name === state.form.name)
   if (serverIndex !== -1) {
-    console.log('重复')
+    ElNotification({
+      title: '提示',
+      message: '数据库名称重复',
+      showClose: false,
+      duration: 3000
+    })
     return
   }
 
@@ -101,18 +109,27 @@ const submit = async () => {
 
   emit('submit', 'submit')
   await clearFrom()
+  ElNotification({
+    title: '提示',
+    message: '添加数据库成功',
+    showClose: false,
+    duration: 2000
+  })
 }
 const ping = async () => {
-  state.checkStatus = 2
-  const client = getClient(state.form)
-  await client.connect()
+  try {
+    const client = getClient(state.form)
+    await client.connect()
 
-  const pingRes = await client.ping()
-  if (pingRes === 'PONG') {
-    state.checkStatus = 1
+    const pingRes = await client.ping()
+    if (pingRes === 'PONG') {
+      state.checkStatus = 1
+    }
+
+    await client.disconnect()
+  } catch (err) {
+    state.checkStatus = 2
   }
-
-  await client.disconnect()
 }
 
 onMounted(() => {
@@ -120,3 +137,10 @@ onMounted(() => {
   state.form.id = length - 1
 })
 </script>
+
+<style scoped>
+.clear-number-input ::v-deep input[type="number"]::-webkit-outer-spin-button,
+.clear-number-input ::v-deep input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+}
+</style>

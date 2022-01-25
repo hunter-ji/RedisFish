@@ -58,7 +58,7 @@
 
     <!-- editFormDialog -->
     <el-dialog title="编辑" v-model="dialogState.editFormDialog">
-      <edit-form :form="dialogState.currentServerForm" @delete="handleEditFormDialogEventDel" @cancel="handleEditFormDialogEventCancel" @submit="handleEditFormDialogEventSubmit" />
+      <edit-form :form="dialogState.currentServerForm" :server-list="state.serverList" @delete="handleEditFormDialogEventDel" @cancel="handleEditFormDialogEventCancel" @submit="handleEditFormDialogEventSubmit" />
     </el-dialog>
     <!-- editFormDialog end -->
   </div>

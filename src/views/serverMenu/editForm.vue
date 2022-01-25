@@ -8,7 +8,7 @@
         <el-input v-model="state.form.host" placeholder="192.168.1.10"/>
       </el-form-item>
       <el-form-item label="端口" required>
-        <el-input type="number" v-model="state.form.port" placeholder="6379"/>
+        <el-input type="number" v-model="state.form.port" placeholder="6379" class="clear-number-input"/>
       </el-form-item>
       <el-form-item label="密码" required>
         <el-input v-model="state.form.password" placeholder="username:password"/>
@@ -41,16 +41,21 @@ import { serverType } from '@/utils/store'
 import { getClient } from '@/utils/redis'
 import { CloseBold, Check } from '@element-plus/icons-vue'
 import { useStore } from 'vuex'
+import { ElNotification } from 'element-plus/es'
 
 const store = useStore()
 const props = defineProps({
+  serverList: {
+    type: Array as PropType<serverType[]>,
+    required: true
+  },
   form: {
     type: Object as PropType<serverType>,
     required: true
   }
 })
 const emit = defineEmits(['delete', 'cancel', 'submit'])
-const state: { checkStatus: number, form: serverType } = reactive({
+const state: { checkStatus: number, form: serverType, originFormName: string } = reactive({
   checkStatus: 0,
   form: {
     id: 0,
@@ -58,10 +63,10 @@ const state: { checkStatus: number, form: serverType } = reactive({
     host: '',
     port: 6379,
     password: ''
-  }
+  },
+  originFormName: ''
 })
 const handleDel = async () => {
-  console.log('props.form.name : ', props.form.name)
   await store.dispatch('serverList/delTabWithServerName', props.form.name)
   emit('delete', state.form.id)
 }
@@ -69,22 +74,40 @@ const handleCancel = () => {
   emit('cancel', 'cancel')
 }
 const handleSubmit = async () => {
+  // 检测连通性
   await ping()
-  if (state.checkStatus === 1) {
-    emit('submit', 'submit')
+  if (state.checkStatus !== 1) {
+    return
   }
+
+  // 检测name是否重复
+  const serverIndex = props.serverList.findIndex((item: serverType) => item.name === state.form.name && item.name !== state.originFormName)
+  if (serverIndex !== -1) {
+    ElNotification({
+      title: '提示',
+      message: '数据库名称重复',
+      showClose: false,
+      duration: 3000
+    })
+    return
+  }
+
+  emit('submit', 'submit')
 }
 const ping = async () => {
-  state.checkStatus = 2
-  const client = getClient(state.form)
-  await client.connect()
+  try {
+    const client = getClient(state.form)
+    await client.connect()
 
-  const pingRes = await client.ping()
-  if (pingRes === 'PONG') {
-    state.checkStatus = 1
+    const pingRes = await client.ping()
+    if (pingRes === 'PONG') {
+      state.checkStatus = 1
+    }
+
+    await client.disconnect()
+  } catch (err) {
+    state.checkStatus = 2
   }
-
-  await client.disconnect()
 }
 
 watch(props, () => {
@@ -93,5 +116,13 @@ watch(props, () => {
 
 onMounted(() => {
   state.form = props.form
+  state.originFormName = props.form.name
 })
 </script>
+
+<style scoped>
+.clear-number-input ::v-deep input[type="number"]::-webkit-outer-spin-button,
+.clear-number-input ::v-deep input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+}
+</style>
