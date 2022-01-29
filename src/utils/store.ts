@@ -19,10 +19,13 @@ export const getStore = (): serverType[] => {
 }
 
 export const initStoreFile = async (): Promise<void> => {
+  const isFolderExists = await existsFile(storeFolderPath)
   const isFileExists = await existsFile(storeFilePath)
-  if (!isFileExists) {
+  if (!isFolderExists) {
     await mkdirFolder(storeFolderPath)
-    await writeFile(storeFilePath, JSON.stringify({}))
+    await writeFile(storeFilePath, JSON.stringify([]))
+  } else if (isFolderExists && !isFileExists) {
+    await writeFile(storeFilePath, JSON.stringify([]))
   }
 }
 

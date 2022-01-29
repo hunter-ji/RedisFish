@@ -1,8 +1,8 @@
 <template>
   <div class="key-menu-container flex flex-row justify-between">
     <!--key-menu-->
-    <div class="flex flex-col items-center">
-      <div class="key-menu-tool p-2 flex flex-row is-text justify-between">
+    <div class="flex flex-col just items-center">
+      <div class="key-menu-tool w-full p-2 flex flex-row is-text justify-between">
         <!--search-->
         <div
           :class="searchState.search.length ? 'w-3/4 transition-width duration-1000 ease-in-out delay-200' : 'w-2/4 transition-width duration-1000 ease-in-out'">
