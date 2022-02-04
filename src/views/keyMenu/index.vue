@@ -23,7 +23,7 @@
           </transition>
           <el-tooltip effect="light" content="删除" placement="bottom" :show-after="1000">
             <el-button type="danger" size="mini" disabled :icon="Delete" circle v-if="!state.multipleSelection.length"/>
-            <el-button type="danger" size="mini" :icon="Delete" round class="flex flex-row items-center" v-else>
+            <el-button type="danger" size="mini" :icon="Delete" round class="flex flex-row items-center" @click="delKey" v-else>
               ({{ state.multipleSelection.length }})
             </el-button>
           </el-tooltip>
@@ -31,7 +31,7 @@
       </div>
 
       <el-table :data="searchState.isSearching ? searchState.keysList : state.keysList" size="mini" height="100%" style="width: 100%;" stripe @cell-dblclick="getValue"
-                @selection-change="handleSelectionChange" class="pb-4">
+                @selection-change="handleSelectionChange" class="pb-4" v-loading="state.loading">
         <el-table-column type="selection" width="50"/>
         <el-table-column prop="label" label="Keys" width="350"/>
       </el-table>
@@ -39,11 +39,22 @@
 
     <!--key-tab-->
     <key-tab class="key-tab h-full w-full" :server-tab="props.serverTab" :target-key="state.targetKey"/>
+
+    <!--del key dialog-->
+    <el-dialog v-model="dialogState.show" title="提示" width="30%" center>
+      <span>将要删除所选key，是否执行？</span>
+      <template #footer>
+        <span class="flex flex-row items-center justify-center">
+          <el-button @click="dialogState.show = false" class="mr-2">取消</el-button>
+          <el-button type="primary" @click="delKeyDialogSubmit()">执行</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps, nextTick, onMounted, PropType, reactive, watch, ref } from 'vue'
+import { defineProps, onMounted, PropType, reactive, watch } from 'vue'
 import { serverTabType } from '@/store/modules/serverList'
 import { getClient } from '@/utils/redis'
 import { useStore } from 'vuex'
@@ -60,17 +71,26 @@ const props = defineProps({
 
 const store = useStore()
 const client = getClient(props.serverTab)
-const state: { keysList: keyMenuType[], targetKey: string, multipleSelection: string[] } = reactive({
+const state: { keysList: keyMenuType[], targetKey: string, multipleSelection: string[], loading: boolean } = reactive({
   keysList: [],
   targetKey: '',
-  multipleSelection: []
+  multipleSelection: [],
+  loading: true
 })
-const searchState: {keysList: keyMenuType[], search: string, isSearching: boolean} = reactive({
+const searchState: { keysList: keyMenuType[], search: string, isSearching: boolean } = reactive({
   keysList: [],
   search: '',
   isSearching: false
 })
+const dialogState: { show: boolean } = reactive({
+  show: false
+})
+const changeLoading = async (status: boolean) => {
+  state.loading = status
+}
 const fetchData = async () => {
+  await changeLoading(true)
+  state.keysList = []
   client.on('error', (err: string) => console.log('Redis Client Error', err))
   await client.connect()
   await client.sendCommand(['select', props.serverTab.db.slice(-1)])
@@ -82,6 +102,7 @@ const fetchData = async () => {
     })
   })
   await client.disconnect()
+  await changeLoading(false)
 }
 const getValue = async (e: { label: string, value: number }) => {
   const { label } = e
@@ -112,14 +133,36 @@ const search = async () => {
   })
   await client.disconnect()
 }
-const tableHeight = ref(850)
+const delKey = () => {
+  dialogState.show = true
+}
+const delKeyDialogCancel = async () => {
+  dialogState.show = false
+}
+const delKeyDialogSubmit = async () => {
+  await client.connect()
+  await client.sendCommand(['select', props.serverTab.db.slice(-1)])
+  for (const item of state.multipleSelection) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    await client.sendCommand(['del', item.label])
+    await store.dispatch('keyList/del', {
+      serverLabel: `${props.serverTab.db} ${props.serverTab.name}`,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      key: item.label
+    })
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    if (item.label === state.targetKey) state.targetKey = 'Console'
+  }
+  await client.disconnect()
+  await fetchData()
+  await delKeyDialogCancel()
+}
 
-nextTick(() => {
-  tableHeight.value = window.innerHeight - 90
-})
-
-onMounted(() => {
-  fetchData()
+onMounted(async () => {
+  await fetchData()
 })
 
 watch(searchState, () => {
