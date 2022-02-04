@@ -4,7 +4,7 @@
       v-model="state.activeTab"
       type="card"
       @tab-remove="removeTab"
-      style="width: 100%;"
+      style="width: calc(100vw - 260px);"
     >
       <el-tab-pane
         v-for="item in data"

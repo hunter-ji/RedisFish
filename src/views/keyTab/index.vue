@@ -4,6 +4,7 @@
       v-model="state.activeTab"
       type="card"
       @tab-remove="removeTab"
+      style="width: calc(100vw - 660px);"
     >
       <el-tab-pane label="Console" name="Console" :closable="state.consoleClosable">
         <command-pane :server-tab="props.serverTab" />

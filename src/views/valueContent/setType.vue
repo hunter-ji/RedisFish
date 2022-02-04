@@ -50,7 +50,7 @@
           </div>
           <div v-else>
             <div v-if="scope.row.value.length" :style="'color:' + SwitchColorWithRepeat(scope.row.isRepeat, scope.row.type)">
-              {{ scope.row.value }}
+              {{ contentLimit(scope.row.value) }}
             </div>
             <div class="text-gray-400 italic" v-else>null</div>
           </div>
@@ -66,6 +66,7 @@ import { commandObjectType, setTableValueType } from '@/views/valueContent/index
 import TopTab from './topTab.vue'
 import { SwitchColorWithRepeat } from '@/utils/switchColor'
 import { ElNotification } from 'element-plus'
+import { contentLimit } from '@/utils/contentLimit'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { Check, Delete, Plus, RefreshRight, Search } from '@element-plus/icons-vue'

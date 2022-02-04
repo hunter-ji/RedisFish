@@ -57,7 +57,7 @@
           <div v-else>
             <div v-if="scope.row.value.length"
                  :style="'color:' + SwitchColor(scope.row.type)">
-              {{ scope.row.value }}
+              {{ contentLimit(scope.row.value) }}
             </div>
             <div class="text-gray-400 italic" v-else>null</div>
           </div>
@@ -73,6 +73,7 @@ import { commandObjectType, listTableValueType } from '@/views/valueContent/inde
 import TopTab from './topTab.vue'
 import { SwitchColor } from '@/utils/switchColor'
 import { ElNotification } from 'element-plus'
+import { contentLimit } from '@/utils/contentLimit'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { Check, RefreshRight, Search } from '@element-plus/icons-vue'
