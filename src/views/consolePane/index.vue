@@ -8,7 +8,7 @@
     </div>
 
     <!-- console -->
-    <div id="ace"/>
+    <div :id="`ace${aceID}`" />
 
     <!-- output -->
     <el-tabs
@@ -51,7 +51,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { Check } from '@element-plus/icons-vue'
-import { defineProps, onMounted, PropType, reactive } from 'vue'
+import { defineProps, onMounted, PropType, reactive, ref, Ref } from 'vue'
 import ace from 'ace-builds'
 import 'ace-builds/webpack-resolver'
 import 'ace-builds/src-noconflict/theme-monokai'
@@ -108,11 +108,6 @@ const dialog = reactive({
   show: false
 })
 const client = getClient(props.serverTab)
-const fetchData = async () => {
-  await client.connect()
-  await client.sendCommand(['select', props.serverTab.db.slice(-1)])
-  await client.disconnect()
-}
 const handleCommand = async (commands: string[]) => {
   clientState.commands = []
   clientState.commands = commands
@@ -121,6 +116,7 @@ const handleCommand = async (commands: string[]) => {
 const runCommands = async () => {
   dialog.show = false
   await client.connect()
+  await client.sendCommand(['select', props.serverTab.db.slice(-1)])
   outputState.outputTabs = []
 
   for (const item of clientState.commands) {
@@ -164,10 +160,14 @@ const removeTab = (targetTabName: string) => {
     outputState.activeTab = 'History'
   }
 }
+const aceID: Ref<string> = ref('')
+const genRandomAceID = async () => {
+  aceID.value = String(new Date().getUTCMilliseconds())
+}
 
 onMounted(async () => {
-  await fetchData()
-  state.aceEditor = ace.edit('ace', {
+  await genRandomAceID()
+  state.aceEditor = ace.edit(`ace${aceID.value}`, {
     maxLines: 15, // 最大行数，超过会自动出现滚动条
     minLines: 15, // 最小行数，还未到最大行数时，编辑器会自动伸缩大小
     fontSize: 14, // 编辑器内字体大小
