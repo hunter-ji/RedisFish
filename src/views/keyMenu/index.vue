@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps, nextTick, onMounted, PropType, reactive, watch, ref } from 'vue'
+import { defineProps, nextTick, onMounted, PropType, reactive, watch, ref } from 'vue'
 import { serverTabType } from '@/store/modules/serverList'
 import { getClient } from '@/utils/redis'
 import { useStore } from 'vuex'

@@ -46,7 +46,7 @@
       height="700"
       size="mini" border stripe
       @cell-dblclick="edit"
-      style="min-width: 900px;max-width: calc(100% - 750px);">
+      style="width: 100%;">
       <el-table-column type="index" width="50"/>
       <el-table-column prop="value" label="Value">
         <template #default="scope">

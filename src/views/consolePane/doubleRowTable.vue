@@ -4,7 +4,7 @@
       :data="props.result"
       height="420"
       size="mini" border stripe
-      style="min-width: 900px;max-width: calc(100% - 750px);">
+      style="width: 100%;">
       <el-table-column type="index" width="50"/>
       <el-table-column prop="field" label="field"/>
       <el-table-column prop="value" label="value"/>

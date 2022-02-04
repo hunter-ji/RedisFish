@@ -39,7 +39,7 @@
       v-loading="state.loading"
       size="mini" border stripe @selection-change="handleSelectionChange"
       @cell-dblclick="edit"
-      style="min-width: 900px;max-width: calc(100% - 750px);">
+      style="width: 100%;">
       <el-table-column type="selection" width="40"/>
       <el-table-column type="index" width="50"/>
       <el-table-column prop="value" label="Value">
