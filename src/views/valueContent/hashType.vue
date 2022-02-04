@@ -1,5 +1,5 @@
 <template>
-  <div class="list-type-container">
+  <div class="value-content-container list-type-container">
     <top-tab :key-name="props.keyName" key-type="hash" class="mb-4"/>
     <div class="w-full flex flex-row justify-between mb-4">
       <div class="w-1/5 flex flex-row items-center">
@@ -37,16 +37,17 @@
     <el-table
       :data="searchState.isSearching ? searchState.values : state.values"
       v-loading="state.loading"
-      height="700"
+      height="100%"
       size="mini" border stripe @selection-change="handleSelectionChange"
       @cell-dblclick="edit"
-      style="min-width: 900px;max-width: calc(100% - 750px);">
+      style="width: 100%;">
       <el-table-column type="selection" width="40"/>
       <el-table-column type="index" width="50"/>
       <el-table-column label="Field">
         <template #default="scope">
           <div v-if="scope.row.id === state.targetID && state.targetLabel === 'Field'">
-            <el-input size="mini" v-model="scope.row.field" @blur="blurInput" placeholder="null"
+            <el-input size="mini" v-model="scope.row.field" @blur="blurInput" placeholder="null" :rows="3"
+                      type="textarea"
                       @change="inputChange(scope.row, true)"/>
           </div>
           <div v-else>
@@ -241,3 +242,9 @@ watch(props, () => {
   state.loading = false
 })
 </script>
+
+<style>
+.value-content-container {
+  height: calc(100vh - 160px);
+}
+</style>

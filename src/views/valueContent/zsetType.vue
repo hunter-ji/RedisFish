@@ -45,7 +45,8 @@
       <el-table-column label="Field">
         <template #default="scope">
           <div v-if="scope.row.id === state.targetID && state.targetLabel === 'Field'">
-            <el-input size="mini" v-model="scope.row.field" @blur="blurInput" placeholder="null"
+            <el-input size="mini" v-model="scope.row.field" @blur="blurInput" placeholder="null" :rows="3"
+                      type="textarea"
                       @change="inputChange(scope.row, true)"/>
           </div>
           <div v-else>
