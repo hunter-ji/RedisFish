@@ -16,9 +16,6 @@
               <el-tooltip effect="light" content="刷新" placement="bottom" :show-after="1000">
                 <el-button type="info" size="mini" :icon="RefreshRight" circle @click="fetchData"/>
               </el-tooltip>
-              <el-tooltip effect="light" content="新增" placement="bottom" :show-after="1000">
-                <el-button type="primary" size="mini" :icon="Plus" circle/>
-              </el-tooltip>
             </div>
           </transition>
           <el-tooltip effect="light" content="删除" placement="bottom" :show-after="1000">
@@ -58,7 +55,7 @@ import { defineProps, onMounted, PropType, reactive, watch } from 'vue'
 import { serverTabType } from '@/store/modules/serverList'
 import { getClient } from '@/utils/redis'
 import { useStore } from 'vuex'
-import { Delete, Plus, RefreshRight, Search } from '@element-plus/icons-vue'
+import { Delete, RefreshRight, Search } from '@element-plus/icons-vue'
 import KeyTab from '@/views/keyTab/index.vue'
 import { keyMenuType } from '@/views/valueContent/index'
 

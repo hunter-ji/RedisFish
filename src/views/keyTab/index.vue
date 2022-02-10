@@ -4,10 +4,21 @@
       v-model="state.activeTab"
       type="card"
       @tab-remove="removeTab"
+      editable
+      @edit="handleTabEdit"
       style="width: calc(100vw - 660px);"
     >
       <el-tab-pane label="Console" name="Console" :closable="state.consoleClosable">
         <command-pane :server-tab="props.serverTab" />
+      </el-tab-pane>
+      <el-tab-pane
+        v-for="item in newKeyState.newKeyList"
+        :key="item"
+        :label="limitLen(item)"
+        :name="item"
+        :closable="state.closable"
+      >
+        <div>New Key</div>
       </el-tab-pane>
       <el-tab-pane
         v-for="item in data"
@@ -47,6 +58,10 @@ const state: { activeTab: string, consoleClosable: boolean, closable: boolean } 
   consoleClosable: false,
   closable: true
 })
+const newKeyState: { newKeyList: string[], newKeyIndex: number } = reactive({
+  newKeyList: [],
+  newKeyIndex: 1
+})
 const removeTab = async (targetName: string) => {
   await store.dispatch('keyList/del', {
     serverLabel: `${props.serverTab.db} ${props.serverTab.name}`,
@@ -62,6 +77,22 @@ const removeTab = async (targetName: string) => {
 const limitLen = (name: string): string => {
   return name.length > 6 ? name.slice(0, 6) + '...' : name
 }
+const addNewKey = async (keyName: string) => {
+  newKeyState.newKeyList.push(keyName)
+  newKeyState.newKeyIndex += 1
+}
+const handleTabEdit = async (targetName: string, action: 'remove' | 'add') => {
+  console.log('targetName : ', targetName)
+  console.log('activeTab : ', state.activeTab)
+  if (action === 'add') {
+    const keyName = `New${newKeyState.newKeyIndex}`
+    await addNewKey(keyName)
+    state.activeTab = keyName
+  } else if (action === 'remove') {
+    newKeyState.newKeyList = newKeyState.newKeyList.filter((item: string) => item !== targetName)
+    if (state.activeTab === targetName) state.activeTab = 'Console'
+  }
+}
 const data: ComputedRef<string[]> = computed(() => {
   const index = store.getters.keyTabList.findIndex((item: keyTabType) => item.serverLabel === `${props.serverTab.db} ${props.serverTab.name}`)
   return index !== -1 ? store.getters.keyTabList[index].values : []
@@ -71,7 +102,3 @@ watch(props, (newProps) => {
   state.activeTab = newProps.targetKey
 })
 </script>
-
-<style scoped>
-
-</style>
