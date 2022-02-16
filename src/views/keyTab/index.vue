@@ -18,7 +18,7 @@
         :name="item"
         :closable="state.closable"
       >
-        <div>New Key</div>
+        <new-key-value :server-tab="props.serverTab" />
       </el-tab-pane>
       <el-tab-pane
         v-for="item in data"
@@ -40,6 +40,7 @@ import { serverTabType } from '@/store/modules/serverList'
 import { keyTabType } from '@/store/modules/keyList'
 import ValueContent from '@/views/valueContent/index.vue'
 import CommandPane from '@/views/consolePane/index.vue'
+import NewKeyValue from '@/views/newKeyValue/index.vue'
 
 const props = defineProps({
   serverTab: {

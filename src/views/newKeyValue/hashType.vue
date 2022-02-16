@@ -1,27 +1,14 @@
 <template>
   <div class="value-content-container list-type-container">
-    <top-tab :key-name="props.keyName" key-type="hash" class="mb-4"/>
     <div class="w-full flex flex-row justify-between mb-4">
       <div class="w-1/5 flex flex-row items-center">
         <div class="text-sm mr-1">TTL(s)</div>
         <el-input-number v-model="state.ttl" size="mini" controls-position="right" :min="-1"/>
       </div>
-      <div
-        :class="searchState.search.length !== 0 ? 'w-3/5 transition-width duration-1000 ease-in-out delay-100' : 'w-2/5 transition-width duration-500 ease-in-out'">
-        <el-input v-model="searchState.search" size="small" placeholder="回车查询搜索结果" :prefix-icon="Search" clearable
-                  @keyup.enter="search"/>
-      </div>
       <div class="w-1/5 flex flex-row justify-end transition-width duration-200 ease-in delay-75">
-        <transition name="slide-fade">
-          <div class="flex flex-row items-center" style="margin-right: 10px;" v-if="!searchState.search.length">
-            <el-tooltip effect="light" content="刷新" placement="bottom" :show-after="delayNumber">
-              <el-button type="info" size="small" :icon="RefreshRight" circle @click="refresh"/>
-            </el-tooltip>
-            <el-tooltip effect="light" content="添加" placement="bottom" :show-after="delayNumber">
-              <el-button type="primary" size="small" circle @click="addRow" :icon="Plus"/>
-            </el-tooltip>
-          </div>
-        </transition>
+          <el-tooltip effect="light" content="添加" placement="bottom" :show-after="delayNumber">
+            <el-button type="primary" size="small" circle @click="addRow" :icon="Plus"/>
+          </el-tooltip>
         <el-tooltip effect="light" content="删除" placement="bottom" :show-after="delayNumber">
           <el-button type="danger" size="small" disabled :icon="Delete" circle v-if="!state.multipleSelection.length"/>
           <el-button type="danger" size="small" :icon="Delete" round class="flex flex-row items-center" @click="del"
@@ -79,36 +66,26 @@
 </template>
 
 <script setup lang="ts">
-import { defineEmits, defineProps, PropType, reactive, ref, watch } from 'vue'
+import { defineEmits, defineProps, onMounted, reactive, ref } from 'vue'
 import { commandObjectType, hashTableValueType } from '@/views/valueContent/index'
-import TopTab from './topTab.vue'
 import { SwitchColor, SwitchColorWithRepeat } from '@/utils/switchColor'
 import { ElNotification } from 'element-plus'
 import { contentLimit } from '@/utils/contentLimit'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { Check, Delete, Plus, RefreshRight, Search } from '@element-plus/icons-vue'
+import { Check, Delete, Plus } from '@element-plus/icons-vue'
 
 const emit = defineEmits(['refresh', 'delete', 'submit'])
 const props = defineProps({
-  values: {
-    type: Array as PropType<string[]>,
-    required: true
-  },
   keyName: {
     type: String,
-    required: true
-  },
-  ttl: {
-    type: Number,
     required: true
   }
 })
 const delayNumber = ref(1000)
-const state: { values: hashTableValueType[], ttl: number, oldTTL: number, multipleSelection: hashTableValueType[], targetID: number, targetLabel: string, commands: commandObjectType[], loading: boolean } = reactive({
+const state: { values: hashTableValueType[], ttl: number, multipleSelection: hashTableValueType[], targetID: number, targetLabel: string, commands: commandObjectType[], loading: boolean } = reactive({
   values: [],
-  ttl: 0,
-  oldTTL: 0,
+  ttl: -1,
   multipleSelection: [],
   targetID: -1,
   targetLabel: '',
@@ -146,18 +123,6 @@ const addRow = () => {
     isRepeat: false
   })
 }
-const search = () => {
-  searchState.isSearching = true
-  searchState.values = state.values.filter((data: hashTableValueType) => {
-    return Object.keys(data).some(key => {
-      return (
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        String(data[key]).toLowerCase().indexOf(searchState.search.toLowerCase()) > -1
-      )
-    })
-  })
-}
 const inputChange = (row: hashTableValueType, isField: boolean) => {
   if (row.type === 'normal') {
     row.type = 'edit'
@@ -167,7 +132,7 @@ const inputChange = (row: hashTableValueType, isField: boolean) => {
 
   if (isField) {
     const index = state.values.findIndex((item: hashTableValueType) => item.field === row.field && item.id !== row.id)
-    if (index !== -1) {
+    if (index > -1) {
       row.isRepeat = true
       ElNotification({
         title: '数据重复',
@@ -190,11 +155,6 @@ const del = () => {
 const submit = () => {
   state.commands = []
 
-  // ttl
-  if (state.ttl !== 0 && state.ttl !== state.oldTTL) {
-    state.commands.push({ command: ['EXPIRE', props.keyName, String(state.ttl)] })
-  }
-
   // command
   state.values.forEach((item: hashTableValueType) => {
     if (item.type === 'add' && item.value.trim().length) {
@@ -209,6 +169,11 @@ const submit = () => {
     }
   })
 
+  // ttl
+  if (state.ttl > 0) {
+    state.commands.push({ command: ['EXPIRE', props.keyName, String(state.ttl)] })
+  }
+
   if (state.commands.length) {
     emit('submit', state.commands)
   } else {
@@ -221,28 +186,8 @@ const submit = () => {
   }
 }
 
-watch(searchState, () => {
-  if (!searchState.search.length) searchState.isSearching = false
-})
-watch(props, () => {
-  state.ttl = props.ttl
-  state.oldTTL = props.ttl
-  state.values = []
-
-  let n = 0
-  for (let i = 0; i < props.values.length - 1; i += 2) {
-    state.values.push({
-      id: n,
-      field: props.values[i],
-      oldField: props.values[i],
-      value: props.values[i + 1],
-      oldValue: props.values[i + 1],
-      type: 'normal',
-      isRepeat: false
-    })
-    n += 1
-  }
-  state.loading = false
+onMounted(() => {
+  addRow()
 })
 </script>
 

@@ -37,7 +37,9 @@ const mutations = {
   },
   delKeyTab (state: stateType, param: paramType): void {
     const targetKeyTabIndex = state.keyTabList.findIndex(item => item.serverLabel === param.serverLabel)
-    state.keyTabList[targetKeyTabIndex].values = state.keyTabList[targetKeyTabIndex].values.filter(item => item !== param.key)
+    if (targetKeyTabIndex !== -1) {
+      state.keyTabList[targetKeyTabIndex].values = state.keyTabList[targetKeyTabIndex].values.filter(item => item !== param.key)
+    }
   }
 }
 

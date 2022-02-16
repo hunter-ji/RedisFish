@@ -1,27 +1,14 @@
 <template>
   <div class="list-type-container">
-    <top-tab :key-name="props.keyName" key-type="set" class="mb-4"/>
     <div class="w-full flex flex-row justify-between mb-4">
       <div class="w-1/5 flex flex-row items-center">
         <div class="text-sm mr-1">TTL(s)</div>
         <el-input-number v-model="state.ttl" size="mini" controls-position="right" :min="-1" />
       </div>
-      <div
-        :class="searchState.search.length !== 0 ? 'w-3/5 transition-width duration-1000 ease-in-out delay-100' : 'w-2/5 transition-width duration-500 ease-in-out'">
-        <el-input v-model="searchState.search" size="small" placeholder="回车查询搜索结果" :prefix-icon="Search" clearable
-                  @keyup.enter="search"/>
-      </div>
       <div class="w-1/5 flex flex-row justify-end transition-width duration-200 ease-in delay-75">
-        <transition name="slide-fade">
-          <div class="flex flex-row items-center" style="margin-right: 10px;" v-if="!searchState.search.length">
-            <el-tooltip effect="light" content="刷新" placement="bottom" :show-after="delayNumber">
-              <el-button type="info" size="small" :icon="RefreshRight" circle @click="refresh" />
-            </el-tooltip>
-            <el-tooltip effect="light" content="添加" placement="bottom" :show-after="delayNumber">
-              <el-button type="primary" size="small" circle @click="addRow" :icon="Plus" />
-            </el-tooltip>
-          </div>
-        </transition>
+          <el-tooltip effect="light" content="添加" placement="bottom" :show-after="delayNumber">
+            <el-button type="primary" size="small" circle @click="addRow" :icon="Plus" />
+          </el-tooltip>
         <el-tooltip effect="light" content="删除" placement="bottom" :show-after="delayNumber">
           <el-button type="danger" size="small" disabled :icon="Delete" circle v-if="!state.multipleSelection.length"/>
           <el-button type="danger" size="small" :icon="Delete" round class="flex flex-row items-center" @click="del" v-else>
@@ -34,7 +21,7 @@
       </div>
     </div>
     <el-table
-      :data="searchState.isSearching ? searchState.values : state.values"
+      :data="state.values"
       height="700"
       v-loading="state.loading"
       size="mini" border stripe @selection-change="handleSelectionChange"
@@ -61,51 +48,31 @@
 </template>
 
 <script setup lang="ts">
-import { defineEmits, defineProps, PropType, reactive, ref, watch } from 'vue'
+import { defineEmits, defineProps, onMounted, reactive, ref } from 'vue'
 import { commandObjectType, setTableValueType } from '@/views/valueContent/index'
-import TopTab from './topTab.vue'
 import { SwitchColorWithRepeat } from '@/utils/switchColor'
 import { ElNotification } from 'element-plus'
 import { contentLimit } from '@/utils/contentLimit'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { Check, Delete, Plus, RefreshRight, Search } from '@element-plus/icons-vue'
+import { Check, Delete, Plus } from '@element-plus/icons-vue'
 
-const emit = defineEmits(['refresh', 'delete', 'submit'])
+const emit = defineEmits(['submit'])
 const props = defineProps({
-  values: {
-    type: Array as PropType<string[]>,
-    required: true
-  },
   keyName: {
     type: String,
-    required: true
-  },
-  ttl: {
-    type: Number,
     required: true
   }
 })
 const delayNumber = ref(1000)
-const state: { values: setTableValueType[], ttl: number, oldTTL: number, multipleSelection: setTableValueType[], targetID: number, commands: commandObjectType[], loading: boolean } = reactive({
+const state: { values: setTableValueType[], ttl: number, multipleSelection: setTableValueType[], targetID: number, commands: commandObjectType[], loading: boolean } = reactive({
   values: [],
-  ttl: 0,
-  oldTTL: 0,
+  ttl: -1,
   multipleSelection: [],
   targetID: -1,
   commands: [],
   loading: false
 })
-const searchState: { search: string, isSearching: boolean, values: setTableValueType[] } = reactive({
-  search: '',
-  isSearching: false,
-  values: []
-})
-const refresh = () => {
-  state.loading = true
-  state.values = []
-  emit('refresh', true)
-}
 const handleSelectionChange = (val: setTableValueType[]) => {
   state.multipleSelection = val
 }
@@ -122,14 +89,6 @@ const addRow = () => {
     oldValue: '',
     type: 'add',
     isRepeat: false
-  })
-}
-const search = () => {
-  searchState.isSearching = true
-  searchState.values = state.values.filter((item: setTableValueType) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    return String(item.value).toLowerCase().indexOf(searchState.search.toLowerCase()) > -1 && item.type !== 'add'
   })
 }
 const inputChange = (row: setTableValueType) => {
@@ -155,17 +114,11 @@ const inputChange = (row: setTableValueType) => {
 const del = () => {
   state.commands = []
   state.multipleSelection.forEach((item: setTableValueType) => {
-    state.commands.push({ command: ['SREM', props.keyName, item.value] })
+    state.values = state.values.filter((valueItem: setTableValueType) => valueItem.value !== item.value)
   })
-  emit('delete', state.commands)
 }
 const submit = () => {
   state.commands = []
-
-  // ttl
-  if (state.ttl !== 0 && state.ttl !== state.oldTTL) {
-    state.commands.push({ command: ['EXPIRE', props.keyName, String(state.ttl)] })
-  }
 
   // command
   state.values.forEach((item: setTableValueType) => {
@@ -176,6 +129,11 @@ const submit = () => {
       state.commands.push({ command: ['SADD', props.keyName, item.value] })
     }
   })
+
+  // ttl
+  if (state.ttl > 0) {
+    state.commands.push({ command: ['EXPIRE', props.keyName, String(state.ttl)] })
+  }
 
   if (state.commands.length) {
     emit('submit', state.commands)
@@ -189,22 +147,7 @@ const submit = () => {
   }
 }
 
-watch(searchState, () => {
-  if (!searchState.search.length) searchState.isSearching = false
-})
-watch(props, () => {
-  state.ttl = props.ttl
-  state.oldTTL = props.ttl
-  state.values = []
-  props.values.forEach((item: string, index: number) => {
-    state.values.push({
-      id: index + 1,
-      value: item,
-      oldValue: item,
-      type: 'normal',
-      isRepeat: false
-    })
-  })
-  state.loading = false
+onMounted(() => {
+  addRow()
 })
 </script>
