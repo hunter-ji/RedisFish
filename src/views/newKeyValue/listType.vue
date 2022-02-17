@@ -134,18 +134,18 @@ const submit = () => {
   state.values.forEach((item: listTableValueType) => {
     if (item.type === 'add' && item.value.trim().length) {
       if (item.isFront) {
-        state.commands.push({ command: ['LPUSH', props.keyName, item.value] })
+        state.commands.push({ command: ['LPUSH', `'${props.keyName}'`, `'${item.value}'`] })
       } else {
-        state.commands.push({ command: ['RPUSH', props.keyName, item.value] })
+        state.commands.push({ command: ['RPUSH', `'${props.keyName}'`, `'${item.value}'`] })
       }
-    } else if (item.type === 'edit' && item.value.trim().length) {
-      state.commands.push({ command: ['LSET', props.keyName, String(item.id - 1), item.value] })
+    } else if (item.type === 'edit' && `'${item.value}'`.trim().length) {
+      state.commands.push({ command: ['LSET', `'${props.keyName}'`, String(item.id - 1), `'${item.value}'`] })
     }
   })
 
   // ttl
   if (state.ttl > 0) {
-    state.commands.push({ command: ['EXPIRE', props.keyName, String(state.ttl)] })
+    state.commands.push({ command: ['EXPIRE', `'${props.keyName}'`, String(state.ttl)] })
   }
 
   if (state.commands.length) {

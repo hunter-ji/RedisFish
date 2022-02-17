@@ -69,16 +69,16 @@ const fetchData = async () => {
   state.keyType = await client.sendCommand(['type', props.targetKey])
 
   if (state.keyType === 'string') {
-    const redisValue: string = await client.sendCommand(['get', props.targetKey])
+    const redisValue: string = await client.sendCommand(['get', `'${props.targetKey}'`])
     state.values.push(redisValue)
   } else if (state.keyType === 'hash') {
-    state.values = await client.sendCommand(['hgetall', props.targetKey])
+    state.values = await client.sendCommand(['hgetall', `'${props.targetKey}'`])
   } else if (state.keyType === 'list') {
-    state.values = await client.sendCommand(['lrange', props.targetKey, '0', '-1'])
+    state.values = await client.sendCommand(['lrange', `'${props.targetKey}'`, '0', '-1'])
   } else if (state.keyType === 'set') {
-    state.values = await client.sendCommand(['smembers', props.targetKey])
+    state.values = await client.sendCommand(['smembers', `'${props.targetKey}'`])
   } else if (state.keyType === 'zset') {
-    state.values = await client.sendCommand(['zrange', props.targetKey, '0', '-1', 'withscores'])
+    state.values = await client.sendCommand(['zrange', `'${props.targetKey}'`, '0', '-1', 'withscores'])
   } else {
     state.values.push('未知类型')
   }

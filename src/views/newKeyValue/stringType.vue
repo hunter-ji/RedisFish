@@ -52,12 +52,12 @@ const submit = () => {
 
   // command
   if (String(state.val).length) {
-    state.commands.push({ command: ['SET', props.keyName, String(state.val)] })
+    state.commands.push({ command: ['SET', `'${props.keyName}'`, `'${String(state.val)}'`] })
   }
 
   // ttl
   if (state.ttl > 0) {
-    state.commands.push({ command: ['EXPIRE', props.keyName, String(state.ttl)] })
+    state.commands.push({ command: ['EXPIRE', `'${props.keyName}'`, String(state.ttl)] })
   }
 
   if (state.commands.length) {

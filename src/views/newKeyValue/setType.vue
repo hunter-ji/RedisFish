@@ -123,16 +123,16 @@ const submit = () => {
   // command
   state.values.forEach((item: setTableValueType) => {
     if (item.type === 'add' && item.value.trim().length) {
-      state.commands.push({ command: ['SADD', props.keyName, item.value] })
-    } else if (item.type === 'edit' && item.value.trim().length) {
-      state.commands.push({ command: ['SREM', props.keyName, item.oldValue] })
-      state.commands.push({ command: ['SADD', props.keyName, item.value] })
+      state.commands.push({ command: ['SADD', `'${props.keyName}'`, `'${item.value}'`] })
+    } else if (item.type === 'edit' && `'${item.value}'`.trim().length) {
+      state.commands.push({ command: ['SREM', `'${props.keyName}'`, `'${item.oldValue}'`] })
+      state.commands.push({ command: ['SADD', `'${props.keyName}'`, `'${item.value}'`] })
     }
   })
 
   // ttl
   if (state.ttl > 0) {
-    state.commands.push({ command: ['EXPIRE', props.keyName, String(state.ttl)] })
+    state.commands.push({ command: ['EXPIRE', `'${props.keyName}'`, String(state.ttl)] })
   }
 
   if (state.commands.length) {

@@ -75,7 +75,7 @@ import { contentLimit } from '@/utils/contentLimit'
 // @ts-ignore
 import { Check, Delete, Plus } from '@element-plus/icons-vue'
 
-const emit = defineEmits(['refresh', 'delete', 'submit'])
+const emit = defineEmits(['submit'])
 const props = defineProps({
   keyName: {
     type: String,
@@ -97,11 +97,6 @@ const searchState: { search: string, isSearching: boolean, values: hashTableValu
   isSearching: false,
   values: []
 })
-const refresh = () => {
-  state.loading = true
-  state.values = []
-  emit('refresh', true)
-}
 const handleSelectionChange = (val: hashTableValueType[]) => {
   state.multipleSelection = val
 }
@@ -148,30 +143,29 @@ const inputChange = (row: hashTableValueType, isField: boolean) => {
 const del = () => {
   state.commands = []
   state.multipleSelection.forEach((item: hashTableValueType) => {
-    state.commands.push({ command: ['HDEL', props.keyName, item.value] })
+    state.values = state.values.filter((valueItem: hashTableValueType) => valueItem.field !== item.field)
   })
-  emit('delete', state.commands)
 }
 const submit = () => {
   state.commands = []
 
   // command
   state.values.forEach((item: hashTableValueType) => {
-    if (item.type === 'add' && item.value.trim().length) {
-      state.commands.push({ command: ['HSETNX', props.keyName, item.field, item.value] })
+    if (item.type === 'add' && `'${item.value}'`.trim().length) {
+      state.commands.push({ command: ['HSETNX', `'${props.keyName}'`, `'${item.field}'`, `'${item.value}'`] })
     } else if (item.type === 'edit' && item.field.trim().length && item.value.trim().length) {
-      if (item.field === item.oldField) {
-        state.commands.push({ command: ['HSET', props.keyName, item.field, item.value] })
+      if (`'${item.field}'` === item.oldField) {
+        state.commands.push({ command: ['HSET', `'${props.keyName}'`, `'${item.field}'`, `'${item.value}'`] })
       } else {
-        state.commands.push({ command: ['HDEL', props.keyName, item.field] })
-        state.commands.push({ command: ['HSETNX', props.keyName, item.field, item.value] })
+        state.commands.push({ command: ['HDEL', `'${props.keyName}'`, `'${item.field}'`] })
+        state.commands.push({ command: ['HSETNX', `'${props.keyName}'`, `'${item.field}'`, `'${item.value}'`] })
       }
     }
   })
 
   // ttl
   if (state.ttl > 0) {
-    state.commands.push({ command: ['EXPIRE', props.keyName, String(state.ttl)] })
+    state.commands.push({ command: ['EXPIRE', `'${props.keyName}'`, String(state.ttl)] })
   }
 
   if (state.commands.length) {

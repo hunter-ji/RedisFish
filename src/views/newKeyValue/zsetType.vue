@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineEmits, defineProps, onMounted, PropType, reactive, ref, watch } from 'vue'
+import { defineEmits, defineProps, onMounted, reactive, ref } from 'vue'
 import { commandObjectType, zsetTableValueType } from '@/views/valueContent/index'
 import { SwitchColorWithRepeat, SwitchColor } from '@/utils/switchColor'
 import { ElNotification } from 'element-plus'
@@ -144,20 +144,20 @@ const submit = () => {
   // command
   state.values.forEach((item: zsetTableValueType) => {
     if (item.type === 'add' && item.value.trim().length) {
-      state.commands.push({ command: ['ZADD', props.keyName, item.value, item.field] })
+      state.commands.push({ command: ['ZADD', `'${props.keyName}'`, item.value, `'${item.field}'`] })
     } else if (item.type === 'edit' && item.field.trim().length && item.value.trim().length) {
-      if (item.field === item.oldField) {
-        state.commands.push({ command: ['ZADD', props.keyName, item.value, item.field] })
+      if (`'${item.field}'` === item.oldField) {
+        state.commands.push({ command: ['ZADD', `'${props.keyName}'`, item.value, `'${item.field}'`] })
       } else {
-        state.commands.push({ command: ['ZREM', props.keyName, item.field] })
-        state.commands.push({ command: ['ZADD', props.keyName, item.value, item.field] })
+        state.commands.push({ command: ['ZREM', `'${props.keyName}'`, `'${item.field}'`] })
+        state.commands.push({ command: ['ZADD', `'${props.keyName}'`, item.value, `'${item.field}'`] })
       }
     }
   })
 
   // ttl
   if (state.ttl > 0) {
-    state.commands.push({ command: ['EXPIRE', props.keyName, String(state.ttl)] })
+    state.commands.push({ command: ['EXPIRE', `'${props.keyName}'`, String(state.ttl)] })
   }
 
   if (state.commands.length) {
