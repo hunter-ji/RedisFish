@@ -1,24 +1,11 @@
-# my_redis_client
+# MyRedisDesktopManager
 
-## Project setup
-```
-yarn install
-```
+![Screenshots](./Screenshots/Screenshots1.png)
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+![Screenshots](./Screenshots/Screenshots2.png)
 
-### Compiles and minifies for production
-```
-yarn build
-```
+![Screenshots](./Screenshots/Screenshots3.png)
 
-### Lints and fixes files
-```
-yarn lint
-```
+![Screenshots](./Screenshots/Screenshots4.png)
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+![Screenshots](./Screenshots/Screenshots5.png)
