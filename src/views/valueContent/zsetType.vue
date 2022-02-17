@@ -164,7 +164,7 @@ const inputChange = (row: zsetTableValueType, isField: boolean) => {
 
   if (isField) {
     const index = state.values.findIndex((item: zsetTableValueType) => item.field === row.field && item.id !== row.id)
-    if (index > -1) {
+    if (index !== -1) {
       row.isRepeat = true
       ElNotification({
         title: '数据重复',
@@ -172,13 +172,15 @@ const inputChange = (row: zsetTableValueType, isField: boolean) => {
         showClose: false,
         duration: 5000
       })
+    } else if (index === -1 && row.isRepeat) {
+      row.isRepeat = false
     }
   }
 }
 const del = () => {
   state.commands = []
   state.multipleSelection.forEach((item: zsetTableValueType) => {
-    state.commands.push({ command: ['HDEL', props.keyName, item.value] })
+    state.commands.push({ command: ['HDEL', `'${props.keyName}'`, item.value] })
   })
   emit('delete', state.commands)
 }
@@ -187,19 +189,19 @@ const submit = () => {
 
   // ttl
   if (state.ttl !== 0 && state.ttl !== state.oldTTL) {
-    state.commands.push({ command: ['EXPIRE', props.keyName, String(state.ttl)] })
+    state.commands.push({ command: ['EXPIRE', `'${props.keyName}'`, String(state.ttl)] })
   }
 
   // command
   state.values.forEach((item: zsetTableValueType) => {
     if (item.type === 'add' && item.value.trim().length) {
-      state.commands.push({ command: ['ZADD', props.keyName, item.value, item.field] })
+      state.commands.push({ command: ['ZADD', `'${props.keyName}'`, item.value, `'${item.field}'`] })
     } else if (item.type === 'edit' && item.field.trim().length && item.value.trim().length) {
-      if (item.field === item.oldField) {
-        state.commands.push({ command: ['ZADD', props.keyName, item.value, item.field] })
+      if (`'${item.field}'` === item.oldField) {
+        state.commands.push({ command: ['ZADD', `'${props.keyName}'`, item.value, `'${item.field}'`] })
       } else {
-        state.commands.push({ command: ['ZREM', props.keyName, item.field] })
-        state.commands.push({ command: ['ZADD', props.keyName, item.value, item.field] })
+        state.commands.push({ command: ['ZREM', `'${props.keyName}'`, `'${item.field}'`] })
+        state.commands.push({ command: ['ZADD', `'${props.keyName}'`, item.value, `'${item.field}'`] })
       }
     }
   })

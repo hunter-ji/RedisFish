@@ -155,7 +155,7 @@ const inputChange = (row: setTableValueType) => {
 const del = () => {
   state.commands = []
   state.multipleSelection.forEach((item: setTableValueType) => {
-    state.commands.push({ command: ['SREM', props.keyName, item.value] })
+    state.commands.push({ command: ['SREM', `'${props.keyName}'`, `'${item.value}'`] })
   })
   emit('delete', state.commands)
 }
@@ -164,16 +164,16 @@ const submit = () => {
 
   // ttl
   if (state.ttl !== 0 && state.ttl !== state.oldTTL) {
-    state.commands.push({ command: ['EXPIRE', props.keyName, String(state.ttl)] })
+    state.commands.push({ command: ['EXPIRE', `'${props.keyName}'`, String(state.ttl)] })
   }
 
   // command
   state.values.forEach((item: setTableValueType) => {
     if (item.type === 'add' && item.value.trim().length) {
-      state.commands.push({ command: ['SADD', props.keyName, item.value] })
-    } else if (item.type === 'edit' && item.value.trim().length) {
-      state.commands.push({ command: ['SREM', props.keyName, item.oldValue] })
-      state.commands.push({ command: ['SADD', props.keyName, item.value] })
+      state.commands.push({ command: ['SADD', `'${props.keyName}'`, `'${item.value}'`] })
+    } else if (item.type === 'edit' && `'${item.value}'`.trim().length) {
+      state.commands.push({ command: ['SREM', `'${props.keyName}'`, `'${item.oldValue}'`] })
+      state.commands.push({ command: ['SADD', `'${props.keyName}'`, `'${item.value}'`] })
     }
   })
 

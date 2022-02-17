@@ -4,7 +4,7 @@
     <div class="w-full flex flex-row justify-between mb-4">
       <div class="w-1/5 flex flex-row items-center">
         <div class="text-sm mr-1">TTL(s)</div>
-        <el-input-number v-model="state.ttl" size="mini" controls-position="right" :min="-1" />
+        <el-input-number v-model="state.ttl" size="mini" controls-position="right" :min="-1"/>
       </div>
       <div class="flex flex-row items-center justify-end">
         <el-tooltip effect="light" content="刷新" placement="bottom" :show-after="delayNumber">
@@ -70,12 +70,12 @@ const submit = () => {
 
   // ttl
   if (state.ttl !== 0 && state.ttl !== state.oldTTL) {
-    state.commands.push({ command: ['EXPIRE', props.keyName, String(state.ttl)] })
+    state.commands.push({ command: ['EXPIRE', `'${props.keyName}'`, String(state.ttl)] })
   }
 
   // command
   if (state.val !== state.oldVal) {
-    state.commands.push({ command: ['SET', props.keyName, String(state.val)] })
+    state.commands.push({ command: ['SET', `'${props.keyName}'`, `'${String(state.val)}'`] })
   }
 
   if (state.commands.length) {

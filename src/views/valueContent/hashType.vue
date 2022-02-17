@@ -183,7 +183,7 @@ const inputChange = (row: hashTableValueType, isField: boolean) => {
 const del = () => {
   state.commands = []
   state.multipleSelection.forEach((item: hashTableValueType) => {
-    state.commands.push({ command: ['HDEL', props.keyName, item.value] })
+    state.commands.push({ command: ['HDEL', `'${props.keyName}'`, `'${item.value}'`] })
   })
   emit('delete', state.commands)
 }
@@ -192,19 +192,19 @@ const submit = () => {
 
   // ttl
   if (state.ttl !== 0 && state.ttl !== state.oldTTL) {
-    state.commands.push({ command: ['EXPIRE', props.keyName, String(state.ttl)] })
+    state.commands.push({ command: ['EXPIRE', `'${props.keyName}'`, String(state.ttl)] })
   }
 
   // command
   state.values.forEach((item: hashTableValueType) => {
-    if (item.type === 'add' && item.value.trim().length) {
-      state.commands.push({ command: ['HSETNX', props.keyName, item.field, item.value] })
+    if (item.type === 'add' && `'${item.value}'`.trim().length) {
+      state.commands.push({ command: ['HSETNX', `'${props.keyName}'`, `'${item.field}'`, `'${item.value}'`] })
     } else if (item.type === 'edit' && item.field.trim().length && item.value.trim().length) {
-      if (item.field === item.oldField) {
-        state.commands.push({ command: ['HSET', props.keyName, item.field, item.value] })
+      if (`'${item.field}'` === item.oldField) {
+        state.commands.push({ command: ['HSET', `'${props.keyName}'`, `'${item.field}'`, `'${item.value}'`] })
       } else {
-        state.commands.push({ command: ['HDEL', props.keyName, item.field] })
-        state.commands.push({ command: ['HSETNX', props.keyName, item.field, item.value] })
+        state.commands.push({ command: ['HDEL', `'${props.keyName}'`, `'${item.field}'`] })
+        state.commands.push({ command: ['HSETNX', `'${props.keyName}'`, `'${item.field}'`, `'${item.value}'`] })
       }
     }
   })
