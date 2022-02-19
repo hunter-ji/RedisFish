@@ -56,6 +56,7 @@ import { contentLimit } from '@/utils/contentLimit'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { Check, Delete, Plus } from '@element-plus/icons-vue'
+import { FormatCommandField } from '@/utils/formatCommandField'
 
 const emit = defineEmits(['submit'])
 const props = defineProps({
@@ -123,16 +124,16 @@ const submit = () => {
   // command
   state.values.forEach((item: setTableValueType) => {
     if (item.type === 'add' && item.value.trim().length) {
-      state.commands.push({ command: ['SADD', `'${props.keyName}'`, `'${item.value}'`] })
-    } else if (item.type === 'edit' && `'${item.value}'`.trim().length) {
-      state.commands.push({ command: ['SREM', `'${props.keyName}'`, `'${item.oldValue}'`] })
-      state.commands.push({ command: ['SADD', `'${props.keyName}'`, `'${item.value}'`] })
+      state.commands.push({ command: ['SADD', FormatCommandField(props.keyName), FormatCommandField(item.value)] })
+    } else if (item.type === 'edit' && item.value.trim().length) {
+      state.commands.push({ command: ['SREM', FormatCommandField(props.keyName), FormatCommandField(item.oldValue)] })
+      state.commands.push({ command: ['SADD', FormatCommandField(props.keyName), FormatCommandField(item.value)] })
     }
   })
 
   // ttl
   if (state.ttl > 0) {
-    state.commands.push({ command: ['EXPIRE', `'${props.keyName}'`, String(state.ttl)] })
+    state.commands.push({ command: ['EXPIRE', FormatCommandField(props.keyName), String(state.ttl)] })
   }
 
   if (state.commands.length) {

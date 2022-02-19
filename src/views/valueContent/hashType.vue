@@ -88,6 +88,7 @@ import { contentLimit } from '@/utils/contentLimit'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { Check, Delete, Plus, RefreshRight, Search } from '@element-plus/icons-vue'
+import { FormatCommandField } from '@/utils/formatCommandField'
 
 const emit = defineEmits(['refresh', 'delete', 'submit'])
 const props = defineProps({
@@ -183,7 +184,7 @@ const inputChange = (row: hashTableValueType, isField: boolean) => {
 const del = () => {
   state.commands = []
   state.multipleSelection.forEach((item: hashTableValueType) => {
-    state.commands.push({ command: ['HDEL', `'${props.keyName}'`, `'${item.value}'`] })
+    state.commands.push({ command: ['HDEL', FormatCommandField(props.keyName), FormatCommandField(item.value)] })
   })
   emit('delete', state.commands)
 }
@@ -192,19 +193,19 @@ const submit = () => {
 
   // ttl
   if (state.ttl !== 0 && state.ttl !== state.oldTTL) {
-    state.commands.push({ command: ['EXPIRE', `'${props.keyName}'`, String(state.ttl)] })
+    state.commands.push({ command: ['EXPIRE', FormatCommandField(props.keyName), String(state.ttl)] })
   }
 
   // command
   state.values.forEach((item: hashTableValueType) => {
-    if (item.type === 'add' && `'${item.value}'`.trim().length) {
-      state.commands.push({ command: ['HSETNX', `'${props.keyName}'`, `'${item.field}'`, `'${item.value}'`] })
+    if (item.type === 'add' && item.value.trim().length) {
+      state.commands.push({ command: ['HSETNX', FormatCommandField(props.keyName), FormatCommandField(item.field), FormatCommandField(item.value)] })
     } else if (item.type === 'edit' && item.field.trim().length && item.value.trim().length) {
       if (`'${item.field}'` === item.oldField) {
-        state.commands.push({ command: ['HSET', `'${props.keyName}'`, `'${item.field}'`, `'${item.value}'`] })
+        state.commands.push({ command: ['HSET', FormatCommandField(props.keyName), FormatCommandField(item.field), FormatCommandField(item.value)] })
       } else {
-        state.commands.push({ command: ['HDEL', `'${props.keyName}'`, `'${item.field}'`] })
-        state.commands.push({ command: ['HSETNX', `'${props.keyName}'`, `'${item.field}'`, `'${item.value}'`] })
+        state.commands.push({ command: ['HDEL', FormatCommandField(props.keyName), FormatCommandField(item.field)] })
+        state.commands.push({ command: ['HSETNX', FormatCommandField(props.keyName), FormatCommandField(item.field), FormatCommandField(item.value)] })
       }
     }
   })

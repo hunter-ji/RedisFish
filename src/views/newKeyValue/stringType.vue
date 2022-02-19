@@ -25,6 +25,7 @@ import { defineEmits, defineProps, reactive, ref } from 'vue'
 import { Check, Brush } from '@element-plus/icons-vue'
 import { commandObjectType } from '@/views/valueContent/index'
 import { ElNotification } from 'element-plus'
+import { FormatCommandField } from '@/utils/formatCommandField'
 
 const emit = defineEmits(['delete', 'submit'])
 const delayNumber = ref(500)
@@ -52,12 +53,12 @@ const submit = () => {
 
   // command
   if (String(state.val).length) {
-    state.commands.push({ command: ['SET', `'${props.keyName}'`, `'${String(state.val)}'`] })
+    state.commands.push({ command: ['SET', FormatCommandField(props.keyName), FormatCommandField(String(state.val))] })
   }
 
   // ttl
   if (state.ttl > 0) {
-    state.commands.push({ command: ['EXPIRE', `'${props.keyName}'`, String(state.ttl)] })
+    state.commands.push({ command: ['EXPIRE', FormatCommandField(props.keyName), String(state.ttl)] })
   }
 
   if (state.commands.length) {

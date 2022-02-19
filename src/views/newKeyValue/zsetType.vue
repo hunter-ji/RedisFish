@@ -3,15 +3,16 @@
     <div class="w-full flex flex-row justify-between mb-4">
       <div class="w-1/5 flex flex-row items-center">
         <div class="text-sm mr-1">TTL(s)</div>
-        <el-input-number v-model="state.ttl" size="mini" controls-position="right" :min="-1" />
+        <el-input-number v-model="state.ttl" size="mini" controls-position="right" :min="-1"/>
       </div>
       <div class="w-1/5 flex flex-row justify-end transition-width duration-200 ease-in delay-75">
-          <el-tooltip effect="light" content="添加" placement="bottom" :show-after="delayNumber">
-            <el-button type="primary" size="small" circle @click="addRow" :icon="Plus" />
-          </el-tooltip>
+        <el-tooltip effect="light" content="添加" placement="bottom" :show-after="delayNumber">
+          <el-button type="primary" size="small" circle @click="addRow" :icon="Plus"/>
+        </el-tooltip>
         <el-tooltip effect="light" content="删除" placement="bottom" :show-after="delayNumber">
           <el-button type="danger" size="small" disabled :icon="Delete" circle v-if="!state.multipleSelection.length"/>
-          <el-button type="danger" size="small" :icon="Delete" round class="flex flex-row items-center" @click="del" v-else>
+          <el-button type="danger" size="small" :icon="Delete" round class="flex flex-row items-center" @click="del"
+                     v-else>
             ({{ state.multipleSelection.length }})
           </el-button>
         </el-tooltip>
@@ -37,7 +38,8 @@
                       @change="inputChange(scope.row, true)"/>
           </div>
           <div v-else>
-            <div v-if="scope.row.field.length" :style="'color:' + SwitchColorWithRepeat(scope.row.isRepeat, scope.row.type)">
+            <div v-if="scope.row.field.length"
+                 :style="'color:' + SwitchColorWithRepeat(scope.row.isRepeat, scope.row.type)">
               {{ contentLimit(scope.row.field) }}
             </div>
             <div class="text-gray-400 italic" v-else>null</div>
@@ -65,12 +67,13 @@
 <script setup lang="ts">
 import { defineEmits, defineProps, onMounted, reactive, ref } from 'vue'
 import { commandObjectType, zsetTableValueType } from '@/views/valueContent/index'
-import { SwitchColorWithRepeat, SwitchColor } from '@/utils/switchColor'
+import { SwitchColor, SwitchColorWithRepeat } from '@/utils/switchColor'
 import { ElNotification } from 'element-plus'
 import { contentLimit } from '@/utils/contentLimit'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { Check, Delete, Plus } from '@element-plus/icons-vue'
+import { FormatCommandField } from '@/utils/formatCommandField'
 
 const emit = defineEmits(['submit'])
 const props = defineProps({
@@ -135,7 +138,7 @@ const inputChange = (row: zsetTableValueType, isField: boolean) => {
 const del = () => {
   state.commands = []
   state.multipleSelection.forEach((item: zsetTableValueType) => {
-    state.commands.push({ command: ['HDEL', props.keyName, item.value] })
+    state.commands.push({ command: ['HDEL', FormatCommandField(props.keyName), item.value] })
   })
 }
 const submit = () => {
@@ -144,20 +147,20 @@ const submit = () => {
   // command
   state.values.forEach((item: zsetTableValueType) => {
     if (item.type === 'add' && item.value.trim().length) {
-      state.commands.push({ command: ['ZADD', `'${props.keyName}'`, item.value, `'${item.field}'`] })
+      state.commands.push({ command: ['ZADD', FormatCommandField(props.keyName), item.value, FormatCommandField(item.field)] })
     } else if (item.type === 'edit' && item.field.trim().length && item.value.trim().length) {
       if (`'${item.field}'` === item.oldField) {
-        state.commands.push({ command: ['ZADD', `'${props.keyName}'`, item.value, `'${item.field}'`] })
+        state.commands.push({ command: ['ZADD', FormatCommandField(props.keyName), item.value, FormatCommandField(item.field)] })
       } else {
-        state.commands.push({ command: ['ZREM', `'${props.keyName}'`, `'${item.field}'`] })
-        state.commands.push({ command: ['ZADD', `'${props.keyName}'`, item.value, `'${item.field}'`] })
+        state.commands.push({ command: ['ZREM', FormatCommandField(props.keyName), FormatCommandField(item.field)] })
+        state.commands.push({ command: ['ZADD', FormatCommandField(props.keyName), item.value, FormatCommandField(item.field)] })
       }
     }
   })
 
   // ttl
   if (state.ttl > 0) {
-    state.commands.push({ command: ['EXPIRE', `'${props.keyName}'`, String(state.ttl)] })
+    state.commands.push({ command: ['EXPIRE', FormatCommandField(props.keyName), String(state.ttl)] })
   }
 
   if (state.commands.length) {

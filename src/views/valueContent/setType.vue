@@ -70,6 +70,7 @@ import { contentLimit } from '@/utils/contentLimit'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { Check, Delete, Plus, RefreshRight, Search } from '@element-plus/icons-vue'
+import { FormatCommandField } from '@/utils/formatCommandField'
 
 const emit = defineEmits(['refresh', 'delete', 'submit'])
 const props = defineProps({
@@ -155,7 +156,7 @@ const inputChange = (row: setTableValueType) => {
 const del = () => {
   state.commands = []
   state.multipleSelection.forEach((item: setTableValueType) => {
-    state.commands.push({ command: ['SREM', `'${props.keyName}'`, `'${item.value}'`] })
+    state.commands.push({ command: ['SREM', FormatCommandField(props.keyName), FormatCommandField(item.value)] })
   })
   emit('delete', state.commands)
 }
@@ -164,16 +165,16 @@ const submit = () => {
 
   // ttl
   if (state.ttl !== 0 && state.ttl !== state.oldTTL) {
-    state.commands.push({ command: ['EXPIRE', `'${props.keyName}'`, String(state.ttl)] })
+    state.commands.push({ command: ['EXPIRE', FormatCommandField(props.keyName), String(state.ttl)] })
   }
 
   // command
   state.values.forEach((item: setTableValueType) => {
     if (item.type === 'add' && item.value.trim().length) {
-      state.commands.push({ command: ['SADD', `'${props.keyName}'`, `'${item.value}'`] })
-    } else if (item.type === 'edit' && `'${item.value}'`.trim().length) {
-      state.commands.push({ command: ['SREM', `'${props.keyName}'`, `'${item.oldValue}'`] })
-      state.commands.push({ command: ['SADD', `'${props.keyName}'`, `'${item.value}'`] })
+      state.commands.push({ command: ['SADD', FormatCommandField(props.keyName), FormatCommandField(item.value)] })
+    } else if (item.type === 'edit' && item.value.trim().length) {
+      state.commands.push({ command: ['SREM', FormatCommandField(props.keyName), FormatCommandField(item.oldValue)] })
+      state.commands.push({ command: ['SADD', FormatCommandField(props.keyName), FormatCommandField(item.value)] })
     }
   })
 

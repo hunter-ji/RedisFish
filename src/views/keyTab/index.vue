@@ -6,7 +6,7 @@
       @tab-remove="removeTab"
       editable
       @edit="handleTabEdit"
-      style="width: calc(100vw - 660px);"
+      style="width: calc(100vw - 680px);"
     >
       <el-tab-pane label="Console" name="Console" :closable="state.consoleClosable">
         <command-pane :server-tab="props.serverTab" />

@@ -30,6 +30,7 @@ import TopTab from './topTab.vue'
 import { Check, RefreshRight, Brush } from '@element-plus/icons-vue'
 import { commandObjectType } from '@/views/valueContent/index'
 import { ElNotification } from 'element-plus'
+import { FormatCommandField } from '@/utils/formatCommandField'
 
 const emit = defineEmits(['refresh', 'delete', 'submit'])
 const delayNumber = ref(500)
@@ -70,12 +71,12 @@ const submit = () => {
 
   // ttl
   if (state.ttl !== 0 && state.ttl !== state.oldTTL) {
-    state.commands.push({ command: ['EXPIRE', `'${props.keyName}'`, String(state.ttl)] })
+    state.commands.push({ command: ['EXPIRE', FormatCommandField(props.keyName), String(state.ttl)] })
   }
 
   // command
   if (state.val !== state.oldVal) {
-    state.commands.push({ command: ['SET', `'${props.keyName}'`, `'${String(state.val)}'`] })
+    state.commands.push({ command: ['SET', FormatCommandField(props.keyName), FormatCommandField(String(state.val))] })
   }
 
   if (state.commands.length) {

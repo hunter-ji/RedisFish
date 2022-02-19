@@ -77,6 +77,7 @@ import { contentLimit } from '@/utils/contentLimit'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { Check, RefreshRight, Search } from '@element-plus/icons-vue'
+import { FormatCommandField } from '@/utils/formatCommandField'
 
 const emit = defineEmits(['refresh', 'delete', 'submit'])
 const props = defineProps({
@@ -155,9 +156,9 @@ const inputChange = (row: listTableValueType) => {
 const del = (isFront: boolean) => {
   state.commands = []
   if (isFront) {
-    state.commands.push({ command: ['LPOP', `'${props.keyName}'`] })
+    state.commands.push({ command: ['LPOP', FormatCommandField(props.keyName)] })
   } else {
-    state.commands.push({ command: ['RPOP', `'${props.keyName}'`] })
+    state.commands.push({ command: ['RPOP', FormatCommandField(props.keyName)] })
   }
   emit('delete', state.commands)
 }
@@ -166,19 +167,19 @@ const submit = () => {
 
   // ttl
   if (state.ttl !== 0 && state.ttl !== state.oldTTL) {
-    state.commands.push({ command: ['EXPIRE', `'${props.keyName}'`, String(state.ttl)] })
+    state.commands.push({ command: ['EXPIRE', FormatCommandField(props.keyName), String(state.ttl)] })
   }
 
   // command
   state.values.forEach((item: listTableValueType) => {
     if (item.type === 'add' && item.value.trim().length) {
       if (item.isFront) {
-        state.commands.push({ command: ['LPUSH', `'${props.keyName}'`, `'${item.value}'`] })
+        state.commands.push({ command: ['LPUSH', FormatCommandField(props.keyName), FormatCommandField(item.value)] })
       } else {
-        state.commands.push({ command: ['RPUSH', `'${props.keyName}'`, `'${item.value}'`] })
+        state.commands.push({ command: ['RPUSH', FormatCommandField(props.keyName), FormatCommandField(item.value)] })
       }
-    } else if (item.type === 'edit' && `'${item.value}'`.trim().length) {
-      state.commands.push({ command: ['LSET', `'${props.keyName}'`, String(item.id - 1), `'${item.value}'`] })
+    } else if (item.type === 'edit' && item.value.trim().length) {
+      state.commands.push({ command: ['LSET', FormatCommandField(props.keyName), String(item.id - 1), FormatCommandField(item.value)] })
     }
   })
 
