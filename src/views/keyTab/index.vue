@@ -8,9 +8,11 @@
       @edit="handleTabEdit"
       style="width: calc(100vw - 680px);"
     >
+      <!-- console tab -->
       <el-tab-pane label="Console" name="Console" :closable="state.consoleClosable">
         <command-pane :server-tab="props.serverTab" />
       </el-tab-pane>
+      <!-- newKeyValue tab -->
       <el-tab-pane
         v-for="item in newKeyState.newKeyList"
         :key="item"
@@ -18,8 +20,9 @@
         :name="item"
         :closable="state.closable"
       >
-        <new-key-value :server-tab="props.serverTab" />
+        <new-key-value :server-tab="props.serverTab" @clearNewTab="handleNewTabFinishEvent($event, item)" />
       </el-tab-pane>
+      <!-- valueContent -->
       <el-tab-pane
         v-for="item in data"
         :key="item"
@@ -35,13 +38,14 @@
 
 <script setup lang="ts">
 import { useStore } from 'vuex'
-import { computed, ComputedRef, defineProps, PropType, reactive, watch } from 'vue'
+import { computed, ComputedRef, defineEmits, defineProps, PropType, reactive, watch } from 'vue'
 import { serverTabType } from '@/store/modules/serverList'
 import { keyTabType } from '@/store/modules/keyList'
 import ValueContent from '@/views/valueContent/index.vue'
 import CommandPane from '@/views/consolePane/index.vue'
 import NewKeyValue from '@/views/newKeyValue/index.vue'
 
+const emit = defineEmits(['addKeyTab'])
 const props = defineProps({
   serverTab: {
     type: Object as PropType<serverTabType>,
@@ -82,17 +86,22 @@ const addNewKey = async (keyName: string) => {
   newKeyState.newKeyList.push(keyName)
   newKeyState.newKeyIndex += 1
 }
+const removeNewKeyValueTab = async (targetName: string) => {
+  newKeyState.newKeyList = newKeyState.newKeyList.filter((item: string) => item !== targetName)
+  if (state.activeTab === targetName) state.activeTab = 'Console'
+}
 const handleTabEdit = async (targetName: string, action: 'remove' | 'add') => {
-  console.log('targetName : ', targetName)
-  console.log('activeTab : ', state.activeTab)
   if (action === 'add') {
     const keyName = `New${newKeyState.newKeyIndex}`
     await addNewKey(keyName)
     state.activeTab = keyName
   } else if (action === 'remove') {
-    newKeyState.newKeyList = newKeyState.newKeyList.filter((item: string) => item !== targetName)
-    if (state.activeTab === targetName) state.activeTab = 'Console'
+    await removeNewKeyValueTab(targetName)
   }
+}
+const handleNewTabFinishEvent = async (keyName: string, targetName: string) => {
+  await removeNewKeyValueTab(targetName)
+  await emit('addKeyTab', keyName)
 }
 const data: ComputedRef<string[]> = computed(() => {
   const index = store.getters.keyTabList.findIndex((item: keyTabType) => item.serverLabel === `${props.serverTab.db} ${props.serverTab.name}`)

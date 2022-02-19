@@ -27,6 +27,7 @@
         </div>
       </div>
 
+      <!--keys tale-->
       <el-table :data="searchState.isSearching ? searchState.keysList : state.keysList" size="mini" height="100%" style="width: 100%;" stripe @cell-dblclick="getValue"
                 @selection-change="handleSelectionChange" class="pb-4" v-loading="state.loading">
         <el-table-column type="selection" width="50"/>
@@ -35,7 +36,7 @@
     </div>
 
     <!--key-tab-->
-    <key-tab class="key-tab h-full w-full" :server-tab="props.serverTab" :target-key="state.targetKey"/>
+    <key-tab class="key-tab h-full w-full" :server-tab="props.serverTab" :target-key="state.targetKey" @addKeyTab="addTab"/>
 
     <!--del key dialog-->
     <el-dialog v-model="dialogState.show" title="提示" width="30%" center>

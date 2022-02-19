@@ -201,10 +201,10 @@ const submit = () => {
     if (item.type === 'add' && item.value.trim().length) {
       state.commands.push({ command: ['HSETNX', FormatCommandField(props.keyName), FormatCommandField(item.field), FormatCommandField(item.value)] })
     } else if (item.type === 'edit' && item.field.trim().length && item.value.trim().length) {
-      if (`'${item.field}'` === item.oldField) {
+      if (item.field === item.oldField) {
         state.commands.push({ command: ['HSET', FormatCommandField(props.keyName), FormatCommandField(item.field), FormatCommandField(item.value)] })
       } else {
-        state.commands.push({ command: ['HDEL', FormatCommandField(props.keyName), FormatCommandField(item.field)] })
+        state.commands.push({ command: ['HDEL', FormatCommandField(props.keyName), FormatCommandField(item.oldField)] })
         state.commands.push({ command: ['HSETNX', FormatCommandField(props.keyName), FormatCommandField(item.field), FormatCommandField(item.value)] })
       }
     }

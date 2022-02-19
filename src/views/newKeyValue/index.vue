@@ -1,12 +1,13 @@
 <template>
   <div class="value-content-container py-2 px-6">
 
+    <!-- base info form -->
     <div class="container py-2 w-full flex flex-row rounded">
       <el-input type="text" size="small" v-model="keyState.keyName" placeholder="Key" clearable>
         <template #prepend>
           <el-select v-model="keyState.keyType" placeholder="Select" size="small" style="width: 100px;">
             <el-option
-              v-for="item in keyState.options"
+              v-for="item in selectOptions"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -17,29 +18,42 @@
       </el-input>
     </div>
 
+    <!-- value content -->
     <string-type :key-name="keyState.keyName" @submit="handleCommand" v-if="keyState.keyType === 'string'"/>
     <hash-type :key-name="keyState.keyName" @submit="handleCommand" v-else-if="keyState.keyType === 'hash'"/>
     <list-type :key-name="keyState.keyName" @submit="handleCommand" v-else-if="keyState.keyType === 'list'"/>
     <set-type :key-name="keyState.keyName" @submit="handleCommand" v-else-if="keyState.keyType === 'set'"/>
     <z-set-type :key-name="keyState.keyName" @submit="handleCommand" v-else-if="keyState.keyType === 'zset'"/>
 
-    <el-dialog v-model="dialog.show" title="提示" width="50%" center>
-      <div>将要执行如下命令：</div>
-      <div class="h-80 overflow-y-auto flex flex-col justify-start p-2 bg-gray-300 mt-2">
-        <div class="p-2" v-for="(item, index) in state.commands" :key="index">{{ item.command.join(' ') }}</div>
-      </div>
+    <!-- run commands dialog -->
+    <el-dialog v-model="dialog.show" @closed="handleFinishEvent()" title="执行命令" width="50%" center>
+      <el-table
+        :data="state.commands"
+        height="600"
+        size="mini" border stripe
+        style="width: 100%;">
+        <el-table-column label="commands">
+          <template #default="scope">
+            {{ scope.row.command.join(' ') }}
+          </template>
+        </el-table-column>
+        <el-table-column label="result" prop="result" v-if="state.runStatus > 0"/>
+      </el-table>
       <template #footer>
       <span class="flex flex-row items-center justify-end">
-        <el-button @click="dialog.show = false">取消</el-button>
-        <el-button type="primary">执行</el-button>
+        <el-button @click="dialog.show = false" v-if="state.runStatus <= 0">取消</el-button>
+        <el-button type="primary" v-if="state.runStatus === 0" @click="runCommand()">执行</el-button>
+        <el-button type="primary" v-if="state.runStatus === 1" disabled>执行中</el-button>
+        <el-button type="primary" v-if="state.runStatus === 2" @click="handleFinishEvent()">确定</el-button>
       </span>
       </template>
     </el-dialog>
+
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps, PropType, reactive } from 'vue'
+import { defineEmits, defineProps, PropType, reactive } from 'vue'
 import { serverTabType } from '@/store/modules/serverList'
 import { getClient } from '@/utils/redis'
 import StringType from './stringType.vue'
@@ -49,7 +63,9 @@ import SetType from './setType.vue'
 import ZSetType from './zsetType.vue'
 import { commandObjectType } from '@/views/valueContent/index'
 import { ElNotification } from 'element-plus/es'
+import { selectOptions } from '.'
 
+const emit = defineEmits(['clearNewTab'])
 const props = defineProps({
   serverTab: {
     type: Object as PropType<serverTabType>,
@@ -57,37 +73,16 @@ const props = defineProps({
   }
 })
 
-const state: { commands: commandObjectType[] } = reactive({
-  commands: []
+const state: { commands: commandObjectType[], runStatus: number } = reactive({
+  commands: [],
+  runStatus: 0 // 0: before run, 1: running, 2: after running
 })
 const dialog = reactive({
   show: false
 })
-const keyState: { keyType: string, keyName: string, options: { label: string, value: string }[] } = reactive({
+const keyState: { keyType: string, keyName: string } = reactive({
   keyType: 'string',
-  keyName: '',
-  options: [
-    {
-      label: 'string',
-      value: 'string'
-    },
-    {
-      label: 'hash',
-      value: 'hash'
-    },
-    {
-      label: 'list',
-      value: 'list'
-    },
-    {
-      label: 'set',
-      value: 'set'
-    },
-    {
-      label: 'zset',
-      value: 'zset'
-    }
-  ]
+  keyName: ''
 })
 
 const client = getClient(props.serverTab)
@@ -106,7 +101,23 @@ const handleCommand = (commands: commandObjectType[]) => {
   state.commands = commands
   dialog.show = true
 }
-
+const runCommand = async () => {
+  state.runStatus = 1
+  await client.connect()
+  for (let i = 0; i < state.commands.length; i++) {
+    state.commands[i].result = await client.sendCommand(state.commands[i].command)
+  }
+  await client.disconnect()
+  state.runStatus = 2
+}
+const handleFinishEvent = async () => {
+  dialog.show = false
+  if (state.runStatus === 2) {
+    state.commands = []
+    state.runStatus = 0
+    emit('clearNewTab', keyState.keyName)
+  }
+}
 </script>
 
 <style>

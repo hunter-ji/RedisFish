@@ -5,6 +5,7 @@ export interface keyMenuType {
 
 export interface commandObjectType {
   command: string[]
+  result?: string
 }
 
 export interface hashTableValueType {
