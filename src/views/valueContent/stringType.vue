@@ -19,18 +19,21 @@
       </div>
     </div>
     <el-input v-model="state.val" :rows="20" type="textarea"/>
+
+    <div :id="`ace${aceID}`" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineEmits, defineProps, PropType, reactive, ref, watch } from 'vue'
+import { defineEmits, defineProps, onMounted, PropType, reactive, Ref, ref, watch } from 'vue'
 import TopTab from './topTab.vue'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { Check, RefreshRight, Brush } from '@element-plus/icons-vue'
-import { commandObjectType } from '@/views/valueContent/index'
+import { commandObjectType, stringTypeSelectOptions } from '.'
 import { ElNotification } from 'element-plus'
 import { FormatCommandField } from '@/utils/formatCommandField'
+import ace from 'ace-builds'
 
 const emit = defineEmits(['refresh', 'delete', 'submit'])
 const delayNumber = ref(500)
@@ -55,10 +58,15 @@ const state: { val: string, oldVal: string, ttl: number, oldTTL: number, command
   oldTTL: 0,
   commands: []
 })
+const aceState: { aceEditor: any, themePath: string, modePath: string } = reactive({
+  aceEditor: null,
+  themePath: 'ace/theme/monokai',
+  modePath: 'ace/mode/json'
+})
 const refresh = () => {
   emit('refresh', true)
 }
-const stringFormat = () => {
+const stringFormat = async () => {
   try {
     const jsonData = JSON.parse(state.val)
     state.val = JSON.stringify(jsonData, null, '\t')
@@ -90,11 +98,35 @@ const submit = () => {
     })
   }
 }
+const aceID: Ref<string> = ref('')
+const genRandomAceID = async () => {
+  aceID.value = String(new Date().getUTCMilliseconds())
+}
+const initAceEditor = async () => {
+  aceState.aceEditor = ace.edit(`ace${aceID.value}`, {
+    maxLines: 15, // 最大行数，超过会自动出现滚动条
+    minLines: 15, // 最小行数，还未到最大行数时，编辑器会自动伸缩大小
+    fontSize: 14, // 编辑器内字体大小
+    theme: aceState.themePath, // 默认设置的主题
+    mode: aceState.modePath, // 默认设置的语言模式
+    tabSize: 4 // 制表符设置为 4 个空格大小
+  })
+}
+
+onMounted(async () => {
+  await genRandomAceID()
+  await initAceEditor()
+})
 
 watch(props, () => {
   state.ttl = props.ttl
   state.oldTTL = props.ttl
   state.val = props.values[0]
   state.oldVal = props.values[0]
+})
+
+watch(state, async () => {
+  await stringFormat()
+  aceState.aceEditor.setValue(state.val)
 })
 </script>

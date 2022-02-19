@@ -6,10 +6,10 @@
       @tab-remove="removeTab"
       editable
       @edit="handleTabEdit"
-      style="width: calc(100vw - 680px);"
+      style="width: calc(100vw - 680px);user-select: none;"
     >
       <!-- console tab -->
-      <el-tab-pane label="Console" name="Console" :closable="state.consoleClosable">
+      <el-tab-pane label="Console" name="Console" :closable="false">
         <command-pane :server-tab="props.serverTab" />
       </el-tab-pane>
       <!-- newKeyValue tab -->
@@ -18,7 +18,7 @@
         :key="item"
         :label="limitLen(item)"
         :name="item"
-        :closable="state.closable"
+        :closable="true"
       >
         <new-key-value :server-tab="props.serverTab" @clearNewTab="handleNewTabFinishEvent($event, item)" />
       </el-tab-pane>
@@ -28,7 +28,7 @@
         :key="item"
         :label="limitLen(item)"
         :name="item"
-        :closable="state.closable"
+        :closable="true"
       >
         <value-content :target-key="item" :server-tab="props.serverTab" />
       </el-tab-pane>
@@ -58,10 +58,8 @@ const props = defineProps({
 })
 
 const store = useStore()
-const state: { activeTab: string, consoleClosable: boolean, closable: boolean } = reactive({
-  activeTab: 'Console',
-  consoleClosable: false,
-  closable: true
+const state: { activeTab: string } = reactive({
+  activeTab: 'Console'
 })
 const newKeyState: { newKeyList: string[], newKeyIndex: number } = reactive({
   newKeyList: [],

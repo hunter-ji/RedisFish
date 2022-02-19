@@ -43,3 +43,14 @@ export interface zsetTableValueType {
   type: string,
   isRepeat: boolean
 }
+
+export const stringTypeSelectOptions: { label: string, value: string }[] = [
+  {
+    label: 'text',
+    value: 'text'
+  },
+  {
+    label: 'json',
+    value: 'json'
+  }
+]
