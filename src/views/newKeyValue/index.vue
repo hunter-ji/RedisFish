@@ -104,6 +104,7 @@ const handleCommand = (commands: commandObjectType[]) => {
 const runCommand = async () => {
   state.runStatus = 1
   await client.connect()
+  await client.sendCommand(['select', props.serverTab.db.slice(-1)])
   for (let i = 0; i < state.commands.length; i++) {
     state.commands[i].result = await client.sendCommand(state.commands[i].command)
   }

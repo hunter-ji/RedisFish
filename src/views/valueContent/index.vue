@@ -77,10 +77,7 @@ const dialog = reactive({
 })
 const client = getClient(props.serverTab)
 const fetchData = async () => {
-  client.on('error', (err: string) => {
-    console.log('Redis Client Error', err)
-  })
-
+  state.values = []
   await client.connect()
 
   await client.sendCommand(['select', props.serverTab.db.slice(-1)])
@@ -113,6 +110,7 @@ const handleCommand = async (commands: commandObjectType[]) => {
 const runCommand = async () => {
   state.runStatus = 1
   await client.connect()
+  await client.sendCommand(['select', props.serverTab.db.slice(-1)])
   for (let i = 0; i < state.commands.length; i++) {
     state.commands[i].result = await client.sendCommand(state.commands[i].command)
   }
