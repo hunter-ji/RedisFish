@@ -28,11 +28,22 @@
       </div>
 
       <!--keys tale-->
-      <el-table :data="searchState.isSearching ? searchState.keysList : state.keysList" size="mini" height="100%" style="width: 100%;" stripe @cell-dblclick="getValue"
+      <el-table :data="searchState.isSearching ? searchState.keysList : state.keysList" size="mini" height="95%" style="width: 100%;" stripe @cell-dblclick="getValue"
                 @selection-change="handleSelectionChange" class="pb-4" v-loading="state.loading">
         <el-table-column type="selection" width="50"/>
         <el-table-column prop="label" label="Keys" width="350"/>
       </el-table>
+
+      <!--pagination-->
+      <el-pagination layout="prev, pager, next" :total="pageState.total" :page-size="pageState.pageSize"
+                     v-model:current-page="pageState.currentPage" @current-change="fetchData()" :hide-on-single-page="true"
+                     class="py-2" v-show="!searchState.isSearching"
+      />
+      <el-pagination layout="prev, pager, next" :total="pageState.total" :page-size="pageState.pageSize"
+                     v-model:current-page="searchPageState.currentPage" @current-change="search()" :hide-on-single-page="true"
+                     class="py-2" v-show="searchState.isSearching"
+      />
+
     </div>
 
     <!--key-tab-->
@@ -83,16 +94,42 @@ const searchState: { keysList: keyMenuType[], search: string, isSearching: boole
 const dialogState: { show: boolean } = reactive({
   show: false
 })
+const pageState: { scanIndex: string, total: number, pageSize: number, currentPage: number } = reactive({
+  scanIndex: '0',
+  total: 0,
+  pageSize: 50,
+  currentPage: 1
+})
+const searchPageState: { scanIndex: string, total: number, pageSize: number, currentPage: number, lock: boolean } = reactive({
+  scanIndex: '0',
+  total: 0,
+  pageSize: 50,
+  currentPage: 1,
+  lock: false
+})
 const changeLoading = async (status: boolean) => {
   state.loading = status
 }
+const getKeysLength = async (keyspaceInfo: string, dbIndex: string): Promise<number> => {
+  const keySpaceArr = keyspaceInfo.split('\r\n')
+  // targetIndexDB db0:keys=1,expires=0,avg_ttl=0
+  const targetIndexDB = keySpaceArr[Number(dbIndex) + 1]
+  return Number(targetIndexDB.split(':')[1].split(',')[0].split('=')[1])
+}
 const fetchData = async () => {
+  const dbIndex = props.serverTab.db.slice(-1)
   await changeLoading(true)
   state.keysList = []
-  client.on('error', (err: string) => console.log('Redis Client Error', err))
   await client.connect()
-  await client.sendCommand(['select', props.serverTab.db.slice(-1)])
-  const keys: string[] = await client.sendCommand(['keys', '*'])
+  await client.sendCommand(['select', dbIndex])
+
+  const keyspaceInfo: string = await client.sendCommand(['INFO', 'keyspace'])
+  pageState.total = await getKeysLength(keyspaceInfo, dbIndex)
+
+  const scanResult: [string, string[]] = await client.sendCommand(['SCAN', pageState.scanIndex, 'COUNT', String(pageState.pageSize)])
+  pageState.scanIndex = scanResult[0]
+  const keys = scanResult[1]
+
   keys.forEach((item: string, index: number) => {
     state.keysList.push({
       label: item,
@@ -120,9 +157,18 @@ const handleSelectionChange = (val: string[]) => {
 const search = async () => {
   searchState.isSearching = true
   searchState.keysList = []
+  if (!searchPageState.lock) {
+    searchPageState.currentPage = 1
+    searchPageState.scanIndex = '0'
+    searchPageState.lock = true
+  }
   await client.connect()
   await client.sendCommand(['select', props.serverTab.db.slice(-1)])
-  const keys: string[] = await client.sendCommand(['keys', `*${searchState.search}*`])
+
+  const scanResult: [string, string[]] = await client.sendCommand(['SCAN', searchPageState.scanIndex, 'MATCH', `*${searchState.search}*`, 'COUNT', String(searchPageState.pageSize)])
+  searchPageState.scanIndex = scanResult[0]
+  const keys = scanResult[1]
+
   keys.forEach((item: string, index: number) => {
     searchState.keysList.push({
       label: item,
@@ -167,6 +213,9 @@ watch(searchState, () => {
   if (!searchState.search.length) {
     searchState.isSearching = false
     searchState.keysList = []
+    if (searchPageState.lock) {
+      searchPageState.lock = false
+    }
   }
 })
 </script>
