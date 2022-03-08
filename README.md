@@ -10,7 +10,7 @@ The first version is the beta version of the Windows platform first.After decomp
 
 
 
-下载测试版可见[Releases](https://github.com/Kuari/MyRedisDesktopManager/releases/tag/v0.1.0)
+Download the beta version package at [Releases](https://github.com/Kuari/MyRedisDesktopManager/releases/tag/v0.1.0)
 
 
 
