@@ -99,15 +99,7 @@ const submit = async () => {
     return
   }
 
-  // 合并serverList
-  const serverList = props.serverList
-  serverList.push(state.form)
-
-  // 推送store
-  await store.dispatch('serverList/updateServer', serverList)
-  await store.dispatch('serverList/setServer')
-
-  emit('submit', 'submit')
+  emit('submit', { server: state.form, eventName: 'submit' })
   await clearFrom()
   ElNotification({
     title: '提示',

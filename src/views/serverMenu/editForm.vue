@@ -81,18 +81,26 @@ const handleSubmit = async () => {
   }
 
   // 检测name是否重复
-  const serverIndex = props.serverList.findIndex((item: serverType) => item.name === state.form.name && item.name !== state.originFormName)
-  if (serverIndex !== -1) {
-    ElNotification({
-      title: '提示',
-      message: '数据库名称重复',
-      showClose: false,
-      duration: 3000
-    })
-    return
+  if (state.form.name !== state.originFormName) {
+    const serverIndex = props.serverList.findIndex((item: serverType) => item.name === state.form.name)
+    if (serverIndex !== -1) {
+      ElNotification({
+        title: '提示',
+        message: '数据库名称重复',
+        showClose: false,
+        duration: 3000
+      })
+      return
+    }
   }
 
-  emit('submit', 'submit')
+  emit('submit', { server: state.form, originName: state.originFormName, eventName: 'submit' })
+  ElNotification({
+    title: '提示',
+    message: '编辑数据库成功',
+    showClose: false,
+    duration: 2000
+  })
 }
 const ping = async () => {
   try {
@@ -115,7 +123,7 @@ watch(props, () => {
 })
 
 onMounted(() => {
-  state.form = props.form
+  state.form = JSON.parse(JSON.stringify(props.form))
   state.originFormName = props.form.name
 })
 </script>

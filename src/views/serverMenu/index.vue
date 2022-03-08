@@ -58,7 +58,7 @@
 
     <!-- editFormDialog -->
     <el-dialog title="编辑" v-model="dialogState.editFormDialog">
-      <edit-form :form="dialogState.currentServerForm" :server-list="state.serverList" @delete="handleEditFormDialogEventDel" @cancel="handleEditFormDialogEventCancel" @submit="handleEditFormDialogEventSubmit" />
+      <edit-form :form="dialogState.currentServerForm" :server-list="state.serverList" @delete="handleEditFormDialogEventDel" @cancel="handleEditFormDialogEventCancel" @submit="handleEditFormDialogEventSubmit" v-if="dialogState.editFormDialog" />
     </el-dialog>
     <!-- editFormDialog end -->
   </div>
@@ -68,7 +68,7 @@
 import { useStore } from 'vuex'
 import { onMounted, reactive } from 'vue'
 import { getClient } from '@/utils/redis'
-import { serverType, initStoreFile } from '@/utils/store'
+import { serverType, initStoreFile, getStore } from '@/utils/store'
 import { Setting, Plus } from '@element-plus/icons-vue'
 import AddForm from './addForm.vue'
 import EditForm from './editForm.vue'
@@ -129,14 +129,22 @@ const handleChildItemClick = (server: serverType, db: string): void => {
 }
 const fetchData = async () => {
   await initStoreFile()
-  await store.commit('serverList/initServerList')
-
-  state.serverList = store.getters.serverList
+  const serverList = await getStore()
+  await store.dispatch('serverList/updateServer', serverList)
+  state.serverList = serverList
 }
-const handleAddFormDialogEvent = (eventName: string) => {
+const addServer = async (server: serverType) => {
+  state.serverList.push(server)
+}
+const handleAddFormDialogEvent = async (data: { server: serverType, eventName: string }) => {
   dialogState.addFormDialog = false
-  if (eventName === 'submit') {
-    fetchData()
+  if (data.eventName === 'submit') {
+    // 合并serverList
+    await addServer(data.server)
+
+    // 推送store
+    await store.dispatch('serverList/updateServer', state.serverList)
+    await store.dispatch('serverList/setServer')
   }
 }
 const openEditFormDialog = (form: serverType) => {
@@ -153,15 +161,18 @@ const handleEditFormDialogEventDel = async (serverID: number) => {
   await delServer(serverID)
   await store.dispatch('serverList/updateServer', state.serverList)
   await store.dispatch('serverList/setServer')
-  await fetchData()
   dialogState.editFormDialog = false
 }
-const handleEditFormDialogEventSubmit = async (eventName: string) => {
-  await store.dispatch('serverList/updateServer', state.serverList)
-  await store.dispatch('serverList/setServer')
-  dialogState.editFormDialog = false
-  if (eventName === 'submit') {
-    await fetchData()
+const updateServer = async (server: serverType, originName: string) => {
+  const serverListIndex = state.serverList.findIndex((item: serverType) => item.name === originName)
+  state.serverList[serverListIndex] = server
+}
+const handleEditFormDialogEventSubmit = async (data: { server: serverType, originName: string, eventName: string }) => {
+  await updateServer(data.server, data.originName)
+  if (data.eventName === 'submit') {
+    await store.dispatch('serverList/updateServer', state.serverList)
+    await store.dispatch('serverList/setServer')
+    dialogState.editFormDialog = false
   }
 }
 

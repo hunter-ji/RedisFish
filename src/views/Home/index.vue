@@ -1,10 +1,11 @@
-<template lang="pug">
-div.container.w-full
-    server-menu.server-menu
+<template>
+  <div class="container w-full">
+    <server-menu class="server-menu" />
 
-    divider
+    <divider />
 
-    server-tab.w-full
+    <server-tab class="w-full" />
+  </div>
 </template>
 
 <script setup lang="ts">

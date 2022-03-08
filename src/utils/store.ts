@@ -14,8 +14,9 @@ export interface serverType {
   children?: string[]
 }
 
-export const getStore = (): serverType[] => {
-  return JSON.parse(readFile(storeFilePath))
+export const getStore = async (): Promise<serverType[]> => {
+  const result = await readFile(storeFilePath)
+  return JSON.parse(result)
 }
 
 export const initStoreFile = async (): Promise<void> => {
@@ -30,5 +31,5 @@ export const initStoreFile = async (): Promise<void> => {
 }
 
 export const setStore = async (content: serverType[]): Promise<void> => {
-  writeFile(storeFilePath, JSON.stringify(content))
+  await writeFile(storeFilePath, JSON.stringify(content))
 }

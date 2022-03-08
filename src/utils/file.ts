@@ -1,18 +1,19 @@
 import * as fs from 'fs'
+import { encrypt, decrypt } from '@/utils/cipherCode'
 
-export const writeFile = (path: string, content: string): void => {
-  fs.writeFileSync(path, content)
+export const writeFile = async (path: string, content: string): Promise<void> => {
+  const encryptContent = await encrypt(content)
+  fs.writeFileSync(path, encryptContent)
 }
 
-export const appendFile = (path: string, content: string): void => {
-  fs.appendFileSync(path, content)
+export const appendFile = async (path: string, content: string): Promise<void> => {
+  const encryptContent = await encrypt(content)
+  fs.appendFileSync(path, encryptContent)
 }
 
-export const readFile = (path: string): string => {
-  return fs.readFileSync(path, {
-    encoding: 'utf8',
-    flag: 'r'
-  })
+export const readFile = async (path: string): Promise<string> => {
+  const content = fs.readFileSync(path, { encoding: 'utf8', flag: 'r' })
+  return await decrypt(content)
 }
 
 export const existsFile = async (path: string): Promise<boolean> => {

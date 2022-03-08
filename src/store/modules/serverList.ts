@@ -1,4 +1,4 @@
-import { getStore, serverType, setStore } from '@/utils/store'
+import { serverType, setStore } from '@/utils/store'
 import { Commit } from 'vuex'
 
 export interface serverTabType extends serverType {
@@ -18,9 +18,6 @@ const state = {
 }
 
 const mutations = {
-  initServerList (state: stateType): void {
-    state.serverList = getStore()
-  },
   setServerList (state: stateType): void {
     setStore(state.serverList)
   },
@@ -68,7 +65,7 @@ const actions = {
   setServer ({ commit }: { commit: Commit }): void {
     commit('setServerList')
   },
-  updateServer ({ commit }: { commit: Commit }, server: serverType): void {
+  updateServer ({ commit }: { commit: Commit }, server: serverType[]): void {
     commit('updateServer', server)
   }
 }
