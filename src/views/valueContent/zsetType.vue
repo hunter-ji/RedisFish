@@ -1,6 +1,10 @@
 <template>
   <div class="list-type-container">
+
+    <!-- top-tab -->
     <top-tab :key-name="props.keyName" key-type="hash" class="mb-4"/>
+
+    <!-- tools -->
     <div class="w-full flex flex-row justify-between mb-4">
       <div class="w-1/5 flex flex-row items-center">
         <div class="text-sm mr-1">TTL(s)</div>
@@ -33,6 +37,8 @@
         </el-tooltip>
       </div>
     </div>
+
+    <!-- table -->
     <el-table
       :data="searchState.isSearching ? searchState.values : state.values"
       v-loading="state.loading"

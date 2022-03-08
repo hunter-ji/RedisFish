@@ -1,6 +1,10 @@
 <template>
   <div class="value-content-container list-type-container">
+
+    <!-- top-tab -->
     <top-tab :key-name="props.keyName" key-type="hash" class="mb-4"/>
+
+    <!-- tools -->
     <div class="w-full flex flex-row justify-between mb-4">
       <div class="w-1/5 flex flex-row items-center">
         <div class="text-sm mr-1">TTL(s)</div>
@@ -34,10 +38,12 @@
         </el-tooltip>
       </div>
     </div>
+
+    <!-- table -->
     <el-table
       :data="searchState.isSearching ? searchState.values : state.values"
       v-loading="state.loading"
-      height="100%"
+      height="700"
       size="mini" border stripe @selection-change="handleSelectionChange"
       @cell-dblclick="edit"
       style="width: 100%;">
@@ -246,9 +252,3 @@ watch(props, () => {
   state.loading = false
 })
 </script>
-
-<style>
-.value-content-container {
-  height: calc(100vh - 160px);
-}
-</style>
