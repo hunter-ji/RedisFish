@@ -6,7 +6,7 @@
       @tab-remove="removeTab"
       editable
       @edit="handleTabEdit"
-      style="width: calc(100vw - 680px);user-select: none;"
+      style="width: calc(100vw - 680px);"
     >
       <!-- console tab -->
       <el-tab-pane label="Console" name="Console" :closable="false">

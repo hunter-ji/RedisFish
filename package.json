@@ -11,6 +11,8 @@
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
+  "author": "Kuari",
+  "license": "GPL",
   "main": "background.js",
   "dependencies": {
     "@element-plus/icons-vue": "^0.2.4",

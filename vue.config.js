@@ -4,6 +4,7 @@ const Components = require('unplugin-vue-components/webpack')
 const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
 
 module.exports = {
+  productionSourceMap: false,
   chainWebpack: config => {
     config.module.rule('pug')
       .test(/\.pug$/)
@@ -22,7 +23,53 @@ module.exports = {
     electronBuilder: {
       nodeIntegration: true,
       disableMainProcessTypescript: false,
-      mainProcessTypeChecking: false
+      mainProcessTypeChecking: false,
+      build: {
+        productName: 'MyRedisDesktopManager',
+        appId: 'com.MyRedisDesktopManager.client',
+        copyright: '© Kuari 2022',
+        nsis: {
+          oneClick: false,
+          allowElevation: true,
+          allowToChangeInstallationDirectory: true,
+          installerIcon: 'build/icon.ico',
+          uninstallerIcon: 'build/icon.ico',
+          installerHeaderIcon: 'build/icon.ico',
+          createDesktopShortcut: true,
+          createStartMenuShortcut: true,
+          shortcutName: 'MyRedisDesktopManager'
+        },
+        win: {
+          icon: 'build/icon.ico',
+          requestedExecutionLevel: 'requireAdministrator',
+          target: [
+            {
+              target: 'nsis'
+            }
+          ]
+        },
+        dmg: {
+          contents: [
+            {
+              x: 410,
+              y: 150,
+              type: 'link',
+              path: '/Applications'
+            },
+            {
+              x: 130,
+              y: 150,
+              type: 'file'
+            }
+          ]
+        },
+        mac: {
+          icon: 'build/icon.icns'
+        },
+        linux: {
+          icon: 'build/icon.ico'
+        }
+      }
     }
   }
 }

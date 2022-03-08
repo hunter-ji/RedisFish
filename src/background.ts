@@ -38,6 +38,13 @@ async function createWindow () {
   }
 }
 
+// 避免开启多个客户端窗口
+const gotTheLock = app.requestSingleInstanceLock()
+
+if (!gotTheLock) {
+  app.quit()
+}
+
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
