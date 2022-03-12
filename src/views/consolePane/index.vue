@@ -2,7 +2,7 @@
   <div class="p-2">
     <!-- btn group -->
     <div class="flex flex-row items-center justify-end mb-4">
-      <el-tooltip effect="light" content="提交操作" placement="bottom" :show-after="500">
+      <el-tooltip effect="light" :content="t('consolePane.index.checkBtn')" placement="bottom" :show-after="500">
         <el-button type="success" size="small" :icon="Check" circle @click="submit"/>
       </el-tooltip>
     </div>
@@ -17,13 +17,13 @@
       @tab-remove="removeTab"
       class="mt-4"
     >
-      <el-tab-pane label="执行历史" name="History" :closable="outputState.historyClosable">
+      <el-tab-pane :label="t('consolePane.index.historyLabel')" name="History" :closable="outputState.historyClosable">
         <history-pane :res="clientState.historyCommands"/>
       </el-tab-pane>
       <el-tab-pane
         v-for="(item, index) in outputState.outputTabs"
         :key="index"
-        :label="`执行结果${index+1}`"
+        :label="`t('consolePane.index.historyPaneLabel')${index+1}`"
         :name="`result${index+1}`"
         :closable="outputState.outputClosable"
       >
@@ -32,15 +32,15 @@
     </el-tabs>
 
     <!-- dialog -->
-    <el-dialog v-model="dialog.show" title="提示" width="50%" center>
-      <div>将要执行如下命令：</div>
+    <el-dialog v-model="dialog.show" :title="t('consolePane.index.dialog.title')" width="50%" center>
+      <div>{{ t('consolePane.index.dialog.content') }}</div>
       <div class="h-80 overflow-y-auto flex flex-col justify-start p-2 bg-gray-300 mt-2">
         <div class="p-2" v-for="(item, index) in clientState.commands" :key="index">{{ item }}</div>
       </div>
       <template #footer>
       <span class="flex flex-row items-center justify-end">
-        <el-button @click="dialog.show = false">取消</el-button>
-        <el-button type="primary" @click="runCommands">执行</el-button>
+        <el-button @click="dialog.show = false">{{ t('consolePane.index.dialog.cancelBtn') }}</el-button>
+        <el-button type="primary" @click="runCommands">{{ t('consolePane.index.dialog.runBtn') }}</el-button>
       </span>
       </template>
     </el-dialog>
@@ -62,6 +62,9 @@ import { historyCommandType, outputPaneType } from '@/views/consolePane/index'
 import { dateFormat } from '@/utils/formatTime'
 import HistoryPane from './history.vue'
 import ResultPane from './result.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   serverTab: {
@@ -97,8 +100,8 @@ const submit = () => {
     handleCommand(commandsArr)
   } else {
     ElNotification({
-      title: '提示',
-      message: '没有可执行的操作',
+      title: t('consolePane.index.notification.title'),
+      message: t('consolePane.index.notification.message'),
       showClose: false,
       duration: 2000
     })

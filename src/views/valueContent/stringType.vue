@@ -53,6 +53,9 @@ import { commandObjectType, stringTypeSelectOptions } from '.'
 import { ElNotification } from 'element-plus'
 import { FormatCommandField } from '@/utils/formatCommandField'
 import ace from 'ace-builds'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const emit = defineEmits(['refresh', 'delete', 'submit'])
 const delayNumber = ref(500)
@@ -96,7 +99,7 @@ const stringFormat = async () => {
     state.jsonVal = JSON.stringify(jsonData, null, '\t')
     initEditorMode()
   } catch (error) {
-    console.log('json格式化错误')
+    console.log('json format error')
   }
 }
 const syncJsonVal = async (): Promise<string> => {
@@ -128,8 +131,8 @@ const submit = async () => {
     emit('submit', state.commands)
   } else {
     ElNotification({
-      title: '提示',
-      message: '没有可执行的操作',
+      title: t('valueContent.notification.infoTitle'),
+      message: t('valueContent.notification.emptyContentMessage'),
       showClose: false,
       duration: 2000
     })

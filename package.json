@@ -2,17 +2,17 @@
   "name": "MyRedisDesktopManager",
   "version": "0.1.0",
   "private": true,
+  "author": "Kuari",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
+    "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\"",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
-  "author": "Kuari",
-  "license": "GPL",
   "main": "background.js",
   "dependencies": {
     "@element-plus/icons-vue": "^0.2.4",
@@ -23,10 +23,12 @@
     "redis": "^4.0.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
     "vue": "^3.0.0",
+    "vue-i18n": "^9.1.0",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
+    "@intlify/vue-i18n-loader": "^3.0.0",
     "@types/electron-devtools-installer": "^2.2.0",
     "@types/node": "^16.11.10",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
@@ -53,6 +55,8 @@
     "style-loader": "^3.3.1",
     "typescript": "~4.1.5",
     "unplugin-vue-components": "^0.17.2",
-    "vue-cli-plugin-electron-builder": "~2.1.1"
-  }
+    "vue-cli-plugin-electron-builder": "~2.1.1",
+    "vue-cli-plugin-i18n": "~2.3.1"
+  },
+  "license": "GPL"
 }

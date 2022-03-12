@@ -78,6 +78,9 @@ import { contentLimit } from '@/utils/contentLimit'
 // @ts-ignore
 import { Check, Delete, Plus } from '@element-plus/icons-vue'
 import { FormatCommandField } from '@/utils/formatCommandField'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const emit = defineEmits(['submit'])
 const props = defineProps({
@@ -129,8 +132,8 @@ const inputChange = (row: zsetTableValueType, isField: boolean) => {
     if (index !== -1) {
       row.isRepeat = true
       ElNotification({
-        title: '数据重复',
-        message: `${row.field && row.field.length > 6 ? row.field.slice(0, 6) + '...' : row.field}与现有Field重复`,
+        title: t('newKeyValue.notification.dataDuplicationTitle'),
+        message: `${row.field && row.field.length > 6 ? row.field.slice(0, 6) + '...' : row.field}t('newKeyValue.notification.dataDuplicationMessage')`,
         showClose: false,
         duration: 5000
       })
@@ -171,8 +174,8 @@ const submit = () => {
     emit('submit', state.commands)
   } else {
     ElNotification({
-      title: '提示',
-      message: '没有可执行的操作',
+      title: t('newKeyValue.notification.infoTitle'),
+      message: t('newKeyValue.notification.emptyContentMessage'),
       showClose: false,
       duration: 2000
     })

@@ -2,8 +2,8 @@
   <div id="serverMenu">
     <!-- menu header -->
     <div class="flex flex-row items-center justify-between mb-2">
-      <div class="font-bold">数据库列表</div>
-      <el-tooltip effect="light" content="添加数据库" placement="bottom" :show-after="1000">
+      <div class="font-bold">{{ t('serverMenu.index.title') }}</div>
+      <el-tooltip effect="light" :content="t('serverMenu.index.addServerBtn')" placement="bottom" :show-after="1000">
         <plus class="w-5 h-5 p-1 rounded cursor-pointer hover:text-white hover:bg-gray-300" @click="dialogState.addFormDialog = true" />
       </el-tooltip>
     </div>
@@ -15,7 +15,7 @@
 
           <!-- server menu server name -->
           <div class="flex flex-row items-center justify-between w-full">
-            <!-- label 点击展开/关闭 -->
+            <!-- label click toggle -->
             <div class="flex flex-row items-center">
               <img src="@/assets/right.png"
                    alt="icon"
@@ -24,7 +24,7 @@
                    :class="{'icon': state.currentServerName === item.name}"/>
               <div class="ml-2">{{ item.name }}</div>
             </div>
-            <!-- server操作按钮 -->
+            <!-- server config btn -->
             <setting class="w-4 h-4 cursor-pointer hover:text-white opacity-70" @click.stop="openEditFormDialog(item)" />
           </div>
         </div>
@@ -46,18 +46,18 @@
     </div>
     <div v-else class="flex flex-col justify-center">
       <div  class="text-center mt-6" style="color: #909399;">
-        数据为空，点击数据库列表列右上角+按钮进行添加
+        {{ t('serverMenu.index.empty') }}
       </div>
     </div>
 
     <!-- addFormDialog -->
-    <el-dialog title="新增" v-model="dialogState.addFormDialog">
+    <el-dialog :title="t('serverMenu.index.addBtn')" v-model="dialogState.addFormDialog">
       <add-form :server-list="state.serverList" @cancel="handleAddFormDialogEvent" @submit="handleAddFormDialogEvent" />
     </el-dialog>
     <!-- addFormDialog end -->
 
     <!-- editFormDialog -->
-    <el-dialog title="编辑" v-model="dialogState.editFormDialog">
+    <el-dialog :title="t('serverMenu.index.editBtn')" v-model="dialogState.editFormDialog">
       <edit-form :form="dialogState.currentServerForm" :server-list="state.serverList" @delete="handleEditFormDialogEventDel" @cancel="handleEditFormDialogEventCancel" @submit="handleEditFormDialogEventSubmit" v-if="dialogState.editFormDialog" />
     </el-dialog>
     <!-- editFormDialog end -->
@@ -72,6 +72,9 @@ import { serverType, initStoreFile, getStore } from '@/utils/store'
 import { Setting, Plus } from '@element-plus/icons-vue'
 import AddForm from './addForm.vue'
 import EditForm from './editForm.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const store = useStore()
 const state: { serverList: serverType[], currentServerName: string, search: string } = reactive({

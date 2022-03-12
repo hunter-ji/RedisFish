@@ -44,6 +44,9 @@ import { commandObjectType, stringTypeSelectOptions } from '@/views/valueContent
 import { ElNotification } from 'element-plus'
 import { FormatCommandField } from '@/utils/formatCommandField'
 import ace from 'ace-builds'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const emit = defineEmits(['delete', 'submit'])
 const delayNumber = ref(500)
@@ -96,8 +99,8 @@ const submit = async () => {
     emit('submit', state.commands)
   } else {
     ElNotification({
-      title: '提示',
-      message: '没有可执行的操作',
+      title: t('newKeyValue.notification.infoTitle'),
+      message: t('newKeyValue.notification.emptyContentMessage'),
       showClose: false,
       duration: 2000
     })

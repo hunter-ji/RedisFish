@@ -6,19 +6,19 @@
         <!--search-->
         <div
           :class="searchState.search.length ? 'w-3/4 transition-width duration-1000 ease-in-out delay-200' : 'w-2/4 transition-width duration-1000 ease-in-out'">
-          <el-input v-model="searchState.search" size="small" placeholder="回车查询搜索结果" clearable :prefix-icon="Search" @keyup.enter="search"/>
+          <el-input v-model="searchState.search" size="small" :placeholder="t('keyMenu.searchInputPlaceholder')" clearable :prefix-icon="Search" @keyup.enter="search"/>
         </div>
 
         <!--btn group-->
         <div class="flex flex-row items-center justify-end w-1/4">
           <transition name="slide-fade">
             <div class="flex flex-row items-center justify-end" v-if="!searchState.search.length" style="margin-right: 10px;">
-              <el-tooltip effect="light" content="刷新" placement="bottom" :show-after="1000">
+              <el-tooltip effect="light" :content="t('keyMenu.btnGroup.refresh')" placement="bottom" :show-after="1000">
                 <el-button type="info" size="mini" :icon="RefreshRight" circle @click="fetchData"/>
               </el-tooltip>
             </div>
           </transition>
-          <el-tooltip effect="light" content="删除" placement="bottom" :show-after="1000">
+          <el-tooltip effect="light" :content="t('keyMenu.btnGroup.delete')" placement="bottom" :show-after="1000">
             <el-button type="danger" size="mini" disabled :icon="Delete" circle v-if="!state.multipleSelection.length"/>
             <el-button type="danger" size="mini" :icon="Delete" round class="flex flex-row items-center" @click="delKey" v-else>
               ({{ state.multipleSelection.length }})
@@ -50,12 +50,12 @@
     <key-tab class="key-tab h-full w-full" :server-tab="props.serverTab" :target-key="state.targetKey" @addKeyTab="addTab"/>
 
     <!--del key dialog-->
-    <el-dialog v-model="dialogState.show" title="提示" width="30%" center>
-      <span>将要删除所选key，是否执行？</span>
+    <el-dialog v-model="dialogState.show" :title="t('keyMenu.delDialog.title')" width="30%" center>
+      <span>{{ t('keyMenu.delDialog.content') }}</span>
       <template #footer>
         <span class="flex flex-row items-center justify-center">
-          <el-button @click="dialogState.show = false" class="mr-2">取消</el-button>
-          <el-button type="primary" @click="delKeyDialogSubmit()">执行</el-button>
+          <el-button @click="dialogState.show = false" class="mr-2">{{ t('keyMenu.delDialog.cancel') }}</el-button>
+          <el-button type="primary" @click="delKeyDialogSubmit()">{{ t('keyMenu.delDialog.submit') }}</el-button>
         </span>
       </template>
     </el-dialog>
@@ -70,6 +70,9 @@ import { useStore } from 'vuex'
 import { Delete, RefreshRight, Search } from '@element-plus/icons-vue'
 import KeyTab from '@/views/keyTab/index.vue'
 import { keyMenuType } from '@/views/valueContent/index'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   serverTab: {

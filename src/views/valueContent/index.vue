@@ -17,7 +17,7 @@
                 @submit="handleCommand" v-else-if="state.keyType === 'zset'"/>
 
     <!-- run commands dialog -->
-    <el-dialog v-model="dialog.show" @closed="handleFinishEvent()" title="执行命令" width="50%" center>
+    <el-dialog v-model="dialog.show" @closed="handleFinishEvent()" :title="t('valueContent.index.runDialog.title')" width="50%" center>
       <el-table
         :data="state.commands"
         height="600"
@@ -32,10 +32,10 @@
       </el-table>
       <template #footer>
       <span class="flex flex-row items-center justify-end">
-        <el-button @click="dialog.show = false" v-if="state.runStatus <= 0">取消</el-button>
-        <el-button type="primary" v-if="state.runStatus === 0" @click="runCommand()">执行</el-button>
-        <el-button type="primary" v-if="state.runStatus === 1" disabled>执行中</el-button>
-        <el-button type="primary" v-if="state.runStatus === 2" @click="handleFinishEvent()">确定</el-button>
+        <el-button @click="dialog.show = false" v-if="state.runStatus <= 0">{{ t('valueContent.index.runDialog.cancel') }}</el-button>
+        <el-button type="primary" v-if="state.runStatus === 0" @click="runCommand()">{{ t('valueContent.index.runDialog.run') }}</el-button>
+        <el-button type="primary" v-if="state.runStatus === 1" disabled>{{ t('valueContent.index.runDialog.running') }}</el-button>
+        <el-button type="primary" v-if="state.runStatus === 2" @click="handleFinishEvent()">{{ t('valueContent.index.runDialog.submit') }}</el-button>
       </span>
       </template>
     </el-dialog>
@@ -53,6 +53,9 @@ import SetType from './setType.vue'
 import ZSetType from './zsetType.vue'
 import { commandObjectType } from '@/views/valueContent/index'
 import { FormatCommandField } from '@/utils/formatCommandField'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   serverTab: {
@@ -95,7 +98,7 @@ const fetchData = async () => {
   } else if (state.keyType === 'zset') {
     state.values = await client.sendCommand(['zrange', FormatCommandField(props.targetKey), '0', '-1', 'withscores'])
   } else {
-    state.values.push('未知类型')
+    state.values.push(t('valueContent.index.unknownTypeValue'))
   }
 
   state.ttl = await client.ttl(props.targetKey)

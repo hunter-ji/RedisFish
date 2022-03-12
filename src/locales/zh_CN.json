@@ -1,0 +1,134 @@
+{
+  "language": "中文",
+  "consolePane": {
+    "index": {
+      "checkBtn": "提交操作",
+      "historyLabel": "执行历史",
+      "historyPaneLabel": "执行结果",
+      "dialog": {
+        "title": "提示",
+        "content": "将要执行如下命令：",
+        "cancelBtn": "取消",
+        "runBtn": "执行"
+      },
+      "notification": {
+        "title": "提示",
+        "message": "没有可执行的操作"
+      }
+    },
+    "history": {
+      "command": "执行命令",
+      "result": "执行结果",
+      "createdAt": "执行时间"
+    }
+  },
+  "Home": {},
+  "keyMenu": {
+    "searchInputPlaceholder": "回车查询搜索结果",
+    "btnGroup": {
+      "refresh": "刷新",
+      "delete": "删除"
+    },
+    "delDialog": {
+      "title": "提示",
+      "content": "将要删除所选key，是否执行？",
+      "cancel": "取消",
+      "submit": "执行"
+    }
+  },
+  "keyTab": {},
+  "newKeyValue": {
+    "index": {
+      "runDialog": {
+        "title": "执行命令",
+        "cancel": "取消",
+        "run": "执行",
+        "running": "执行中",
+        "submit": "确定"
+      },
+      "notification": {
+        "title": "提示",
+        "message": "请填写key"
+      }
+    },
+    "btnGroup": {
+      "add": "添加",
+      "delete": "删除",
+      "submit": "提交操作",
+      "addFromHeader": "头部添加",
+      "addFromFooter": "尾部添加",
+      "deleteFromHeader": "头部移出",
+      "deleteFromFooter": "尾部移出"
+    },
+    "notification": {
+      "infoTitle": "提示",
+      "dataDuplicationTitle": "数据重复",
+      "dataDuplicationMessage": "与现有数据重复",
+      "emptyContentMessage": "没有可执行的操作"
+    }
+  },
+  "serverMenu": {
+    "index": {
+      "title": "数据库列表",
+      "addServerBtn": "添加数据库",
+      "empty": "数据为空，点击数据库列表列右上角+按钮进行添加",
+      "addBtn": "新增",
+      "editBtn": "编辑"
+    },
+    "form": {
+      "name": "名称",
+      "host": "地址",
+      "port": "端口",
+      "password": "密码",
+      "namePlaceholder": "开发数据库",
+      "hostPlaceholder": "192.168.1.10",
+      "successTip": "连接成功",
+      "failTip": "无法连接",
+      "defaultTip": "连接状态未知",
+      "cancelBtn": "取消",
+      "testBtn": "测试连接",
+      "deleteBtn": "删除",
+      "saveBtn": "保存"
+    },
+    "notification": {
+      "infoTitle": "提示",
+      "addSuccessMessage": "添加数据库成功",
+      "editSuccessMessage": "编辑数据库成功",
+      "errorMessage": "数据库名称重复"
+    }
+  },
+  "serverTab": {},
+  "valueContent": {
+    "index": {
+      "runDialog": {
+        "title": "执行命令",
+        "cancel": "取消",
+        "run": "执行",
+        "running": "执行中",
+        "submit": "确定"
+      },
+      "notification": {
+        "title": "提示",
+        "message": "请填写key"
+      },
+      "unknownTypeValue": "未知类型"
+    },
+    "searchInputPlaceholder": "回车查询搜索结果",
+    "btnGroup": {
+      "refresh": "刷新",
+      "add": "添加",
+      "delete": "删除",
+      "submit": "提交操作",
+      "addFromHeader": "头部添加",
+      "addFromFooter": "尾部添加",
+      "deleteFromHeader": "头部移出",
+      "deleteFromFooter": "尾部移出"
+    },
+    "notification": {
+      "infoTitle": "提示",
+      "dataDuplicationTitle": "数据重复",
+      "dataDuplicationMessage": "与现有数据重复",
+      "emptyContentMessage": "没有可执行的操作"
+    }
+  }
+}

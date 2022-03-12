@@ -9,24 +9,24 @@
       </div>
       <div class="w-64 flex flex-row items-center justify-end">
         <div class="mr-2 flex flex-row items-center">
-          <el-tooltip effect="light" content="头部添加" placement="bottom" :show-after="delayNumber">
+          <el-tooltip effect="light" :content="t('newKeyValue.btnGroup.addFromHeader')" placement="bottom" :show-after="delayNumber">
             <img src="@/assets/add_up.png" height="34" width="34" alt="add_up"
                  class="hover:opacity-70 cursor-pointer ml-2" @click="addRow(true)"/>
           </el-tooltip>
-          <el-tooltip effect="light" content="尾部添加" placement="bottom" :show-after="delayNumber">
+          <el-tooltip effect="light" :content="t('newKeyValue.btnGroup.addFromFooter')" placement="bottom" :show-after="delayNumber">
             <img src="@/assets/add_down.png" height="34" width="34" alt="add_down"
                  class="hover:opacity-70 cursor-pointer ml-2" @click="addRow(false)"/>
           </el-tooltip>
-          <el-tooltip effect="light" content="头部移出" placement="bottom" :show-after="delayNumber">
+          <el-tooltip effect="light" :content="t('newKeyValue.btnGroup.deleteFromHeader')" placement="bottom" :show-after="delayNumber">
             <img src="@/assets/del_up.png" height="34" width="34" alt="del_up"
                  class="hover:opacity-70 cursor-pointer ml-2" @click="del(true)"/>
           </el-tooltip>
-          <el-tooltip effect="light" content="尾部移出" placement="bottom" :show-after="delayNumber">
+          <el-tooltip effect="light" :content="t('newKeyValue.btnGroup.deleteFromFooter')" placement="bottom" :show-after="delayNumber">
             <img src="@/assets/del_down.png" height="34" width="34" alt="del_down"
                  class="hover:opacity-70 cursor-pointer ml-2" @click="del(false)"/>
           </el-tooltip>
         </div>
-        <el-tooltip effect="light" content="提交操作" placement="bottom" :show-after="delayNumber">
+        <el-tooltip effect="light" :content="t('newKeyValue.btnGroup.submit')" placement="bottom" :show-after="delayNumber">
           <el-button type="success" size="small" :icon="Check" circle @click="submit" class="ml-2"/>
         </el-tooltip>
       </div>
@@ -71,6 +71,9 @@ import { contentLimit } from '@/utils/contentLimit'
 // @ts-ignore
 import { Check } from '@element-plus/icons-vue'
 import { FormatCommandField } from '@/utils/formatCommandField'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const emit = defineEmits(['submit'])
 const props = defineProps({
@@ -157,8 +160,8 @@ const submit = () => {
     emit('submit', state.commands)
   } else {
     ElNotification({
-      title: '提示',
-      message: '没有可执行的操作',
+      title: t('newKeyValue.notification.infoTitle'),
+      message: t('newKeyValue.notification.emptyContentMessage'),
       showClose: false,
       duration: 2000
     })

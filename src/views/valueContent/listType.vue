@@ -12,34 +12,34 @@
       </div>
       <div
         :class="searchState.search.length !== 0 ? 'w-2/4 transition-width duration-1000 ease-in-out delay-100' : 'w-1/4 transition-width duration-500 ease-in-out'">
-        <el-input v-model="searchState.search" size="small" placeholder="回车查询搜索结果" :prefix-icon="Search" clearable
+        <el-input v-model="searchState.search" size="small" :placeholder="t('valueContent.searchInputPlaceholder')" :prefix-icon="Search" clearable
                   @keyup.enter="search"/>
       </div>
       <div class="w-64 flex flex-row items-center justify-end">
         <transition name="slide-fade">
           <div v-if="!searchState.search.length" class="w-full flex flex-row items-center justify-end mr-2">
-            <el-tooltip effect="light" content="刷新" placement="bottom" :show-after="delayNumber">
+            <el-tooltip effect="light" :content="t('valueContent.btnGroup.refresh')" placement="bottom" :show-after="delayNumber">
               <el-button type="info" size="small" :icon="RefreshRight" circle @click="refresh"/>
             </el-tooltip>
-            <el-tooltip effect="light" content="头部添加" placement="bottom" :show-after="delayNumber">
+            <el-tooltip effect="light" :content="t('valueContent.btnGroup.addFromHeader')" placement="bottom" :show-after="delayNumber">
               <img src="@/assets/add_up.png" height="34" width="34" alt="add_up"
                    class="hover:opacity-70 cursor-pointer ml-2" @click="addRow(true)"/>
             </el-tooltip>
-            <el-tooltip effect="light" content="尾部添加" placement="bottom" :show-after="delayNumber">
+            <el-tooltip effect="light" :content="t('valueContent.btnGroup.addFromFooter')" placement="bottom" :show-after="delayNumber">
               <img src="@/assets/add_down.png" height="34" width="34" alt="add_down"
                    class="hover:opacity-70 cursor-pointer ml-2" @click="addRow(false)"/>
             </el-tooltip>
-            <el-tooltip effect="light" content="头部移出" placement="bottom" :show-after="delayNumber">
+            <el-tooltip effect="light" :content="t('valueContent.btnGroup.deleteFromHeader')" placement="bottom" :show-after="delayNumber">
               <img src="@/assets/del_up.png" height="34" width="34" alt="del_up"
                    class="hover:opacity-70 cursor-pointer ml-2" @click="del(true)"/>
             </el-tooltip>
-            <el-tooltip effect="light" content="尾部移出" placement="bottom" :show-after="delayNumber">
+            <el-tooltip effect="light" :content="t('valueContent.btnGroup.deleteFromFooter')" placement="bottom" :show-after="delayNumber">
               <img src="@/assets/del_down.png" height="34" width="34" alt="del_down"
                    class="hover:opacity-70 cursor-pointer ml-2" @click="del(false)"/>
             </el-tooltip>
           </div>
         </transition>
-        <el-tooltip effect="light" content="提交操作" placement="bottom" :show-after="delayNumber">
+        <el-tooltip effect="light" :content="t('valueContent.btnGroup.submit')" placement="bottom" :show-after="delayNumber">
           <el-button type="success" size="small" :icon="Check" circle @click="submit" class="ml-2"/>
         </el-tooltip>
       </div>
@@ -84,6 +84,9 @@ import { contentLimit } from '@/utils/contentLimit'
 // @ts-ignore
 import { Check, RefreshRight, Search } from '@element-plus/icons-vue'
 import { FormatCommandField } from '@/utils/formatCommandField'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const emit = defineEmits(['refresh', 'delete', 'submit'])
 const props = defineProps({
@@ -193,8 +196,8 @@ const submit = () => {
     emit('submit', state.commands)
   } else {
     ElNotification({
-      title: '提示',
-      message: '没有可执行的操作',
+      title: t('valueContent.notification.infoTitle'),
+      message: t('valueContent.notification.emptyContentMessage'),
       showClose: false,
       duration: 2000
     })

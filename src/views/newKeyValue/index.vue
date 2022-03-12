@@ -26,7 +26,7 @@
     <z-set-type :key-name="keyState.keyName" @submit="handleCommand" v-else-if="keyState.keyType === 'zset'"/>
 
     <!-- run commands dialog -->
-    <el-dialog v-model="dialog.show" @closed="handleFinishEvent()" title="执行命令" width="50%" center>
+    <el-dialog v-model="dialog.show" @closed="handleFinishEvent()" :title="t('newKeyValue.index.runDialog.title')" width="50%" center>
       <el-table
         :data="state.commands"
         height="600"
@@ -41,10 +41,10 @@
       </el-table>
       <template #footer>
       <span class="flex flex-row items-center justify-end">
-        <el-button @click="dialog.show = false" v-if="state.runStatus <= 0">取消</el-button>
-        <el-button type="primary" v-if="state.runStatus === 0" @click="runCommand()">执行</el-button>
-        <el-button type="primary" v-if="state.runStatus === 1" disabled>执行中</el-button>
-        <el-button type="primary" v-if="state.runStatus === 2" @click="handleFinishEvent()">确定</el-button>
+        <el-button @click="dialog.show = false" v-if="state.runStatus <= 0">{{ t('newKeyValue.index.runDialog.cancel') }}</el-button>
+        <el-button type="primary" v-if="state.runStatus === 0" @click="runCommand()">t('newKeyValue.index.runDialog.run')</el-button>
+        <el-button type="primary" v-if="state.runStatus === 1" disabled>t('newKeyValue.index.runDialog.running')</el-button>
+        <el-button type="primary" v-if="state.runStatus === 2" @click="handleFinishEvent()">t('newKeyValue.index.runDialog.submit')</el-button>
       </span>
       </template>
     </el-dialog>
@@ -64,6 +64,9 @@ import ZSetType from './zsetType.vue'
 import { commandObjectType } from '@/views/valueContent/index'
 import { ElNotification } from 'element-plus/es'
 import { selectOptions } from '.'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const emit = defineEmits(['clearNewTab'])
 const props = defineProps({
@@ -90,8 +93,8 @@ const client = getClient(props.serverTab)
 const handleCommand = (commands: commandObjectType[]) => {
   if (!keyState.keyName.length) {
     ElNotification({
-      title: '提示',
-      message: '请填写key',
+      title: t('newKeyValue.index.notification.title'),
+      message: t('newKeyValue.index.notification.message'),
       showClose: false,
       duration: 2000
     })

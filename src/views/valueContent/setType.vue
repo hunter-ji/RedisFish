@@ -12,27 +12,27 @@
       </div>
       <div
         :class="searchState.search.length !== 0 ? 'w-3/5 transition-width duration-1000 ease-in-out delay-100' : 'w-2/5 transition-width duration-500 ease-in-out'">
-        <el-input v-model="searchState.search" size="small" placeholder="回车查询搜索结果" :prefix-icon="Search" clearable
+        <el-input v-model="searchState.search" size="small" :placeholder="t('valueContent.searchInputPlaceholder')" :prefix-icon="Search" clearable
                   @keyup.enter="search"/>
       </div>
       <div class="w-1/5 flex flex-row justify-end transition-width duration-200 ease-in delay-75">
         <transition name="slide-fade">
           <div class="flex flex-row items-center" style="margin-right: 10px;" v-if="!searchState.search.length">
-            <el-tooltip effect="light" content="刷新" placement="bottom" :show-after="delayNumber">
+            <el-tooltip effect="light" :content="t('valueContent.btnGroup.refresh')" placement="bottom" :show-after="delayNumber">
               <el-button type="info" size="small" :icon="RefreshRight" circle @click="refresh" />
             </el-tooltip>
-            <el-tooltip effect="light" content="添加" placement="bottom" :show-after="delayNumber">
+            <el-tooltip effect="light" :content="t('valueContent.btnGroup.add')" placement="bottom" :show-after="delayNumber">
               <el-button type="primary" size="small" circle @click="addRow" :icon="Plus" />
             </el-tooltip>
           </div>
         </transition>
-        <el-tooltip effect="light" content="删除" placement="bottom" :show-after="delayNumber">
+        <el-tooltip effect="light" :content="t('valueContent.btnGroup.delete')" placement="bottom" :show-after="delayNumber">
           <el-button type="danger" size="small" disabled :icon="Delete" circle v-if="!state.multipleSelection.length"/>
           <el-button type="danger" size="small" :icon="Delete" round class="flex flex-row items-center" @click="del" v-else>
           ({{ state.multipleSelection.length }})
         </el-button>
         </el-tooltip>
-        <el-tooltip effect="light" content="提交操作" placement="bottom" :show-after="delayNumber">
+        <el-tooltip effect="light" :content="t('valueContent.btnGroup.submit')" placement="bottom" :show-after="delayNumber">
           <el-button type="success" size="small" :icon="Check" circle @click="submit"/>
         </el-tooltip>
       </div>
@@ -77,6 +77,9 @@ import { contentLimit } from '@/utils/contentLimit'
 // @ts-ignore
 import { Check, Delete, Plus, RefreshRight, Search } from '@element-plus/icons-vue'
 import { FormatCommandField } from '@/utils/formatCommandField'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const emit = defineEmits(['refresh', 'delete', 'submit'])
 const props = defineProps({
@@ -150,8 +153,8 @@ const inputChange = (row: setTableValueType) => {
   if (index !== -1) {
     row.isRepeat = true
     ElNotification({
-      title: '数据重复',
-      message: `${row.value && row.value.length > 6 ? row.value.slice(0, 6) + '...' : row.value}与现有数据重复`,
+      title: t('valueContent.notification.dataDuplicationTitle'),
+      message: `${row.value && row.value.length > 6 ? row.value.slice(0, 6) + '...' : row.value}t('valueContent.notification.dataDuplicationMessage')`,
       showClose: false,
       duration: 5000
     })
@@ -188,8 +191,8 @@ const submit = () => {
     emit('submit', state.commands)
   } else {
     ElNotification({
-      title: '提示',
-      message: '没有可执行的操作',
+      title: t('valueContent.notification.infoTitle'),
+      message: t('valueContent.notification.emptyContentMessage'),
       showClose: false,
       duration: 2000
     })

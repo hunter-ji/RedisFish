@@ -1,0 +1,134 @@
+{
+  "language": "English",
+  "consolePane": {
+    "index": {
+      "checkBtn": "submit",
+      "historyLabel": "commands history",
+      "historyPaneLabel": "run result",
+      "dialog": {
+        "title": "tip",
+        "content": "The following command will be executed:",
+        "cancelBtn": "cancel",
+        "runBtn": "run"
+      },
+      "notification": {
+        "title": "tip",
+        "message": "No action to take"
+      }
+    },
+    "history": {
+      "command": "run commands",
+      "result": "run result",
+      "createdAt": "run time"
+    }
+  },
+  "Home": {},
+  "keyMenu": {
+    "searchInputPlaceholder": "enter to query",
+    "btnGroup": {
+      "refresh": "refresh",
+      "delete": "delete"
+    },
+    "delDialog": {
+      "title": "tip",
+      "content": "The selected key is about to be deleted, do you want to execute it?",
+      "cancel": "cancel",
+      "submit": "run"
+    }
+  },
+  "keyTab": {},
+  "newKeyValue": {
+    "index": {
+      "runDialog": {
+        "title": "run commands",
+        "cancel": "cancel",
+        "run": "run",
+        "running": "in progress",
+        "submit": "关闭"
+      },
+      "notification": {
+        "title": "tip",
+        "message": "Please fill in the key"
+      }
+    },
+    "btnGroup": {
+      "add": "add",
+      "delete": "delete",
+      "submit": "submit",
+      "addFromHeader": "add from header",
+      "addFromFooter": "add from footer",
+      "deleteFromHeader": "delete from header",
+      "deleteFromFooter": "delete from footer"
+    },
+    "notification": {
+      "infoTitle": "tip",
+      "dataDuplicationTitle": "data duplication",
+      "dataDuplicationMessage": "Duplicate with existing data",
+      "emptyContentMessage": "No action to take"
+    }
+  },
+  "serverMenu": {
+    "index": {
+      "title": "Database List",
+      "addServerBtn": "add database",
+      "empty": "The data is empty, click the + button in the upper right corner of the database list column to add",
+      "addBtn": "add",
+      "editBtn": "edit"
+    },
+    "form": {
+      "name": "name",
+      "host": "host",
+      "port": "port",
+      "password": "password",
+      "namePlaceholder": "example: db_redis",
+      "hostPlaceholder": "192.168.1.10",
+      "successTip": "connection succeeded",
+      "failTip": "unable to connect",
+      "defaultTip": "connection status unknown",
+      "cancelBtn": "cancel",
+      "testBtn": "test connection",
+      "deleteBtn": "delete",
+      "saveBtn": "save"
+    },
+    "notification": {
+      "infoTitle": "tip",
+      "addSuccessMessage": "Add database succeeded",
+      "editSuccessMessage": "Edit database succeeded",
+      "errorMessage": "Duplicate database name"
+    }
+  },
+  "serverTab": {},
+  "valueContent": {
+    "index": {
+      "runDialog": {
+        "title": "run commands",
+        "cancel": "cancel",
+        "run": "run",
+        "running": "in progress",
+        "submit": "ok"
+      },
+      "notification": {
+        "title": "tip",
+        "message": "Please fill in the key"
+      },
+      "unknownTypeValue": "unknown type"
+    },
+    "searchInputPlaceholder": "enter to query",
+    "btnGroup": {
+      "refresh": "refresh",
+      "add": "add",
+      "delete": "delete",
+      "submit": "submit",
+      "addFromHeader": "add from header",
+      "addFromFooter": "add from footer",
+      "deleteFromHeader": "delete from header",
+      "deleteFromFooter": "delete from footer"
+    },
+    "notification": {
+      "infoTitle": "tip",
+      "dataDuplicationTitle": "data duplication",
+      "dataDuplicationMessage": "Duplicate with existing data",
+      "emptyContentMessage": "No action to take"
+    }
+  }
+}
