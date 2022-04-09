@@ -1,35 +1,57 @@
 <template>
   <div class="p-2">
-    <!-- btn group -->
-    <div class="flex flex-row items-center justify-end mb-4">
-      <el-tooltip effect="light" :content="t('consolePane.index.checkBtn')" placement="bottom" :show-after="500">
-        <el-button type="success" size="small" :icon="Check" circle @click="submit"/>
-      </el-tooltip>
+
+    <!-- top tools -->
+    <div class="flex flex-row items-center justify-between mb-4 px-4">
+      <!-- mode switch -->
+      <el-select v-model="consoleMode" placeholder="Select" size="small">
+        <el-option
+          v-for="item in consoleModeSelectOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+
+      <!-- btn group -->
+      <div v-show="consoleMode !== 'command'">
+        <el-tooltip effect="light" :content="t('consolePane.index.checkBtn')" placement="bottom" :show-after="500">
+          <el-button type="success" size="small" :icon="Check" circle @click="submit"/>
+        </el-tooltip>
+      </div>
     </div>
 
-    <!-- console -->
-    <div :id="`ace${aceID}`" />
+    <!-- command mode -->
+    <div v-show="consoleMode === 'command'">
+      <command-mode :server-tab="props.serverTab" />
+    </div>
 
-    <!-- output -->
-    <el-tabs
-      v-model="outputState.activeTab"
-      type="card"
-      @tab-remove="removeTab"
-      class="mt-4"
-    >
-      <el-tab-pane :label="t('consolePane.index.historyLabel')" name="History" :closable="outputState.historyClosable">
-        <history-pane :res="clientState.historyCommands"/>
-      </el-tab-pane>
-      <el-tab-pane
-        v-for="(item, index) in outputState.outputTabs"
-        :key="index"
-        :label="`t('consolePane.index.historyPaneLabel')${index+1}`"
-        :name="`result${index+1}`"
-        :closable="outputState.outputClosable"
+    <!-- console mode -->
+    <div v-show="consoleMode === 'console query'" class="px-4">
+      <!-- console -->
+      <div :id="`ace${aceID}`" />
+
+      <!-- output -->
+      <el-tabs
+        v-model="outputState.activeTab"
+        type="card"
+        @tab-remove="removeTab"
+        class="mt-4"
       >
-        <result-pane :content="item"/>
-      </el-tab-pane>
-    </el-tabs>
+        <el-tab-pane :label="t('consolePane.index.historyLabel')" name="History" :closable="outputState.historyClosable">
+          <history-pane :res="clientState.historyCommands"/>
+        </el-tab-pane>
+        <el-tab-pane
+          v-for="(item, index) in outputState.outputTabs"
+          :key="index"
+          :label="`t('consolePane.index.historyPaneLabel')${index+1}`"
+          :name="`result${index+1}`"
+          :closable="outputState.outputClosable"
+        >
+          <result-pane :content="item"/>
+        </el-tab-pane>
+      </el-tabs>
+    </div>
 
     <!-- dialog -->
     <el-dialog v-model="dialog.show" :title="t('consolePane.index.dialog.title')" width="50%" center>
@@ -63,6 +85,7 @@ import { dateFormat } from '@/utils/formatTime'
 import HistoryPane from './history.vue'
 import ResultPane from './result.vue'
 import { useI18n } from 'vue-i18n'
+import CommandMode from './commandMode.vue'
 
 const { t } = useI18n()
 
@@ -72,6 +95,18 @@ const props = defineProps({
     required: true
   }
 })
+
+const consoleMode = ref('command')
+const consoleModeSelectOptions: { label: string, value: string }[] = [
+  {
+    label: 'command',
+    value: 'command'
+  },
+  {
+    label: 'console query',
+    value: 'console query'
+  }
+]
 
 const state: { aceEditor: any, themePath: string } = reactive({
   aceEditor: null,

@@ -18,3 +18,9 @@ export interface outputPaneResultDoubleRowType {
   field: string
   value: string
 }
+
+export interface commandHistoryItemType {
+  command: string
+  results: string[]
+  createAt: string
+}
