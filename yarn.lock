@@ -10981,6 +10981,13 @@ vue-cli-plugin-i18n@~2.3.1:
     vue-i18n "^8.17.0"
     vue-i18n-extract "1.0.2"
 
+vue-clipboard3@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmmirror.com/vue-clipboard3/-/vue-clipboard3-2.0.0.tgz#79b026c765c0f6a5cde18a477c2dbfc7d3b9f178"
+  integrity sha512-Q9S7dzWGax7LN5iiSPcu/K1GGm2gcBBlYwmMsUc5/16N6w90cbKow3FnPmPs95sungns4yvd9/+JhbAznECS2A==
+  dependencies:
+    clipboard "^2.0.6"
+
 vue-demi@*:
   version "0.12.1"
   resolved "https://registry.npmmirror.com/vue-demi/download/vue-demi-0.12.1.tgz#f7e18efbecffd11ab069d1472d7a06e319b4174c"
@@ -11070,13 +11077,6 @@ vue-template-es2015-compiler@^1.9.0:
   version "1.9.1"
   resolved "https://registry.nlark.com/vue-template-es2015-compiler/download/vue-template-es2015-compiler-1.9.1.tgz?cache=0&sync_timestamp=1622604416998&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fvue-template-es2015-compiler%2Fdownload%2Fvue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha1-HuO8mhbsv1EYvjNLsV+cRvgvWCU=
-
-vue3-clipboard@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmmirror.com/vue3-clipboard/-/vue3-clipboard-1.0.0.tgz#f7d17a00bce6579ba866df825541563b272610f2"
-  integrity sha512-GUqKh1oO79xDpq0z+cCv/NDVTpcJGNDzeNgT3PmTdTp/WJh3gcTrDqIYKycKhzMFOtIFJ7hO/+usgyWtT+fNhA==
-  dependencies:
-    clipboard "^2.0.6"
 
 vue@^2.6.11:
   version "2.6.14"

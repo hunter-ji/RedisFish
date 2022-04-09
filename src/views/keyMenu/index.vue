@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, onMounted, PropType, reactive, watch, ref } from 'vue'
+import { defineProps, onMounted, PropType, reactive, watch } from 'vue'
 import { serverTabType } from '@/store/modules/serverList'
 import { getClient } from '@/utils/redis'
 import { useStore } from 'vuex'
@@ -71,10 +71,11 @@ import { Delete, RefreshRight, Search } from '@element-plus/icons-vue'
 import KeyTab from '@/views/keyTab/index.vue'
 import { keyMenuType } from '@/views/valueContent/index'
 import { useI18n } from 'vue-i18n'
-import { copyText } from 'vue3-clipboard'
 import { ElMessage } from 'element-plus'
+import useClipboard from 'vue-clipboard3'
 
 const { t } = useI18n()
+const { toClipboard } = useClipboard()
 
 const props = defineProps({
   serverTab: {
@@ -85,7 +86,6 @@ const props = defineProps({
 
 const store = useStore()
 const client = getClient(props.serverTab)
-const isCtrl = ref(false)
 const state: { keysList: keyMenuType[], targetKey: string, multipleSelection: string[], loading: boolean } = reactive({
   keysList: [],
   targetKey: '',
@@ -146,18 +146,12 @@ const fetchData = async () => {
   await changeLoading(false)
 }
 const copyKey = async (e: { label: string, value: number }) => {
-  if (isCtrl.value) {
-    copyText(e.label)
+  if (store.getters.isCtrl) {
+    await toClipboard(e.label)
     ElMessage({
       message: '复制成功',
       type: 'success'
     })
-    // ElNotification({
-    //   title: '提示',
-    //   message: '复制成功',
-    //   showClose: false,
-    //   duration: 2000
-    // })
   }
 }
 const getValue = async (e: { label: string, value: number }) => {
@@ -225,25 +219,9 @@ const delKeyDialogSubmit = async () => {
   await fetchData()
   await delKeyDialogCancel()
 }
-const checkCtrlEvent = () => {
-  // const sUserAgent = navigator.userAgent
-  const isWin = (navigator.platform === 'Win32') || (navigator.platform === 'Windows')
-  const isMac = (navigator.platform === 'Mac68K') || (navigator.platform === 'MacPPC') || (navigator.platform === 'Macintosh') || (navigator.platform === 'MacIntel')
-  document.addEventListener('keydown', (e: {keyCode: number}) => {
-    if ((e.keyCode === 17 && isWin) || (e.keyCode === 91 && isMac)) {
-      isCtrl.value = true
-    }
-  })
-  document.addEventListener('keyup', (e: {keyCode: number}) => {
-    if ((e.keyCode === 17 && isWin) || (e.keyCode === 91 && isMac)) {
-      isCtrl.value = false
-    }
-  })
-}
 
 onMounted(async () => {
   await fetchData()
-  checkCtrlEvent()
 })
 
 watch(searchState, () => {

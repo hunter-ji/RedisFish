@@ -58,7 +58,7 @@
           </div>
           <div v-else>
             <div v-if="scope.row.field.length"
-                 :style="'color:' + SwitchColorWithRepeat(scope.row.isRepeat, scope.row.type)">
+                 :style="'color:' + SwitchColorWithRepeat(scope.row.isRepeat, scope.row.type)" @click="copyKey(scope.row.field)">
               {{ contentLimit(scope.row.field) }}
             </div>
             <div class="text-gray-400 italic" v-else>null</div>
@@ -73,7 +73,7 @@
                       @change="inputChange(scope.row, false)"/>
           </div>
           <div v-else>
-            <div v-if="scope.row.value.length" :style="'color:' + SwitchColor(scope.row.type)">
+            <div v-if="scope.row.value.length" :style="'color:' + SwitchColor(scope.row.type)" @click="copyKey(scope.row.value)">
               {{ contentLimit(scope.row.value) }}
             </div>
             <div class="text-gray-400 italic" v-else>null</div>
@@ -89,13 +89,14 @@ import { defineEmits, defineProps, PropType, reactive, ref, watch } from 'vue'
 import { commandObjectType, hashTableValueType } from '@/views/valueContent/index'
 import TopTab from './topTab.vue'
 import { SwitchColor, SwitchColorWithRepeat } from '@/utils/switchColor'
-import { ElNotification } from 'element-plus'
+import { ElMessage, ElNotification } from 'element-plus'
 import { contentLimit } from '@/utils/contentLimit'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { Check, Delete, Plus, RefreshRight, Search } from '@element-plus/icons-vue'
 import { FormatCommandField } from '@/utils/formatCommandField'
 import { useI18n } from 'vue-i18n'
+import { copyKey } from '@/utils/copyFromTable'
 
 const { t } = useI18n()
 

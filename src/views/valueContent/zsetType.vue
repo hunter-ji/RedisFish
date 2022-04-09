@@ -70,7 +70,7 @@
                       @change="inputChange(scope.row, false)"/>
           </div>
           <div v-else>
-            <div v-if="scope.row.value.length" :style="'color:' + SwitchColor(scope.row.type)">
+            <div v-if="scope.row.value.length" :style="'color:' + SwitchColor(scope.row.type)" @click="copyKey(scope.row.value)">
               {{ scope.row.value }}
             </div>
             <div class="text-gray-400 italic" v-else>null</div>
@@ -93,6 +93,7 @@ import { contentLimit } from '@/utils/contentLimit'
 import { Check, Delete, Plus, RefreshRight, Search } from '@element-plus/icons-vue'
 import { FormatCommandField } from '@/utils/formatCommandField'
 import { useI18n } from 'vue-i18n'
+import { copyKey } from '@/utils/copyFromTable'
 
 const { t } = useI18n()
 

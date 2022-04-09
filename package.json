@@ -57,7 +57,7 @@
     "unplugin-vue-components": "^0.17.2",
     "vue-cli-plugin-electron-builder": "~2.1.1",
     "vue-cli-plugin-i18n": "~2.3.1",
-    "vue3-clipboard": "^1.0.0"
+    "vue-clipboard3": "^2.0.0"
   },
   "license": "GPL"
 }

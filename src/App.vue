@@ -5,6 +5,7 @@
 <script setup lang="ts">
 import { reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useStore } from 'vuex'
 
 const { locale } = useI18n()
 const state: { language: string } = reactive({
@@ -27,8 +28,28 @@ const fetchData = () => {
   }
 }
 
+const store = useStore()
+const checkCtrlEvent = () => {
+  // const sUserAgent = navigator.userAgent
+  const isWin = (navigator.platform === 'Win32') || (navigator.platform === 'Windows')
+  const isMac = (navigator.platform === 'Mac68K') || (navigator.platform === 'MacPPC') || (navigator.platform === 'Macintosh') || (navigator.platform === 'MacIntel')
+  document.addEventListener('keydown', (e: {keyCode: number}) => {
+    if ((e.keyCode === 17 && isWin) || (e.keyCode === 91 && isMac)) {
+      // isCtrl.value = true
+      store.commit('keyboardListen/setIsCtrl', true)
+    }
+  })
+  document.addEventListener('keyup', (e: {keyCode: number}) => {
+    if ((e.keyCode === 17 && isWin) || (e.keyCode === 91 && isMac)) {
+      // isCtrl.value = false
+      store.commit('keyboardListen/setIsCtrl', false)
+    }
+  })
+}
+
 onMounted(() => {
   fetchData()
+  checkCtrlEvent()
 })
 </script>
 
