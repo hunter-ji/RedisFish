@@ -26,6 +26,7 @@
   "keyMenu": {
     "searchInputPlaceholder": "enter to query",
     "btnGroup": {
+      "log": "log",
       "refresh": "refresh",
       "delete": "delete"
     },

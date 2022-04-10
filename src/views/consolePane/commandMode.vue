@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import { ElIcon } from 'element-plus'
-import { ArrowRightBold, DArrowRight } from '@element-plus/icons-vue'
+import { ArrowRightBold } from '@element-plus/icons-vue'
 import { defineProps, PropType, reactive } from 'vue'
 import { commandHistoryItemType } from '.'
 import { serverTabType } from '@/store/modules/serverList'
@@ -65,7 +65,7 @@ const handleRun = async () => {
   await client.sendCommand(['select', props.serverTab.db.slice(-1)])
 
   const res = await client.sendCommand(key.split(' '))
-  if (!res) {
+  if (!res || res === [] || res.length === 0) {
     results.push('nil')
   } else {
     if (typeof res === 'string') {

@@ -13,6 +13,13 @@
         <div class="flex flex-row items-center justify-end w-1/4">
           <transition name="slide-fade">
             <div class="flex flex-row items-center justify-end" v-if="!searchState.search.length" style="margin-right: 10px;">
+              <el-tooltip effect="light" :content="t('keyMenu.btnGroup.log')" placement="bottom" :show-after="1000">
+                <el-button type="primary" size="mini" :icon="Tickets" circle @click="fetchData"/>
+              </el-tooltip>
+            </div>
+          </transition>
+          <transition name="slide-fade">
+            <div class="flex flex-row items-center justify-end" v-if="!searchState.search.length" style="margin-right: 10px;">
               <el-tooltip effect="light" :content="t('keyMenu.btnGroup.refresh')" placement="bottom" :show-after="1000">
                 <el-button type="info" size="mini" :icon="RefreshRight" circle @click="fetchData"/>
               </el-tooltip>
@@ -67,7 +74,7 @@ import { defineProps, onMounted, PropType, reactive, watch } from 'vue'
 import { serverTabType } from '@/store/modules/serverList'
 import { getClient } from '@/utils/redis'
 import { useStore } from 'vuex'
-import { Delete, RefreshRight, Search } from '@element-plus/icons-vue'
+import { Delete, RefreshRight, Search, Tickets } from '@element-plus/icons-vue'
 import KeyTab from '@/views/keyTab/index.vue'
 import { keyMenuType } from '@/views/valueContent/index'
 import { useI18n } from 'vue-i18n'

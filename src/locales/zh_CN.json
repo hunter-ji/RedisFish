@@ -26,6 +26,7 @@
   "keyMenu": {
     "searchInputPlaceholder": "回车查询搜索结果",
     "btnGroup": {
+      "log": "日志",
       "refresh": "刷新",
       "delete": "删除"
     },
