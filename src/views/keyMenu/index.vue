@@ -14,7 +14,7 @@
           <transition name="slide-fade">
             <div class="flex flex-row items-center justify-end" v-if="!searchState.search.length" style="margin-right: 10px;">
               <el-tooltip effect="light" :content="t('keyMenu.btnGroup.log')" placement="bottom" :show-after="1000">
-                <el-button type="primary" size="mini" :icon="Tickets" circle @click="fetchData"/>
+                <el-button type="primary" size="mini" :icon="Tickets" circle @click="dialogState.logShow = true"/>
               </el-tooltip>
             </div>
           </transition>
@@ -66,6 +66,11 @@
         </span>
       </template>
     </el-dialog>
+
+    <!-- history log -->
+    <el-dialog v-model="dialogState.logShow" :title="t('keyMenu.delDialog.title')" width="60%" center>
+      <history-log :server-tab="props.serverTab" v-if="dialogState.logShow" />
+    </el-dialog>
   </div>
 </template>
 
@@ -80,6 +85,7 @@ import { keyMenuType } from '@/views/valueContent/index'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
 import useClipboard from 'vue-clipboard3'
+import HistoryLog from '@/views/historyLog/index.vue'
 
 const { t } = useI18n()
 const { toClipboard } = useClipboard()
@@ -104,8 +110,9 @@ const searchState: { keysList: keyMenuType[], search: string, isSearching: boole
   search: '',
   isSearching: false
 })
-const dialogState: { show: boolean } = reactive({
-  show: false
+const dialogState: { show: boolean, logShow: boolean } = reactive({
+  show: false,
+  logShow: false
 })
 const pageState: { scanIndex: string, total: number, pageSize: number, currentPage: number } = reactive({
   scanIndex: '0',
@@ -199,6 +206,9 @@ const search = async () => {
   })
   await client.disconnect()
 }
+const logDialogCancel = async () => {
+  dialogState.logShow = false
+}
 const delKey = () => {
   dialogState.show = true
 }
@@ -225,6 +235,9 @@ const delKeyDialogSubmit = async () => {
   await client.disconnect()
   await fetchData()
   await delKeyDialogCancel()
+}
+const logToggle = async () => {
+  await store.dispatch('keyMenuAndTabBind/logToggle', { serverName: props.serverTab.name, dbNumber: props.serverTab.db })
 }
 
 onMounted(async () => {

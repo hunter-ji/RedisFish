@@ -88,7 +88,8 @@ const handleRun = async () => {
 
 <style scoped>
 .command-content {
-  height: 800px;
+  /*height: 800px;*/
+  height: calc(90vh - 100px);
   background-color: #282828;
   color: #fbf1c7;
 }
@@ -105,7 +106,8 @@ const handleRun = async () => {
   outline: none;
 }
 .command-result {
-  height: 750px;
+  /*height: 750px;*/
+  height: calc(90vh - 150px);
   overflow-y: scroll;
 }
 .command-result-item__time {
