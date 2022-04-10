@@ -68,8 +68,8 @@
     </el-dialog>
 
     <!-- history log -->
-    <el-dialog v-model="dialogState.logShow" :title="t('keyMenu.delDialog.title')" width="60%" center>
-      <history-log :server-tab="props.serverTab" v-if="dialogState.logShow" />
+    <el-dialog v-model="dialogState.logShow" :title="t('keyMenu.delDialog.title')" width="60%" center top="10vh" :destroy-on-close="true">
+      <history-log :server-tab="props.serverTab" />
     </el-dialog>
   </div>
 </template>

@@ -2,14 +2,17 @@
   <div class="LogTab">
     <!-- history content -->
     <div class="history-content rounded-md py-4">
-      <div class="log-item py-1" v-for="(item, index) in state.content" :key="index" @click="handleCopyLog(item)">
+      <div class="px-4" v-if="state.content.length === 0">
+        (nil)
+      </div>
+      <div class="log-item py-1" v-for="(item, index) in state.content" :key="index" @click="handleCopyLog(item)" v-else>
         <div class="px-4">{{ item.replaceAll('###', ' - ') }}</div>
       </div>
     </div>
 
     <!-- btn -->
     <div class="flex justify-end pt-2">
-      <el-button type="success" @click="handleClearLog">清空日志</el-button>
+      <el-button type="success" @click="handleClearLog" :disabled="state.content.length === 0">清空日志</el-button>
     </div>
   </div>
 </template>

@@ -35,6 +35,7 @@ import { serverTabType } from '@/store/modules/serverList'
 import { getClient } from '@/utils/redis'
 import { dateFormat } from '@/utils/formatTime'
 import { copyKey } from '@/utils/copyFromTable'
+import { setLog } from '@/utils/log'
 
 const props = defineProps({
   serverTab: {
@@ -48,6 +49,9 @@ const state: { command: string, history: commandHistoryItemType[] } = reactive({
   command: '',
   history: []
 })
+const handleLog = async (command: string, createAt: string) => {
+  await setLog(props.serverTab.name, props.serverTab.db, command, createAt)
+}
 const handleRun = async () => {
   if (state.command === '') {
     return
@@ -77,12 +81,16 @@ const handleRun = async () => {
 
   await client.disconnect()
 
+  const createAt = dateFormat()
+
   state.command = ''
   state.history.unshift({
     command: key,
     results: results,
-    createAt: dateFormat()
+    createAt: createAt
   })
+
+  await handleLog(key, createAt)
 }
 </script>
 
