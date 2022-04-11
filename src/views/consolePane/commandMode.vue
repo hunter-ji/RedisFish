@@ -56,6 +56,7 @@ const handleRun = async () => {
 
   if (state.command === 'clear') {
     state.history = []
+    state.command = ''
     return
   }
 
@@ -94,7 +95,7 @@ const handleRun = async () => {
 <style scoped>
 .command-content {
   /*height: 800px;*/
-  height: calc(90vh - 100px);
+  height: calc(90vh - 110px);
   background-color: #282828;
   color: #fbf1c7;
 }
@@ -112,7 +113,7 @@ const handleRun = async () => {
 }
 .command-result {
   /*height: 750px;*/
-  height: calc(90vh - 150px);
+  height: calc(90vh - 160px);
   overflow-y: scroll;
 }
 .command-result-item__time {

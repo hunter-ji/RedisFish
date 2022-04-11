@@ -35,7 +35,7 @@
       </div>
 
       <!--keys tale-->
-      <el-table :data="searchState.isSearching ? searchState.keysList : state.keysList" size="mini" height="95%" style="width: 100%;" stripe @cell-click="copyKey" @cell-dblclick="getValue"
+      <el-table :data="searchState.isSearching ? searchState.keysList : state.keysList" size="mini" height="90%" style="width: 100%;" stripe @cell-click="copyKey" @cell-dblclick="getValue"
                 @selection-change="handleSelectionChange" class="pb-4" v-loading="state.loading">
         <el-table-column type="selection" width="50"/>
         <el-table-column prop="label" label="Keys" width="350"/>
@@ -256,7 +256,7 @@ watch(searchState, () => {
 
 <style>
 .key-menu-container {
-  height: calc(100vh - 60px);
+  height: calc(100vh - 65px);
   width: 100%;
   overflow-y: hidden;
 }

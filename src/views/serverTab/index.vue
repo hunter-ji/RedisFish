@@ -1,10 +1,10 @@
 <template>
-  <div class="server-tab-container">
+  <div class="server-tab-container pt-2 pl-2">
     <el-tabs
       v-model="state.activeTab"
       type="card"
       @tab-remove="removeTab"
-      style="width: calc(100vw - 260px);"
+      style="width: calc(100vw - 270px);"
     >
       <el-tab-pane
         v-for="item in data"
