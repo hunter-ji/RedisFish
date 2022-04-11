@@ -33,15 +33,15 @@ const state: { content: string[] } = reactive({
   content: []
 })
 const fetchData = async () => {
-  await initLogFile(props.serverTab.name, props.serverTab.db)
-  state.content = await readLog(props.serverTab.name, props.serverTab.db)
+  await initLogFile(props.serverTab)
+  state.content = await readLog(props.serverTab)
 }
 const handleCopyLog = (logInfo: string) => {
   const arr = logInfo.split('###')
   copyKey(arr[arr.length - 1])
 }
 const handleClearLog = async () => {
-  await clearLog(props.serverTab.name, props.serverTab.db)
+  await clearLog(props.serverTab)
   state.content = []
 }
 onMounted(() => {

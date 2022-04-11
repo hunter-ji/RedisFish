@@ -68,8 +68,8 @@
     </el-dialog>
 
     <!-- history log -->
-    <el-dialog v-model="dialogState.logShow" :title="t('keyMenu.delDialog.title')" width="60%" center top="10vh" :destroy-on-close="true">
-      <history-log :server-tab="props.serverTab" />
+    <el-dialog v-model="dialogState.logShow" :title="t('keyMenu.delDialog.title')" width="60%" center top="10vh">
+      <history-log :server-tab="props.serverTab" v-if="dialogState.logShow" />
     </el-dialog>
   </div>
 </template>
@@ -86,6 +86,8 @@ import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
 import useClipboard from 'vue-clipboard3'
 import HistoryLog from '@/views/historyLog/index.vue'
+import { setLog } from '@/utils/log'
+import { dateFormat } from '@/utils/formatTime'
 
 const { t } = useI18n()
 const { toClipboard } = useClipboard()
@@ -206,9 +208,6 @@ const search = async () => {
   })
   await client.disconnect()
 }
-const logDialogCancel = async () => {
-  dialogState.logShow = false
-}
 const delKey = () => {
   dialogState.show = true
 }
@@ -230,14 +229,14 @@ const delKeyDialogSubmit = async () => {
     })
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
+    await setLog(props.serverTab, `del ${item.label}`, dateFormat())
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     if (item.label === state.targetKey) state.targetKey = 'Console'
   }
   await client.disconnect()
   await fetchData()
   await delKeyDialogCancel()
-}
-const logToggle = async () => {
-  await store.dispatch('keyMenuAndTabBind/logToggle', { serverName: props.serverTab.name, dbNumber: props.serverTab.db })
 }
 
 onMounted(async () => {

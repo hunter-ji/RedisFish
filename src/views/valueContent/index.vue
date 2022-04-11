@@ -54,6 +54,8 @@ import ZSetType from './zsetType.vue'
 import { commandObjectType } from '@/views/valueContent/index'
 import { FormatCommandField } from '@/utils/formatCommandField'
 import { useI18n } from 'vue-i18n'
+import { setLog } from '@/utils/log'
+import { dateFormat } from '@/utils/formatTime'
 
 const { t } = useI18n()
 
@@ -115,7 +117,9 @@ const runCommand = async () => {
   await client.connect()
   await client.sendCommand(['select', props.serverTab.db.slice(-1)])
   for (let i = 0; i < state.commands.length; i++) {
-    state.commands[i].result = await client.sendCommand(state.commands[i].command)
+    const command = state.commands[i].command
+    state.commands[i].result = await client.sendCommand(command)
+    await setLog(props.serverTab, command.join(' '), dateFormat())
   }
   await client.disconnect()
   state.runStatus = 2

@@ -49,9 +49,6 @@ const state: { command: string, history: commandHistoryItemType[] } = reactive({
   command: '',
   history: []
 })
-const handleLog = async (command: string, createAt: string) => {
-  await setLog(props.serverTab.name, props.serverTab.db, command, createAt)
-}
 const handleRun = async () => {
   if (state.command === '') {
     return
@@ -90,7 +87,7 @@ const handleRun = async () => {
     createAt: createAt
   })
 
-  await handleLog(key, createAt)
+  await setLog(props.serverTab, key, createAt)
 }
 </script>
 

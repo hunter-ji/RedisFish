@@ -86,6 +86,7 @@ import HistoryPane from './history.vue'
 import ResultPane from './result.vue'
 import { useI18n } from 'vue-i18n'
 import CommandMode from './commandMode.vue'
+import { setLog } from '@/utils/log'
 
 const { t } = useI18n()
 
@@ -176,12 +177,15 @@ const runCommands = async () => {
       result = `${res}`
       resultData = ''
     }
+    const createAt = dateFormat()
     clientState.historyCommands.unshift({
       command: item,
       result: result,
       resultData: resultData,
-      createdAt: dateFormat()
+      createdAt: createAt
     })
+
+    await setLog(props.serverTab, item, createAt)
   }
 
   if (outputState.outputTabs.length) {
