@@ -1,27 +1,21 @@
 import { Commit } from 'vuex'
+import { serverTabType } from '@/store/modules/serverList'
 
 interface stateType {
-  logList: string[]
   monitorList: string[]
 }
 
+const genKey = (serverTab: serverTabType): string => {
+  return `${serverTab.name}_${serverTab.db}`
+}
+
 const state: stateType = {
-  logList: [],
   monitorList: []
 }
 
 const mutations = {
-  logToggle (state: stateType, data: { serverName: string, dbNumber: number }): void {
-    const key = `${data.serverName}_${data.dbNumber}`
-
-    if (state.logList.indexOf(key) === -1) {
-      state.logList.push(key)
-    } else {
-      state.logList = state.logList.filter((item: string) => item !== key)
-    }
-  },
-  monitorToggle (state: stateType, data: { serverName: string, dbNumber: number }): void {
-    const key = `${data.serverName}_${data.dbNumber}`
+  monitorToggle (state: stateType, serverTab: serverTabType): void {
+    const key = genKey(serverTab)
 
     if (state.monitorList.indexOf(key) === -1) {
       state.monitorList.push(key)
@@ -32,11 +26,8 @@ const mutations = {
 }
 
 const actions = {
-  logToggle ({ commit }: { commit: Commit }, data: { serverName: string, dbNumber: number }): void {
-    commit('logToggle', data)
-  },
-  monitorToggle ({ commit }: { commit: Commit }, data: { serverName: string, dbNumber: number }): void {
-    commit('monitorToggle', data)
+  monitorToggle ({ commit }: { commit: Commit }, serverTab: serverTabType): void {
+    commit('monitorToggle', serverTab)
   }
 }
 

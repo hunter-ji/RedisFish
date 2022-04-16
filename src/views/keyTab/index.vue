@@ -6,11 +6,15 @@
       @tab-remove="removeTab"
       editable
       @edit="handleTabEdit"
-      style="width: calc(100vw - 690px);"
+      style="width: calc(100vw - 680px);"
     >
       <!-- console tab -->
       <el-tab-pane label="Console" name="Console" :closable="false">
         <command-pane :server-tab="props.serverTab" />
+      </el-tab-pane>
+      <!-- monitor -->
+      <el-tab-pane label="Monitor" name="Monitor" :closable="true" v-if="isMonitorOpen">
+        <monitor :server-tab="props.serverTab" />
       </el-tab-pane>
       <!-- newKeyValue tab -->
       <el-tab-pane
@@ -44,6 +48,7 @@ import { keyTabType } from '@/store/modules/keyList'
 import ValueContent from '@/views/valueContent/index.vue'
 import CommandPane from '@/views/consolePane/index.vue'
 import NewKeyValue from '@/views/newKeyValue/index.vue'
+import Monitor from '@/views/monitor/index.vue'
 
 const emit = defineEmits(['addKeyTab'])
 const props = defineProps({
@@ -66,6 +71,11 @@ const newKeyState: { newKeyList: string[], newKeyIndex: number } = reactive({
   newKeyIndex: 1
 })
 const removeTab = async (targetName: string) => {
+  if (targetName === 'Monitor') {
+    await store.dispatch('keyMenuAndTabBind/monitorToggle', props.serverTab)
+    return
+  }
+
   await store.dispatch('keyList/del', {
     serverLabel: `${props.serverTab.db} ${props.serverTab.name}`,
     key: targetName
@@ -105,8 +115,18 @@ const data: ComputedRef<string[]> = computed(() => {
   const index = store.getters.keyTabList.findIndex((item: keyTabType) => item.serverLabel === `${props.serverTab.db} ${props.serverTab.name}`)
   return index !== -1 ? store.getters.keyTabList[index].values : []
 })
+const isMonitorOpen = computed(() => {
+  return store.getters.monitorList.indexOf(`${props.serverTab.name}_${props.serverTab.db}`) !== -1
+})
 
 watch(props, (newProps) => {
   state.activeTab = newProps.targetKey
+})
+watch(isMonitorOpen, () => {
+  if (isMonitorOpen.value) {
+    state.activeTab = 'Monitor'
+  } else {
+    state.activeTab = 'Console'
+  }
 })
 </script>

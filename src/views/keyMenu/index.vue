@@ -13,6 +13,13 @@
         <div class="flex flex-row items-center justify-end w-1/4">
           <transition name="slide-fade">
             <div class="flex flex-row items-center justify-end" v-if="!searchState.search.length" style="margin-right: 10px;">
+              <el-tooltip effect="light" :content="t('keyMenu.btnGroup.monitor')" placement="bottom" :show-after="1000">
+                <el-button type="success" size="mini" :icon="DataLine" circle @click="handleMonitorToggle"/>
+              </el-tooltip>
+            </div>
+          </transition>
+          <transition name="slide-fade">
+            <div class="flex flex-row items-center justify-end" v-if="!searchState.search.length" style="margin-right: 10px;">
               <el-tooltip effect="light" :content="t('keyMenu.btnGroup.log')" placement="bottom" :show-after="1000">
                 <el-button type="primary" size="mini" :icon="Tickets" circle @click="dialogState.logShow = true"/>
               </el-tooltip>
@@ -79,7 +86,7 @@ import { defineProps, onMounted, PropType, reactive, watch } from 'vue'
 import { serverTabType } from '@/store/modules/serverList'
 import { getClient } from '@/utils/redis'
 import { useStore } from 'vuex'
-import { Delete, RefreshRight, Search, Tickets } from '@element-plus/icons-vue'
+import { Delete, RefreshRight, Search, Tickets, DataLine } from '@element-plus/icons-vue'
 import KeyTab from '@/views/keyTab/index.vue'
 import { keyMenuType } from '@/views/valueContent/index'
 import { useI18n } from 'vue-i18n'
@@ -237,6 +244,10 @@ const delKeyDialogSubmit = async () => {
   await client.disconnect()
   await fetchData()
   await delKeyDialogCancel()
+}
+const handleMonitorToggle = async () => {
+  await store.dispatch('keyMenuAndTabBind/monitorToggle', props.serverTab)
+  console.log('monitorList : ', store.getters.monitorList)
 }
 
 onMounted(async () => {
