@@ -28,6 +28,7 @@
     "btnGroup": {
       "monitor": "性能监控",
       "log": "日志",
+      "sub": "发布/订阅",
       "refresh": "刷新",
       "delete": "删除"
     },

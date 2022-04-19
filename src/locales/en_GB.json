@@ -28,6 +28,7 @@
     "btnGroup": {
       "monitor": "monitor",
       "log": "log",
+      "sub": "Pub/Sub",
       "refresh": "refresh",
       "delete": "delete"
     },

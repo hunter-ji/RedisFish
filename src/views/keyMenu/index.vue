@@ -5,7 +5,7 @@
       <div class="key-menu-tool w-full p-2 flex flex-row is-text justify-between">
         <!--search-->
         <div
-          :class="searchState.search.length ? 'w-3/4 transition-width duration-1000 ease-in-out delay-200' : 'w-2/4 transition-width duration-1000 ease-in-out'">
+          :class="searchState.search.length ? 'w-3/4 transition-width duration-1000 ease-in-out delay-200' : 'w-2/5 transition-width duration-1000 ease-in-out'">
           <el-input v-model="searchState.search" size="small" :placeholder="t('keyMenu.searchInputPlaceholder')" clearable :prefix-icon="Search" @keyup.enter="search"/>
         </div>
 
@@ -22,6 +22,13 @@
             <div class="flex flex-row items-center justify-end" v-if="!searchState.search.length" style="margin-right: 10px;">
               <el-tooltip effect="light" :content="t('keyMenu.btnGroup.log')" placement="bottom" :show-after="1000">
                 <el-button type="primary" size="mini" :icon="Tickets" circle @click="dialogState.logShow = true"/>
+              </el-tooltip>
+            </div>
+          </transition>
+          <transition name="slide-fade">
+            <div class="flex flex-row items-center justify-end" v-if="!searchState.search.length" style="margin-right: 10px;">
+              <el-tooltip effect="light" :content="t('keyMenu.btnGroup.sub')" placement="bottom" :show-after="1000">
+                <el-button type="warning" size="mini" :icon="Switch" circle @click="dialogState.logShow = true"/>
               </el-tooltip>
             </div>
           </transition>
@@ -86,7 +93,7 @@ import { defineProps, onMounted, PropType, reactive, watch } from 'vue'
 import { serverTabType } from '@/store/modules/serverList'
 import { getClient } from '@/utils/redis'
 import { useStore } from 'vuex'
-import { Delete, RefreshRight, Search, Tickets, DataLine } from '@element-plus/icons-vue'
+import { Delete, RefreshRight, Search, Tickets, DataLine, Switch } from '@element-plus/icons-vue'
 import KeyTab from '@/views/keyTab/index.vue'
 import { keyMenuType } from '@/views/valueContent/index'
 import { useI18n } from 'vue-i18n'

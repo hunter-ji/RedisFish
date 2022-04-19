@@ -16,6 +16,10 @@
       <el-tab-pane label="Monitor" name="Monitor" :closable="true" v-if="isMonitorOpen">
         <monitor :server-tab="props.serverTab" />
       </el-tab-pane>
+      <!-- pub/sub -->
+      <el-tab-pane label="Pub/Sub" name="Pub/Sub" :closable="true">
+        <pub-sub :server-tab="props.serverTab" />
+      </el-tab-pane>
       <!-- newKeyValue tab -->
       <el-tab-pane
         v-for="item in newKeyState.newKeyList"
@@ -49,6 +53,7 @@ import ValueContent from '@/views/valueContent/index.vue'
 import CommandPane from '@/views/consolePane/index.vue'
 import NewKeyValue from '@/views/newKeyValue/index.vue'
 import Monitor from '@/views/monitor/index.vue'
+import PubSub from '@/views/pubAndSub/index.vue'
 
 const emit = defineEmits(['addKeyTab'])
 const props = defineProps({
@@ -126,7 +131,11 @@ watch(isMonitorOpen, () => {
   if (isMonitorOpen.value) {
     state.activeTab = 'Monitor'
   } else {
-    state.activeTab = 'Console'
+    if (data.value.length && state.activeTab !== 'Console') {
+      state.activeTab = data.value[data.value.length - 1]
+    } else if (!data.value.length) {
+      state.activeTab = 'Console'
+    }
   }
 })
 </script>
