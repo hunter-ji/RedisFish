@@ -3,6 +3,7 @@ import { serverTabType } from '@/store/modules/serverList'
 
 interface stateType {
   monitorList: string[]
+  psList: string[]
 }
 
 const genKey = (serverTab: serverTabType): string => {
@@ -10,7 +11,8 @@ const genKey = (serverTab: serverTabType): string => {
 }
 
 const state: stateType = {
-  monitorList: []
+  monitorList: [],
+  psList: []
 }
 
 const mutations = {
@@ -22,12 +24,24 @@ const mutations = {
     } else {
       state.monitorList = state.monitorList.filter((item: string) => item !== key)
     }
+  },
+  psToggle (state: stateType, serverTab: serverTabType): void {
+    const key = genKey(serverTab)
+
+    if (state.psList.indexOf(key) === -1) {
+      state.psList.push(key)
+    } else {
+      state.psList = state.psList.filter((item: string) => item !== key)
+    }
   }
 }
 
 const actions = {
   monitorToggle ({ commit }: { commit: Commit }, serverTab: serverTabType): void {
     commit('monitorToggle', serverTab)
+  },
+  psToggle ({ commit }: { commit: Commit }, serverTab: serverTabType): void {
+    commit('psToggle', serverTab)
   }
 }
 

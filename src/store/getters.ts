@@ -4,7 +4,8 @@ const getters = {
   currentServerTab: (state: any) => state.serverList.currentServerTab,
   keyTabList: (state: any) => state.keyList.keyTabList,
   isCtrl: (state: any) => state.keyboardListen.isCtrl,
-  monitorList: (state: any) => state.keyMenuAndTabBind.monitorList
+  monitorList: (state: any) => state.keyMenuAndTabBind.monitorList,
+  psList: (state: any) => state.keyMenuAndTabBind.psList
 }
 
 export default getters

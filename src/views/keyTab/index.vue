@@ -17,7 +17,7 @@
         <monitor :server-tab="props.serverTab" />
       </el-tab-pane>
       <!-- pub/sub -->
-      <el-tab-pane label="Pub/Sub" name="Pub/Sub" :closable="true">
+      <el-tab-pane label="Pub/Sub" name="Pub/Sub" :closable="true" v-if="isPsOpen">
         <pub-sub :server-tab="props.serverTab" />
       </el-tab-pane>
       <!-- newKeyValue tab -->
@@ -81,6 +81,11 @@ const removeTab = async (targetName: string) => {
     return
   }
 
+  if (targetName === 'Pub/Sub') {
+    await store.dispatch('keyMenuAndTabBind/psToggle', props.serverTab)
+    return
+  }
+
   await store.dispatch('keyList/del', {
     serverLabel: `${props.serverTab.db} ${props.serverTab.name}`,
     key: targetName
@@ -123,6 +128,9 @@ const data: ComputedRef<string[]> = computed(() => {
 const isMonitorOpen = computed(() => {
   return store.getters.monitorList.indexOf(`${props.serverTab.name}_${props.serverTab.db}`) !== -1
 })
+const isPsOpen = computed(() => {
+  return store.getters.psList.indexOf(`${props.serverTab.name}_${props.serverTab.db}`) !== -1
+})
 
 watch(props, (newProps) => {
   state.activeTab = newProps.targetKey
@@ -132,6 +140,17 @@ watch(isMonitorOpen, () => {
     state.activeTab = 'Monitor'
   } else {
     if (data.value.length && state.activeTab !== 'Console') {
+      state.activeTab = data.value[data.value.length - 1]
+    } else if (!data.value.length) {
+      state.activeTab = 'Console'
+    }
+  }
+})
+watch(isPsOpen, () => {
+  if (isPsOpen.value) {
+    state.activeTab = 'Pub/Sub'
+  } else {
+    if (data.value.length && state.activeTab !== 'Pub/Sub') {
       state.activeTab = data.value[data.value.length - 1]
     } else if (!data.value.length) {
       state.activeTab = 'Console'

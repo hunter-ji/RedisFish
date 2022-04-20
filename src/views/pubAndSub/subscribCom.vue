@@ -17,7 +17,7 @@
       </div>
 
       <!-- add channel -->
-      <div class="channel-card-btn flex flex-row justify-between items-center p-2">
+      <div class="channel-card-btn flex flex-row justify-between items-center p-2" @keydown.enter="addNewChannel">
         <el-input type="text" size="small" v-model="state.channel" class="w-full">
           <template #append>
             <el-button :icon="Plus" @click="addNewChannel" />
@@ -28,7 +28,7 @@
 
     <!-- content -->
     <div class="channel-content w-4/5 h-full p-4">
-      <sub-content :card-info="getCardInfo()" @toggle-sub="changeCardInfoSub" />
+      <sub-content :card-info="getCardInfo()" @toggle-sub="changeCardInfoSub" @clear="clearMessage" />
     </div>
   </div>
 </template>
@@ -62,6 +62,10 @@ const state: { message: string, channel: string, currentSubChannel: string, subC
   ]
 })
 const addNewChannel = () => {
+  if (state.channel.trim() === '') {
+    return
+  }
+
   state.subChannelList.push({
     label: state.channel,
     isSub: false,
@@ -79,9 +83,13 @@ const changeCardInfoSub = () => {
   state.subChannelList[index].isSub = !state.subChannelList[index].isSub
 }
 const getMessage = (message: subMessageType, channel: string) => {
-  console.log('get message : ', channel, message)
+  console.log('getMessage : ', channel, message)
   const index = state.subChannelList.findIndex((item: subItemType) => item.label === channel)
   state.subChannelList[index].messages.push(message)
+}
+const clearMessage = (channel: string) => {
+  const index = state.subChannelList.findIndex((item: subItemType) => item.label === channel)
+  state.subChannelList[index].messages = []
 }
 
 const client = getClient(props.serverTab)

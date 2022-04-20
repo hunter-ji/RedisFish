@@ -28,7 +28,7 @@
           <transition name="slide-fade">
             <div class="flex flex-row items-center justify-end" v-if="!searchState.search.length" style="margin-right: 10px;">
               <el-tooltip effect="light" :content="t('keyMenu.btnGroup.sub')" placement="bottom" :show-after="1000">
-                <el-button type="warning" size="mini" :icon="Switch" circle @click="dialogState.logShow = true"/>
+                <el-button type="warning" size="mini" :icon="Switch" circle @click="handlePsToggle"/>
               </el-tooltip>
             </div>
           </transition>
@@ -254,7 +254,9 @@ const delKeyDialogSubmit = async () => {
 }
 const handleMonitorToggle = async () => {
   await store.dispatch('keyMenuAndTabBind/monitorToggle', props.serverTab)
-  console.log('monitorList : ', store.getters.monitorList)
+}
+const handlePsToggle = async () => {
+  await store.dispatch('keyMenuAndTabBind/psToggle', props.serverTab)
 }
 
 onMounted(async () => {

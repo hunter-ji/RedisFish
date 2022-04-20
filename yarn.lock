@@ -3376,7 +3376,7 @@ cli-width@^3.0.0:
   resolved "https://registry.nlark.com/cli-width/download/cli-width-3.0.0.tgz#a2f48437a2caa9a22436e794bf071ec9e61cedf6"
   integrity sha1-ovSEN6LKqaIkNueUvwceyeYc7fY=
 
-clipboard@^2.0.6:
+clipboard@^2.0.4, clipboard@^2.0.6:
   version "2.0.10"
   resolved "https://registry.npmmirror.com/clipboard/-/clipboard-2.0.10.tgz#e61f6f7139ac5044c58c0484dcac9fb2a918bfd6"
   integrity sha512-cz3m2YVwFz95qSEbCDi2fzLN/epEN9zXBvfgAoGkvGOJZATMl9gtTDVOtBYkx2ODUJl2kvmud7n32sV2BpYR4g==
@@ -11050,6 +11050,13 @@ vue-i18n@^9.1.0:
     "@intlify/shared" "9.1.9"
     "@intlify/vue-devtools" "9.1.9"
     "@vue/devtools-api" "^6.0.0-beta.7"
+
+vue-json-viewer@3:
+  version "3.0.4"
+  resolved "https://registry.npmmirror.com/vue-json-viewer/-/vue-json-viewer-3.0.4.tgz#c1d65515e57d4036defbbc18fa942d7fd5fb9a8b"
+  integrity sha512-pnC080rTub6YjccthVSNQod2z9Sl5IUUq46srXtn6rxwhW8QM4rlYn+CTSLFKXWfw+N3xv77Cioxw7B4XUKIbQ==
+  dependencies:
+    clipboard "^2.0.4"
 
 "vue-loader-v16@npm:vue-loader@^16.1.0":
   version "16.8.3"

@@ -33,11 +33,9 @@ const subscriber = client.duplicate()
 const lock = ref<boolean>(false)
 
 const fetchData = async () => {
-  console.log('start : ', props.cardInfo.label)
   await subscriber.connect()
 
   await subscriber.subscribe(props.cardInfo.label, (message: string) => {
-    console.log('message : ', props.cardInfo.label, message)
     emit('getMessage', {
       isSend: false,
       message: message,
@@ -46,11 +44,12 @@ const fetchData = async () => {
   })
 }
 const handleClose = async () => {
-  await subscriber.disconnect()
+  await subscriber.unsubscribe(props.cardInfo.label)
+  // await subscriber.disconnect()
+  // await client.disconnect()
 }
 
 watch(props.cardInfo, async (first, second) => {
-  console.log('watch ... ', first, second)
   if (first.label === second.label) {
     if (!lock.value && props.cardInfo.isSub) {
       console.log('start : ', props.cardInfo.label)
@@ -64,7 +63,7 @@ watch(props.cardInfo, async (first, second) => {
 })
 
 onBeforeUnmount(async () => {
-  await handleClose()
+  // await handleClose()
 })
 </script>
 
