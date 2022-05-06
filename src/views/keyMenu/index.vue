@@ -52,7 +52,7 @@
       <el-table :data="searchState.isSearching ? searchState.keysList : state.keysList" size="mini" height="90%" style="width: 100%;" stripe @cell-click="copyKey" @cell-dblclick="getValue"
                 @selection-change="handleSelectionChange" class="pb-4" v-loading="state.loading">
         <el-table-column type="selection" width="50"/>
-        <el-table-column prop="label" label="Keys" width="350"/>
+        <el-table-column prop="label" label="Keys" width="350" :filters="groupState.list" :filter-method="handleKeyGroupFilter"/>
       </el-table>
 
       <!--pagination-->
@@ -121,6 +121,9 @@ const state: { keysList: keyMenuType[], targetKey: string, multipleSelection: st
   multipleSelection: [],
   loading: true
 })
+const groupState: { list: { text: string, value: string }[] } = reactive({
+  list: []
+})
 const searchState: { keysList: keyMenuType[], search: string, isSearching: boolean } = reactive({
   keysList: [],
   search: '',
@@ -146,6 +149,9 @@ const searchPageState: { scanIndex: string, total: number, pageSize: number, cur
 const changeLoading = async (status: boolean) => {
   state.loading = status
 }
+const handleKeyGroupFilter = (value: string, row: keyMenuType): boolean => {
+  return row.label.startsWith(value + ':')
+}
 const getKeysLength = async (keyspaceInfo: string, dbIndex: string): Promise<number> => {
   const keySpaceArr = keyspaceInfo.split('\r\n')
   // targetIndexDB db0:keys=1,expires=0,avg_ttl=0
@@ -166,12 +172,24 @@ const fetchData = async () => {
   pageState.scanIndex = scanResult[0]
   const keys = scanResult[1]
 
+  const groupList: string[] = []
+
   keys.forEach((item: string, index: number) => {
     state.keysList.push({
       label: item,
       value: index
     })
+
+    // 处理分组前缀
+    const preArr = item.split(':')
+    if (preArr.length >= 2) {
+      groupList.push(preArr[0])
+    }
   })
+
+  const groupListSingle = [...new Set(groupList)]
+  groupState.list = groupListSingle.map((item: string) => ({ text: item, value: item }))
+
   await client.disconnect()
   await changeLoading(false)
 }
