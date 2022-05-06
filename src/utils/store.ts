@@ -5,6 +5,12 @@ import { writeFile, readFile, existsFile, mkdirFolder } from '@/utils/file'
 const storeFolderPath = path.join(remote.app.getPath('home'), '.myRedisClient')
 const storeFilePath = path.join(remote.app.getPath('home'), '.myRedisClient/.info')
 
+export interface tlsType {
+  tlsCertFile: string
+  tlsKeyFile: string
+  tlsCaCertFile: string
+}
+
 export interface serverType {
   id: number
   name: string
@@ -12,6 +18,7 @@ export interface serverType {
   port: number
   password: string
   children?: string[]
+  tls?: tlsType
 }
 
 export const getStore = async (): Promise<serverType[]> => {

@@ -23,3 +23,7 @@ export const existsFile = async (path: string): Promise<boolean> => {
 export const mkdirFolder = async (path: string): Promise<void> => {
   fs.mkdirSync(path)
 }
+
+export const readFileWithoutEn = async (path: string): Promise<string> => {
+  return fs.readFileSync(path, 'ascii')
+}

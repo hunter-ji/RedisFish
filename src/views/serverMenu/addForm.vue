@@ -10,7 +10,7 @@
       <el-form-item :label="t('serverMenu.form.port')" required>
         <el-input type="number" v-model="state.form.port" placeholder="6379" class="clear-number-input"/>
       </el-form-item>
-      <el-form-item :label="t('serverMenu.form.password')" required>
+      <el-form-item :label="t('serverMenu.form.password')">
         <el-input type="text" v-model="state.form.password" placeholder="username:password"/>
       </el-form-item>
       <el-form-item>
@@ -34,17 +34,47 @@
           </div>
         </div>
       </el-form-item>
+
+      <!-- check group -->
+      <el-form-item>
+          <el-checkbox-group v-model="checkList">
+            <el-checkbox label="TLS"></el-checkbox>
+          </el-checkbox-group>
+      </el-form-item>
+
+      <!-- tls -->
+      <el-form-item v-if="checkList.indexOf('TLS') !== -1">
+        <el-input :value="toolsStatus.tls.tlsCertFile" placeholder="tlsCertFile" class="mb-2">
+          <template #append>
+          <el-button @click="openDialog('tlsCertFile')">...</el-button>
+          </template>
+        </el-input>
+
+        <el-input :value="toolsStatus.tls.tlsKeyFile" placeholder="tlsKeyFile" class="mb-2">
+          <template #append>
+            <el-button @click="openDialog('tlsKeyFile')">...</el-button>
+          </template>
+        </el-input>
+
+        <el-input :value="toolsStatus.tls.tlsCaCertFile" placeholder="tlsCaCertFile">
+          <template #append>
+            <el-button @click="openDialog('tlsCaCertFile')">...</el-button>
+          </template>
+        </el-input>
+      </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineEmits, defineProps, onMounted, PropType, reactive } from 'vue'
-import { serverType } from '@/utils/store'
+import { defineEmits, defineProps, onMounted, PropType, reactive, ref } from 'vue'
+import { serverType, tlsType } from '@/utils/store'
 import { getClient } from '@/utils/redis'
 import { CloseBold, Check, Paperclip } from '@element-plus/icons-vue'
-import { ElNotification } from 'element-plus'
+import { ElNotification, ElButton } from 'element-plus'
 import { useI18n } from 'vue-i18n'
+import { remote } from 'electron'
+import { readFileWithoutEn } from '@/utils/file'
 
 const { t } = useI18n()
 
@@ -59,10 +89,23 @@ const state: { checkStatus: number, form: serverType } = reactive({
   checkStatus: 0,
   form: {
     id: 0,
-    name: '',
-    host: '',
-    port: 6379,
-    password: ''
+    name: 'tls',
+    host: 'dev.justmylife.cc',
+    port: 9527,
+    password: 'adminadmin',
+    tls: {
+      tlsCertFile: '',
+      tlsKeyFile: '',
+      tlsCaCertFile: ''
+    }
+  }
+})
+const checkList = ref<string[]>([])
+const toolsStatus: { tls: tlsType } = reactive({
+  tls: {
+    tlsCertFile: '',
+    tlsKeyFile: '',
+    tlsCaCertFile: ''
   }
 })
 const clearFrom = async () => {
@@ -113,15 +156,48 @@ const ping = async () => {
   try {
     const client = getClient(state.form)
     await client.connect()
+    client.on('error', (err: string) => console.log('Redis Client Error', err))
 
     const pingRes = await client.ping()
+    console.log('pingRes : ', pingRes)
     if (pingRes === 'PONG') {
       state.checkStatus = 1
     }
 
     await client.disconnect()
   } catch (err) {
+    console.log('ping err : ', err)
     state.checkStatus = 2
+  }
+}
+const openDialog = async (pathType: string) => {
+  const result = await remote.dialog.showOpenDialog({
+    properties: ['openFile']
+  })
+
+  if (!result.filePaths.length) {
+    return
+  }
+
+  const filePath = result.filePaths[0]
+  if (pathType === 'tlsCertFile') {
+    toolsStatus.tls.tlsCertFile = filePath
+    const content = await readFileWithoutEn(filePath)
+    if (content) {
+      state.form.tls!.tlsCertFile = content
+    }
+  } else if (pathType === 'tlsKeyFile') {
+    toolsStatus.tls.tlsKeyFile = filePath
+    const content = await readFileWithoutEn(filePath)
+    if (content) {
+      state.form.tls!.tlsKeyFile = content
+    }
+  } else if (pathType === 'tlsCaCertFile') {
+    toolsStatus.tls.tlsCaCertFile = filePath
+    const content = await readFileWithoutEn(filePath)
+    if (content) {
+      state.form.tls!.tlsCaCertFile = content
+    }
   }
 }
 
