@@ -136,13 +136,13 @@ const dialogState: { show: boolean, logShow: boolean } = reactive({
 const pageState: { scanIndex: string, total: number, pageSize: number, currentPage: number } = reactive({
   scanIndex: '0',
   total: 0,
-  pageSize: 50,
+  pageSize: 100,
   currentPage: 1
 })
 const searchPageState: { scanIndex: string, total: number, pageSize: number, currentPage: number, lock: boolean } = reactive({
   scanIndex: '0',
   total: 0,
-  pageSize: 50,
+  pageSize: 100,
   currentPage: 1,
   lock: false
 })
