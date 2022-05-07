@@ -57,7 +57,7 @@
             <div class="text-green-500 italic mr-2">{{ scope.row.type }}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="label" label="Keys" width="280" :filters="groupState.list" :filter-method="handleKeyGroupFilter"/>
+        <el-table-column prop="label" label="Key" width="280" :filters="groupState.list" :filter-method="handleKeyGroupFilter"/>
       </el-table>
 
       <!--pagination-->
@@ -242,12 +242,15 @@ const search = async () => {
   searchPageState.scanIndex = scanResult[0]
   const keys = scanResult[1]
 
-  keys.forEach((item: string, index: number) => {
+  for (let index = 0; index < keys.length; index++) {
+    const item = keys[index]
+    const type = await client.sendCommand(['type', item])
     searchState.keysList.push({
       label: item,
-      value: index
+      value: index,
+      type: type
     })
-  })
+  }
   await client.disconnect()
 }
 const delKey = () => {

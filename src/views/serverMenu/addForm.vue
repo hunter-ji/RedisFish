@@ -15,13 +15,9 @@
       </el-form-item>
       <el-form-item>
         <div class="flex flex-row items-center justify-between">
-          <div v-if="state.checkStatus === 1" style="color: #67C23A;" class="flex flex-row items-center">
+          <div v-if="state.isConnected" style="color: #67C23A;" class="flex flex-row items-center">
             <check class="w-4 h-4 mr-1" style="color: #67C23A;"/>
             {{ t('serverMenu.form.successTip') }}
-          </div>
-          <div v-else-if="state.checkStatus === 2" style="color: #F56C6C;" class="flex flex-row items-center">
-            <close-bold class="w-4 h-4 mr-1" style="color: #F56C6C;"/>
-            {{ t('serverMenu.form.failTip') }}
           </div>
           <div v-else style="color: #909399;" class="flex flex-row items-center">
             <paperclip class="w-4 h-4 mr-1" />
@@ -44,19 +40,19 @@
 
       <!-- tls -->
       <el-form-item v-if="checkList.indexOf('TLS') !== -1">
-        <el-input :value="toolsStatus.tls.tlsCertFile" placeholder="tlsCertFile" class="mb-2">
+        <el-input v-model="state.form.tls.tlsCertFilePath" placeholder="tlsCertFile" class="mb-2" clearable>
           <template #append>
           <el-button @click="openDialog('tlsCertFile')">...</el-button>
           </template>
         </el-input>
 
-        <el-input :value="toolsStatus.tls.tlsKeyFile" placeholder="tlsKeyFile" class="mb-2">
+        <el-input v-model="state.form.tls.tlsKeyFilePath" placeholder="tlsKeyFile" class="mb-2" clearable>
           <template #append>
             <el-button @click="openDialog('tlsKeyFile')">...</el-button>
           </template>
         </el-input>
 
-        <el-input :value="toolsStatus.tls.tlsCaCertFile" placeholder="tlsCaCertFile">
+        <el-input v-model="state.form.tls.tlsCaCertFilePath" placeholder="tlsCaCertFile" clearable>
           <template #append>
             <el-button @click="openDialog('tlsCaCertFile')">...</el-button>
           </template>
@@ -68,7 +64,7 @@
 
 <script setup lang="ts">
 import { defineEmits, defineProps, onMounted, PropType, reactive, ref } from 'vue'
-import { serverType, tlsType } from '@/utils/store'
+import { serverType } from '@/utils/store'
 import { getClient } from '@/utils/redis'
 import { CloseBold, Check, Paperclip } from '@element-plus/icons-vue'
 import { ElNotification, ElButton } from 'element-plus'
@@ -85,15 +81,18 @@ const props = defineProps({
     required: true
   }
 })
-const state: { checkStatus: number, form: serverType } = reactive({
-  checkStatus: 0,
+const state: { isConnected: boolean, form: serverType } = reactive({
+  isConnected: false,
   form: {
     id: 0,
-    name: 'tls',
-    host: 'dev.justmylife.cc',
-    port: 9527,
-    password: 'adminadmin',
+    name: '',
+    host: '',
+    port: 6379,
+    password: '',
     tls: {
+      tlsCertFilePath: '',
+      tlsKeyFilePath: '',
+      tlsCaCertFilePath: '',
       tlsCertFile: '',
       tlsKeyFile: '',
       tlsCaCertFile: ''
@@ -101,22 +100,23 @@ const state: { checkStatus: number, form: serverType } = reactive({
   }
 })
 const checkList = ref<string[]>([])
-const toolsStatus: { tls: tlsType } = reactive({
-  tls: {
-    tlsCertFile: '',
-    tlsKeyFile: '',
-    tlsCaCertFile: ''
-  }
-})
 const clearFrom = async () => {
   setTimeout(() => {
-    state.checkStatus = 0
+    state.isConnected = false
     state.form = {
       id: 0,
       name: '',
       host: '',
       port: 6379,
-      password: ''
+      password: '',
+      tls: {
+        tlsCertFilePath: '',
+        tlsKeyFilePath: '',
+        tlsCaCertFilePath: '',
+        tlsCertFile: '',
+        tlsKeyFile: '',
+        tlsCaCertFile: ''
+      }
     }
   }, 1000)
 }
@@ -127,7 +127,7 @@ const cancel = async () => {
 const submit = async () => {
   // ping
   await ping()
-  if (state.checkStatus !== 1) {
+  if (!state.isConnected) {
     return
   }
 
@@ -155,19 +155,19 @@ const submit = async () => {
 const ping = async () => {
   try {
     const client = getClient(state.form)
-    await client.connect()
-    client.on('error', (err: string) => console.log('Redis Client Error', err))
+    const res = await client.connect()
+    console.log('connect res : ', res)
+    client.on('error', (error: string) => console.log('on err : ', error))
 
     const pingRes = await client.ping()
-    console.log('pingRes : ', pingRes)
     if (pingRes === 'PONG') {
-      state.checkStatus = 1
+      state.isConnected = true
     }
 
     await client.disconnect()
   } catch (err) {
-    console.log('ping err : ', err)
-    state.checkStatus = 2
+    console.log('err : ', err)
+    state.isConnected = false
   }
 }
 const openDialog = async (pathType: string) => {
@@ -181,19 +181,19 @@ const openDialog = async (pathType: string) => {
 
   const filePath = result.filePaths[0]
   if (pathType === 'tlsCertFile') {
-    toolsStatus.tls.tlsCertFile = filePath
+    state.form.tls!.tlsCertFilePath = filePath
     const content = await readFileWithoutEn(filePath)
     if (content) {
       state.form.tls!.tlsCertFile = content
     }
   } else if (pathType === 'tlsKeyFile') {
-    toolsStatus.tls.tlsKeyFile = filePath
+    state.form.tls!.tlsKeyFilePath = filePath
     const content = await readFileWithoutEn(filePath)
     if (content) {
       state.form.tls!.tlsKeyFile = content
     }
   } else if (pathType === 'tlsCaCertFile') {
-    toolsStatus.tls.tlsCaCertFile = filePath
+    state.form.tls!.tlsCaCertFilePath = filePath
     const content = await readFileWithoutEn(filePath)
     if (content) {
       state.form.tls!.tlsCaCertFile = content
@@ -208,8 +208,8 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.clear-number-input ::v-deep input[type="number"]::-webkit-outer-spin-button,
-.clear-number-input ::v-deep input[type="number"]::-webkit-inner-spin-button {
+.clear-number-input:deep input[type="number"]::-webkit-outer-spin-button,
+.clear-number-input:deep input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none !important;
 }
 </style>

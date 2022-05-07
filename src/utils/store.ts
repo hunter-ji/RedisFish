@@ -6,6 +6,9 @@ const storeFolderPath = path.join(remote.app.getPath('home'), '.myRedisClient')
 const storeFilePath = path.join(remote.app.getPath('home'), '.myRedisClient/.info')
 
 export interface tlsType {
+  tlsCertFilePath: string
+  tlsKeyFilePath: string
+  tlsCaCertFilePath: string
   tlsCertFile: string
   tlsKeyFile: string
   tlsCaCertFile: string

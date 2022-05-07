@@ -91,7 +91,15 @@ const dialogState: { addFormDialog: boolean, editFormDialog: boolean, currentSer
     user: '',
     host: '',
     port: 6379,
-    password: ''
+    password: '',
+    tls: {
+      tlsCertFilePath: '',
+      tlsKeyFilePath: '',
+      tlsCaCertFilePath: '',
+      tlsCertFile: '',
+      tlsKeyFile: '',
+      tlsCaCertFile: ''
+    }
   }
 })
 const clickServer = (server: serverType, index: number) => {
