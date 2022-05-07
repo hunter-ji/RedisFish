@@ -42,9 +42,9 @@
       <template #footer>
       <span class="flex flex-row items-center justify-end">
         <el-button @click="dialog.show = false" v-if="state.runStatus <= 0">{{ t('newKeyValue.index.runDialog.cancel') }}</el-button>
-        <el-button type="primary" v-if="state.runStatus === 0" @click="runCommand()">t('newKeyValue.index.runDialog.run')</el-button>
-        <el-button type="primary" v-if="state.runStatus === 1" disabled>t('newKeyValue.index.runDialog.running')</el-button>
-        <el-button type="primary" v-if="state.runStatus === 2" @click="handleFinishEvent()">t('newKeyValue.index.runDialog.submit')</el-button>
+        <el-button type="primary" v-if="state.runStatus === 0" @click="runCommand()">{{ t('newKeyValue.index.runDialog.run') }}</el-button>
+        <el-button type="primary" v-if="state.runStatus === 1" disabled>{{ t('newKeyValue.index.runDialog.running') }}</el-button>
+        <el-button type="primary" v-if="state.runStatus === 2" @click="handleFinishEvent()">{{ t('newKeyValue.index.runDialog.submit') }}</el-button>
       </span>
       </template>
     </el-dialog>

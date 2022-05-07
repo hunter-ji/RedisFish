@@ -46,6 +46,7 @@
       height="700"
       size="mini" border stripe @selection-change="handleSelectionChange"
       @cell-dblclick="edit"
+      @cell-contextmenu="handleContentDetail"
       style="width: 100%;">
       <el-table-column type="selection" width="40"/>
       <el-table-column type="index" width="50"/>
@@ -81,6 +82,11 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- content detail -->
+    <el-dialog v-model="isDetailDialogShow" width="60%" center top="10vh">
+      <content-detail :message="targetDetailMessage" v-if="isDetailDialogShow" />
+    </el-dialog>
   </div>
 </template>
 
@@ -97,6 +103,7 @@ import { Check, Delete, Plus, RefreshRight, Search } from '@element-plus/icons-v
 import { FormatCommandField } from '@/utils/formatCommandField'
 import { useI18n } from 'vue-i18n'
 import { copyKey } from '@/utils/copyFromTable'
+import ContentDetail from '@/components/contentDetail/index.vue'
 
 const { t } = useI18n()
 
@@ -115,6 +122,8 @@ const props = defineProps({
     required: true
   }
 })
+const isDetailDialogShow = ref(false)
+const targetDetailMessage = ref<string>('')
 const delayNumber = ref(1000)
 const state: { values: hashTableValueType[], ttl: number, oldTTL: number, multipleSelection: hashTableValueType[], targetID: number, targetLabel: string, commands: commandObjectType[], loading: boolean } = reactive({
   values: [],
@@ -230,6 +239,14 @@ const submit = () => {
       duration: 2000
     })
   }
+}
+const handleContentDetail = (row: { field: string, value: string }, column: { label: string }) => {
+  if (column.label === 'Field') {
+    targetDetailMessage.value = row.field
+  } else if (column.label === 'Value') {
+    targetDetailMessage.value = row.value
+  }
+  isDetailDialogShow.value = true
 }
 
 watch(searchState, () => {
