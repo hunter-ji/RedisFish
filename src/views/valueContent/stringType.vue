@@ -36,7 +36,7 @@
     </div>
 
     <!--textarea-->
-    <el-input v-model="state.val" :rows="30" type="textarea" v-show="editorModeState.mode === 'text'"/>
+    <el-input v-model="state.val" :rows="30" type="textarea" v-show="editorModeState.mode === 'text'" @click="copyKey(state.val)"/>
 
     <!--ace-->
     <div :id="`ace${aceID}`" v-show="editorModeState.mode === 'json'" />
@@ -54,6 +54,7 @@ import { ElNotification } from 'element-plus'
 import { FormatCommandField } from '@/utils/formatCommandField'
 import ace from 'ace-builds'
 import { useI18n } from 'vue-i18n'
+import { copyKey } from '@/utils/copyFromTable'
 
 const { t } = useI18n()
 

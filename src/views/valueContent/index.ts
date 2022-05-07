@@ -1,6 +1,7 @@
 export interface keyMenuType {
   label: string
   value: number
+  type: string
 }
 
 export interface commandObjectType {

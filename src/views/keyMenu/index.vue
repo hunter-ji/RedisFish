@@ -52,7 +52,12 @@
       <el-table :data="searchState.isSearching ? searchState.keysList : state.keysList" size="mini" height="90%" style="width: 100%;" stripe @cell-click="copyKey" @cell-dblclick="getValue"
                 @selection-change="handleSelectionChange" class="pb-4" v-loading="state.loading">
         <el-table-column type="selection" width="50"/>
-        <el-table-column prop="label" label="Keys" width="350" :filters="groupState.list" :filter-method="handleKeyGroupFilter"/>
+        <el-table-column prop="type" label="Type" width="70">
+          <template #default="scope">
+            <div class="text-green-500 italic mr-2">{{ scope.row.type }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="label" label="Keys" width="280" :filters="groupState.list" :filter-method="handleKeyGroupFilter"/>
       </el-table>
 
       <!--pagination-->
@@ -136,13 +141,13 @@ const dialogState: { show: boolean, logShow: boolean } = reactive({
 const pageState: { scanIndex: string, total: number, pageSize: number, currentPage: number } = reactive({
   scanIndex: '0',
   total: 0,
-  pageSize: 100,
+  pageSize: 50,
   currentPage: 1
 })
 const searchPageState: { scanIndex: string, total: number, pageSize: number, currentPage: number, lock: boolean } = reactive({
   scanIndex: '0',
   total: 0,
-  pageSize: 100,
+  pageSize: 50,
   currentPage: 1,
   lock: false
 })
@@ -174,10 +179,15 @@ const fetchData = async () => {
 
   const groupList: string[] = []
 
-  keys.forEach((item: string, index: number) => {
+  // keys.forEach((item: string, index: number) => {
+  for (let index = 0; index < keys.length; index++) {
+    const item = keys[index]
+
+    const type = await client.sendCommand(['type', item])
     state.keysList.push({
       label: item,
-      value: index
+      value: index,
+      type: type
     })
 
     // 处理分组前缀
@@ -185,7 +195,7 @@ const fetchData = async () => {
     if (preArr.length >= 2) {
       groupList.push(preArr[0])
     }
-  })
+  }
 
   const groupListSingle = [...new Set(groupList)]
   groupState.list = groupListSingle.map((item: string) => ({ text: item, value: item }))
