@@ -1,7 +1,7 @@
 <template>
   <div class="detail-container">
     <!--textarea-->
-    <el-input v-model="localMessage" :rows="30" type="textarea" v-show="!checkIsJSON(localMessage)" @click="copyKey(localMessage)"/>
+    <el-input v-model="localMessage" :autosize="{ minRows: 20, maxRows: 30 }" type="textarea" v-show="!checkIsJSON(localMessage)" @click="copyKey(localMessage)"/>
 
     <!--ace-->
     <div :id="`ace${aceID}`" v-show="checkIsJSON(localMessage)" />
@@ -39,8 +39,8 @@ const genRandomAceID = async () => {
 }
 const initAceEditor = async () => {
   aceState.aceEditor = ace.edit(`ace${aceID.value}`, {
-    maxLines: 50, // 最大行数，超过会自动出现滚动条
-    minLines: 30, // 最小行数，还未到最大行数时，编辑器会自动伸缩大小
+    maxLines: 40, // 最大行数，超过会自动出现滚动条
+    minLines: 20, // 最小行数，还未到最大行数时，编辑器会自动伸缩大小
     fontSize: 14, // 编辑器内字体大小
     theme: aceState.themePath, // 默认设置的主题
     mode: aceState.modePath, // 默认设置的语言模式

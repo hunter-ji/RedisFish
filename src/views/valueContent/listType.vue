@@ -46,36 +46,43 @@
     </div>
 
     <!-- table -->
-    <el-table
-      :data="searchState.isSearching ? searchState.values : state.values"
-      v-loading="state.loading"
-      height="700"
-      size="mini" border stripe
-      @cell-dblclick="edit"
-      style="width: 100%;">
-      <el-table-column type="index" width="50"/>
-      <el-table-column prop="value" label="Value">
-        <template #default="scope">
-          <div v-if="scope.row.id === state.targetID">
-            <el-input size="mini" v-model="scope.row.value" @blur="blurInput" placeholder="null" :rows="3" type="textarea"
-                      @change="inputChange(scope.row)"/>
-          </div>
-          <div v-else>
-            <div v-if="scope.row.value.length"
-                 :style="'color:' + SwitchColor(scope.row.type)" @click="copyKey(scope.row.value)">
-              {{ contentLimit(scope.row.value) }}
+    <div class="table-container">
+      <el-table
+        :data="searchState.isSearching ? searchState.values : state.values"
+        v-loading="state.loading"
+        size="mini" border stripe
+        @cell-dblclick="edit"
+        @cell-contextmenu="handleContentDetail"
+        style="width: 100%;">
+        <el-table-column type="index" width="50"/>
+        <el-table-column prop="value" label="Value">
+          <template #default="scope">
+            <div v-if="scope.row.id === state.targetID">
+              <el-input size="mini" v-model="scope.row.value" @blur="blurInput" placeholder="null" :rows="3" type="textarea"
+                        @change="inputChange(scope.row)"/>
             </div>
-            <div class="text-gray-400 italic" v-else>null</div>
-          </div>
-        </template>
-      </el-table-column>
-    </el-table>
+            <div v-else>
+              <div v-if="scope.row.value.length"
+                   :style="'color:' + SwitchColor(scope.row.type)" @click="copyKey(scope.row.value)">
+                {{ contentLimit(scope.row.value) }}
+              </div>
+              <div class="text-gray-400 italic" v-else>null</div>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <!-- content detail -->
+    <el-dialog v-model="contentDetailState.isShow" width="60%" center top="10vh">
+      <content-detail :message="contentDetailState.message" @update="handleDetailUpdate" @cancel="handleDetailCancel" v-if="contentDetailState.isShow" />
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { defineEmits, defineProps, PropType, reactive, watch, ref } from 'vue'
-import { commandObjectType, listTableValueType } from '@/views/valueContent/index'
+import { commandObjectType, hashTableValueType, listTableValueType } from '@/views/valueContent/index'
 import TopTab from './topTab.vue'
 import { SwitchColor } from '@/utils/switchColor'
 import { ElNotification } from 'element-plus'
@@ -86,6 +93,7 @@ import { Check, RefreshRight, Search } from '@element-plus/icons-vue'
 import { FormatCommandField } from '@/utils/formatCommandField'
 import { useI18n } from 'vue-i18n'
 import { copyKey } from '@/utils/copyFromTable'
+import ContentDetail from '@/components/contentDetail/index.vue'
 
 const { t } = useI18n()
 
@@ -117,6 +125,17 @@ const searchState: { search: string, isSearching: boolean, values: listTableValu
   search: '',
   isSearching: false,
   values: []
+})
+const contentDetailState: { isShow: boolean, message: string, row: listTableValueType } = reactive({
+  isShow: false,
+  message: '',
+  row: {
+    id: 0,
+    value: '',
+    oldValue: '',
+    type: '',
+    isFront: false
+  }
 })
 const refresh = () => {
   state.loading = true
@@ -203,6 +222,29 @@ const submit = () => {
       duration: 2000
     })
   }
+}
+const handleContentDetail = (row: listTableValueType, column: { label: string }) => {
+  if (column.label === 'Value') {
+    contentDetailState.message = row.value
+    contentDetailState.isShow = true
+    contentDetailState.row = row
+  }
+}
+const handleDetailCancel = () => {
+  contentDetailState.isShow = false
+  contentDetailState.message = ''
+  contentDetailState.row = {
+    id: 0,
+    value: '',
+    oldValue: '',
+    type: '',
+    isFront: false
+  }
+}
+const handleDetailUpdate = (message: string) => {
+  contentDetailState.row.value = message
+  inputChange(contentDetailState.row)
+  handleDetailCancel()
 }
 
 watch(searchState, () => {

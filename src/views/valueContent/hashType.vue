@@ -40,49 +40,50 @@
     </div>
 
     <!-- table -->
-    <el-table
-      :data="searchState.isSearching ? searchState.values : state.values"
-      v-loading="state.loading"
-      height="700"
-      size="mini" border stripe
-      @selection-change="handleSelectionChange"
-      @cell-dblclick="edit"
-      @cell-contextmenu="handleContentDetail"
-      style="width: 100%;">
-      <el-table-column type="selection" width="40"/>
-      <el-table-column type="index" width="50"/>
-      <el-table-column label="Field">
-        <template #default="scope">
-          <div v-if="scope.row.id === state.targetID && state.targetLabel === 'Field'">
-            <el-input size="mini" v-model="scope.row.field" @blur="blurInput" placeholder="null" :rows="3"
-                      type="textarea"
-                      @change="inputChange(scope.row, true)"/>
-          </div>
-          <div v-else>
-            <div v-if="scope.row.field.length"
-                 :style="'color:' + SwitchColorWithRepeat(scope.row.isRepeat, scope.row.type)" @click="copyKey(scope.row.field)">
-              {{ contentLimit(scope.row.field) }}
+    <div class="table-container">
+      <el-table
+        :data="searchState.isSearching ? searchState.values : state.values"
+        v-loading="state.loading"
+        size="mini" border stripe
+        @selection-change="handleSelectionChange"
+        @cell-dblclick="edit"
+        @cell-contextmenu="handleContentDetail"
+        style="width: 100%;">
+        <el-table-column type="selection" width="40"/>
+        <el-table-column type="index" width="50"/>
+        <el-table-column label="Field">
+          <template #default="scope">
+            <div v-if="scope.row.id === state.targetID && state.targetLabel === 'Field'">
+              <el-input size="mini" v-model="scope.row.field" @blur="blurInput" placeholder="null" :rows="3"
+                        type="textarea"
+                        @change="inputChange(scope.row, true)"/>
             </div>
-            <div class="text-gray-400 italic" v-else>null</div>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column label="Value">
-        <template #default="scope">
-          <div v-if="scope.row.id === state.targetID && state.targetLabel === 'Value'">
-            <el-input size="mini" v-model="scope.row.value" @blur="blurInput" placeholder="null" :rows="3"
-                      type="textarea"
-                      @change="inputChange(scope.row, false)"/>
-          </div>
-          <div v-else>
-            <div v-if="scope.row.value.length" :style="'color:' + SwitchColor(scope.row.type)" @click="copyKey(scope.row.value)">
-              {{ contentLimit(scope.row.value) }}
+            <div v-else>
+              <div v-if="scope.row.field.length"
+                   :style="'color:' + SwitchColorWithRepeat(scope.row.isRepeat, scope.row.type)" @click="copyKey(scope.row.field)">
+                {{ contentLimit(scope.row.field) }}
+              </div>
+              <div class="text-gray-400 italic" v-else>null</div>
             </div>
-            <div class="text-gray-400 italic" v-else>null</div>
-          </div>
-        </template>
-      </el-table-column>
-    </el-table>
+          </template>
+        </el-table-column>
+        <el-table-column label="Value">
+          <template #default="scope">
+            <div v-if="scope.row.id === state.targetID && state.targetLabel === 'Value'">
+              <el-input size="mini" v-model="scope.row.value" @blur="blurInput" placeholder="null" :rows="3"
+                        type="textarea"
+                        @change="inputChange(scope.row, false)"/>
+            </div>
+            <div v-else>
+              <div v-if="scope.row.value.length" :style="'color:' + SwitchColor(scope.row.type)" @click="copyKey(scope.row.value)">
+                {{ contentLimit(scope.row.value) }}
+              </div>
+              <div class="text-gray-400 italic" v-else>null</div>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
 
     <!-- content detail -->
     <el-dialog v-model="contentDetailState.isShow" width="60%" center top="10vh">
@@ -257,16 +258,17 @@ const handleContentDetail = (row: hashTableValueType, column: { label: string })
   if (column.label === 'Field') {
     contentDetailState.message = row.field
     contentDetailState.isField = true
+    contentDetailState.isShow = true
+    contentDetailState.row = row
   } else if (column.label === 'Value') {
     contentDetailState.message = row.value
     contentDetailState.isField = false
+    contentDetailState.isShow = true
+    contentDetailState.row = row
   }
-  contentDetailState.isShow = true
-  contentDetailState.row = row
 }
 const handleDetailCancel = () => {
   contentDetailState.isShow = false
-
   contentDetailState.message = ''
   contentDetailState.isField = true
   contentDetailState.row = {
@@ -280,20 +282,12 @@ const handleDetailCancel = () => {
   }
 }
 const handleDetailUpdate = (message: string) => {
-  // const data = state.values.find((item: hashTableValueType) => item.id === contentDetailState.row.id)
-  //
-  // if (!data) {
-  //   return
-  // }
-
   if (contentDetailState.isField) {
     contentDetailState.row.field = message
   } else {
     contentDetailState.row.value = message
   }
-
   inputChange(contentDetailState.row, contentDetailState.isField)
-
   handleDetailCancel()
 }
 
