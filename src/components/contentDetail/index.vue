@@ -7,14 +7,14 @@
     <div :id="`ace${aceID}`" v-show="checkIsJSON(localMessage)" />
 
     <div class="flex flex-row justify-end mt-2">
-      <el-button>关闭</el-button>
-      <el-button type="primary">保存</el-button>
+      <el-button @click="handleCancel">关闭</el-button>
+      <el-button type="primary" @click="handleSubmit">保存</el-button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref, Ref, defineProps, watch } from 'vue'
+import { onMounted, reactive, ref, Ref, defineProps, watch, defineEmits } from 'vue'
 import ace from 'ace-builds'
 import { copyKey } from '@/utils/copyFromTable'
 import { checkIsJSON } from '@/utils/checkIsJson'
@@ -25,6 +25,7 @@ const props = defineProps({
     required: true
   }
 })
+const emit = defineEmits(['update', 'cancel'])
 
 const localMessage = ref('')
 const aceState: { aceEditor: any, themePath: string, modePath: string } = reactive({
@@ -58,10 +59,27 @@ onMounted(async () => {
     aceState.aceEditor.setValue(JSON.stringify(jsonData, null, '\t'))
   }
 })
+const handleSubmit = () => {
+  if (checkIsJSON(localMessage.value)) {
+    const data = aceState.aceEditor.getValue().replaceAll(/\s+/g, '')
+    emit('update', data)
+  } else {
+    emit('update', localMessage.value)
+  }
+}
+const handleCancel = () => {
+  emit('cancel')
+}
 
 watch(() => props.message, () => {
-  console.log('watch ... : ', props)
   localMessage.value = props.message
+})
+
+watch(localMessage, () => {
+  if (checkIsJSON(localMessage.value)) {
+    const jsonData = JSON.parse(localMessage.value)
+    aceState.aceEditor.setValue(JSON.stringify(jsonData, null, '\t'))
+  }
 })
 </script>
 

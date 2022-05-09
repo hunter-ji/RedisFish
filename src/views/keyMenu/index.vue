@@ -62,11 +62,11 @@
 
       <!--pagination-->
       <el-pagination layout="prev, pager, next" :total="pageState.total" :page-size="pageState.pageSize"
-                     v-model:current-page="pageState.currentPage" @current-change="fetchData()" :hide-on-single-page="true"
+                     v-model:current-page="pageState.currentPage" @current-change="fetchData()"
                      class="py-2" v-show="!searchState.isSearching"
       />
-      <el-pagination layout="prev, pager, next" :total="pageState.total" :page-size="pageState.pageSize"
-                     v-model:current-page="searchPageState.currentPage" @current-change="search()" :hide-on-single-page="true"
+      <el-pagination layout="prev, pager, next" :total="searchPageState.total" :page-size="searchPageState.pageSize"
+                     v-model:current-page="searchPageState.currentPage" @current-change="search()"
                      class="py-2" v-show="searchState.isSearching"
       />
 
@@ -147,7 +147,7 @@ const pageState: { scanIndex: string, total: number, pageSize: number, currentPa
 const searchPageState: { scanIndex: string, total: number, pageSize: number, currentPage: number, lock: boolean } = reactive({
   scanIndex: '0',
   total: 0,
-  pageSize: 50,
+  pageSize: 200,
   currentPage: 1,
   lock: false
 })

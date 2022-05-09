@@ -25,10 +25,12 @@
         style="width: 100%;">
         <el-table-column label="commands">
           <template #default="scope">
-            {{ scope.row.command.join(' ') }}
+            <div class="flex flex-row justify-start items-center">
+              <div v-for="(item, index) in scope.row.command" :key="index" class="pr-1">{{ item.includes(' ') ? `'${item}'` : item }}</div>
+            </div>
           </template>
         </el-table-column>
-        <el-table-column label="result" prop="result" v-if="state.runStatus > 0"/>
+        <el-table-column label="result" prop="result" v-if="state.runStatus > 0" width="100"/>
       </el-table>
       <template #footer>
       <span class="flex flex-row items-center justify-end">

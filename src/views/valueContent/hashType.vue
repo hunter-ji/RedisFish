@@ -44,7 +44,8 @@
       :data="searchState.isSearching ? searchState.values : state.values"
       v-loading="state.loading"
       height="700"
-      size="mini" border stripe @selection-change="handleSelectionChange"
+      size="mini" border stripe
+      @selection-change="handleSelectionChange"
       @cell-dblclick="edit"
       @cell-contextmenu="handleContentDetail"
       style="width: 100%;">
@@ -84,8 +85,8 @@
     </el-table>
 
     <!-- content detail -->
-    <el-dialog v-model="isDetailDialogShow" width="60%" center top="10vh">
-      <content-detail :message="targetDetailMessage" v-if="isDetailDialogShow" />
+    <el-dialog v-model="contentDetailState.isShow" width="60%" center top="10vh">
+      <content-detail :message="contentDetailState.message" @update="handleDetailUpdate" @cancel="handleDetailCancel" v-if="contentDetailState.isShow" />
     </el-dialog>
   </div>
 </template>
@@ -122,8 +123,6 @@ const props = defineProps({
     required: true
   }
 })
-const isDetailDialogShow = ref(false)
-const targetDetailMessage = ref<string>('')
 const delayNumber = ref(1000)
 const state: { values: hashTableValueType[], ttl: number, oldTTL: number, multipleSelection: hashTableValueType[], targetID: number, targetLabel: string, commands: commandObjectType[], loading: boolean } = reactive({
   values: [],
@@ -139,6 +138,20 @@ const searchState: { search: string, isSearching: boolean, values: hashTableValu
   search: '',
   isSearching: false,
   values: []
+})
+const contentDetailState: { isShow: boolean, message: string, isField: boolean, row: hashTableValueType } = reactive({
+  isShow: false,
+  message: '',
+  isField: true,
+  row: {
+    id: 0,
+    field: '',
+    oldField: '',
+    value: '',
+    oldValue: '',
+    type: '',
+    isRepeat: false
+  }
 })
 const refresh = () => {
   state.loading = true
@@ -217,9 +230,9 @@ const submit = () => {
 
   // command
   state.values.forEach((item: hashTableValueType) => {
-    if (item.type === 'add' && item.value.trim().length) {
+    if (item.type === 'add' && item.value.length) {
       state.commands.push({ command: ['HSETNX', FormatCommandField(props.keyName), FormatCommandField(item.field), FormatCommandField(item.value)] })
-    } else if (item.type === 'edit' && item.field.trim().length && item.value.trim().length) {
+    } else if (item.type === 'edit' && item.field.length && item.value.length) {
       if (item.field === item.oldField) {
         state.commands.push({ command: ['HSET', FormatCommandField(props.keyName), FormatCommandField(item.field), FormatCommandField(item.value)] })
       } else {
@@ -240,13 +253,48 @@ const submit = () => {
     })
   }
 }
-const handleContentDetail = (row: { field: string, value: string }, column: { label: string }) => {
+const handleContentDetail = (row: hashTableValueType, column: { label: string }) => {
   if (column.label === 'Field') {
-    targetDetailMessage.value = row.field
+    contentDetailState.message = row.field
+    contentDetailState.isField = true
   } else if (column.label === 'Value') {
-    targetDetailMessage.value = row.value
+    contentDetailState.message = row.value
+    contentDetailState.isField = false
   }
-  isDetailDialogShow.value = true
+  contentDetailState.isShow = true
+  contentDetailState.row = row
+}
+const handleDetailCancel = () => {
+  contentDetailState.isShow = false
+
+  contentDetailState.message = ''
+  contentDetailState.isField = true
+  contentDetailState.row = {
+    id: 0,
+    field: '',
+    oldField: '',
+    value: '',
+    oldValue: '',
+    type: '',
+    isRepeat: false
+  }
+}
+const handleDetailUpdate = (message: string) => {
+  // const data = state.values.find((item: hashTableValueType) => item.id === contentDetailState.row.id)
+  //
+  // if (!data) {
+  //   return
+  // }
+
+  if (contentDetailState.isField) {
+    contentDetailState.row.field = message
+  } else {
+    contentDetailState.row.value = message
+  }
+
+  inputChange(contentDetailState.row, contentDetailState.isField)
+
+  handleDetailCancel()
 }
 
 watch(searchState, () => {
