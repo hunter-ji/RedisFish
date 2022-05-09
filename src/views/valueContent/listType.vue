@@ -22,20 +22,16 @@
               <el-button type="info" size="small" :icon="RefreshRight" circle @click="refresh"/>
             </el-tooltip>
             <el-tooltip effect="light" :content="t('valueContent.btnGroup.addFromHeader')" placement="bottom" :show-after="delayNumber">
-              <img src="@/assets/add_up.png" height="34" width="34" alt="add_up"
-                   class="hover:opacity-70 cursor-pointer ml-2" @click="addRow(true)"/>
+              <el-button type="primary" size="small" :icon="Top" circle @click="addRow(true)"/>
             </el-tooltip>
             <el-tooltip effect="light" :content="t('valueContent.btnGroup.addFromFooter')" placement="bottom" :show-after="delayNumber">
-              <img src="@/assets/add_down.png" height="34" width="34" alt="add_down"
-                   class="hover:opacity-70 cursor-pointer ml-2" @click="addRow(false)"/>
+              <el-button type="primary" size="small" :icon="Bottom" circle @click="addRow(false)"/>
             </el-tooltip>
             <el-tooltip effect="light" :content="t('valueContent.btnGroup.deleteFromHeader')" placement="bottom" :show-after="delayNumber">
-              <img src="@/assets/del_up.png" height="34" width="34" alt="del_up"
-                   class="hover:opacity-70 cursor-pointer ml-2" @click="del(true)"/>
+              <el-button type="danger" size="small" :icon="SortUp" circle @click="del(true)"/>
             </el-tooltip>
             <el-tooltip effect="light" :content="t('valueContent.btnGroup.deleteFromFooter')" placement="bottom" :show-after="delayNumber">
-              <img src="@/assets/del_down.png" height="34" width="34" alt="del_down"
-                   class="hover:opacity-70 cursor-pointer ml-2" @click="del(false)"/>
+              <el-button type="danger" size="small" :icon="SortDown" circle @click="del(false)"/>
             </el-tooltip>
           </div>
         </transition>
@@ -89,7 +85,7 @@ import { ElNotification } from 'element-plus'
 import { contentLimit } from '@/utils/contentLimit'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { Check, RefreshRight, Search } from '@element-plus/icons-vue'
+import { Check, RefreshRight, Search, Top, Bottom, SortUp, SortDown } from '@element-plus/icons-vue'
 import { FormatCommandField } from '@/utils/formatCommandField'
 import { useI18n } from 'vue-i18n'
 import { copyKey } from '@/utils/copyFromTable'

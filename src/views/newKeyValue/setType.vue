@@ -24,30 +24,31 @@
     </div>
 
     <!-- table -->
-    <el-table
-      :data="state.values"
-      height="700"
-      v-loading="state.loading"
-      size="mini" border stripe @selection-change="handleSelectionChange"
-      @cell-dblclick="edit"
-      style="width: 100%;">
-      <el-table-column type="selection" width="40"/>
-      <el-table-column type="index" width="50"/>
-      <el-table-column prop="value" label="Value">
-        <template #default="scope">
-          <div v-if="scope.row.id === state.targetID">
-            <el-input size="mini" v-model="scope.row.value" @blur="blurInput" placeholder="null" :rows="3" type="textarea"
-                      @change="inputChange(scope.row)"/>
-          </div>
-          <div v-else>
-            <div v-if="scope.row.value.length" :style="'color:' + SwitchColorWithRepeat(scope.row.isRepeat, scope.row.type)">
-              {{ contentLimit(scope.row.value) }}
+    <div class="table-container">
+      <el-table
+        :data="state.values"
+        v-loading="state.loading"
+        size="mini" border stripe @selection-change="handleSelectionChange"
+        @cell-dblclick="edit"
+        style="width: 100%;">
+        <el-table-column type="selection" width="40"/>
+        <el-table-column type="index" width="50"/>
+        <el-table-column prop="value" label="Value">
+          <template #default="scope">
+            <div v-if="scope.row.id === state.targetID">
+              <el-input size="mini" v-model="scope.row.value" @blur="blurInput" placeholder="null" :rows="3" type="textarea"
+                        @change="inputChange(scope.row)"/>
             </div>
-            <div class="text-gray-400 italic" v-else>null</div>
-          </div>
-        </template>
-      </el-table-column>
-    </el-table>
+            <div v-else>
+              <div v-if="scope.row.value.length" :style="'color:' + SwitchColorWithRepeat(scope.row.isRepeat, scope.row.type)">
+                {{ contentLimit(scope.row.value) }}
+              </div>
+              <div class="text-gray-400 italic" v-else>null</div>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 

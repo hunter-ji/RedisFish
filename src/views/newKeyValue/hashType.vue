@@ -25,47 +25,48 @@
     </div>
 
     <!-- table -->
-    <el-table
-      :data="searchState.isSearching ? searchState.values : state.values"
-      v-loading="state.loading"
-      height="700"
-      size="mini" border stripe @selection-change="handleSelectionChange"
-      @cell-dblclick="edit"
-      style="width: 100%;">
-      <el-table-column type="selection" width="40"/>
-      <el-table-column type="index" width="50"/>
-      <el-table-column label="Field">
-        <template #default="scope">
-          <div v-if="scope.row.id === state.targetID && state.targetLabel === 'Field'">
-            <el-input size="mini" v-model="scope.row.field" @blur="blurInput" placeholder="null" :rows="3"
-                      type="textarea"
-                      @change="inputChange(scope.row, true)"/>
-          </div>
-          <div v-else>
-            <div v-if="scope.row.field.length"
-                 :style="'color:' + SwitchColorWithRepeat(scope.row.isRepeat, scope.row.type)">
-              {{ contentLimit(scope.row.field) }}
+    <div class="table-container">
+      <el-table
+        :data="searchState.isSearching ? searchState.values : state.values"
+        v-loading="state.loading"
+        size="mini" border stripe @selection-change="handleSelectionChange"
+        @cell-dblclick="edit"
+        style="width: 100%;">
+        <el-table-column type="selection" width="40"/>
+        <el-table-column type="index" width="50"/>
+        <el-table-column label="Field">
+          <template #default="scope">
+            <div v-if="scope.row.id === state.targetID && state.targetLabel === 'Field'">
+              <el-input size="mini" v-model="scope.row.field" @blur="blurInput" placeholder="null" :rows="3"
+                        type="textarea"
+                        @change="inputChange(scope.row, true)"/>
             </div>
-            <div class="text-gray-400 italic" v-else>null</div>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column label="Value">
-        <template #default="scope">
-          <div v-if="scope.row.id === state.targetID && state.targetLabel === 'Value'">
-            <el-input size="mini" v-model="scope.row.value" @blur="blurInput" placeholder="null" :rows="3"
-                      type="textarea"
-                      @change="inputChange(scope.row, false)"/>
-          </div>
-          <div v-else>
-            <div v-if="scope.row.value.length" :style="'color:' + SwitchColor(scope.row.type)">
-              {{ contentLimit(scope.row.value) }}
+            <div v-else>
+              <div v-if="scope.row.field.length"
+                   :style="'color:' + SwitchColorWithRepeat(scope.row.isRepeat, scope.row.type)">
+                {{ contentLimit(scope.row.field) }}
+              </div>
+              <div class="text-gray-400 italic" v-else>null</div>
             </div>
-            <div class="text-gray-400 italic" v-else>null</div>
-          </div>
-        </template>
-      </el-table-column>
-    </el-table>
+          </template>
+        </el-table-column>
+        <el-table-column label="Value">
+          <template #default="scope">
+            <div v-if="scope.row.id === state.targetID && state.targetLabel === 'Value'">
+              <el-input size="mini" v-model="scope.row.value" @blur="blurInput" placeholder="null" :rows="3"
+                        type="textarea"
+                        @change="inputChange(scope.row, false)"/>
+            </div>
+            <div v-else>
+              <div v-if="scope.row.value.length" :style="'color:' + SwitchColor(scope.row.type)">
+                {{ contentLimit(scope.row.value) }}
+              </div>
+              <div class="text-gray-400 italic" v-else>null</div>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 

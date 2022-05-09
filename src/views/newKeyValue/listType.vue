@@ -10,20 +10,16 @@
       <div class="w-64 flex flex-row items-center justify-end">
         <div class="mr-2 flex flex-row items-center">
           <el-tooltip effect="light" :content="t('newKeyValue.btnGroup.addFromHeader')" placement="bottom" :show-after="delayNumber">
-            <img src="@/assets/add_up.png" height="34" width="34" alt="add_up"
-                 class="hover:opacity-70 cursor-pointer ml-2" @click="addRow(true)"/>
+            <el-button type="primary" size="small" :icon="Top" circle @click="addRow(true)"/>
           </el-tooltip>
           <el-tooltip effect="light" :content="t('newKeyValue.btnGroup.addFromFooter')" placement="bottom" :show-after="delayNumber">
-            <img src="@/assets/add_down.png" height="34" width="34" alt="add_down"
-                 class="hover:opacity-70 cursor-pointer ml-2" @click="addRow(false)"/>
+            <el-button type="primary" size="small" :icon="Bottom" circle @click="addRow(false)"/>
           </el-tooltip>
           <el-tooltip effect="light" :content="t('newKeyValue.btnGroup.deleteFromHeader')" placement="bottom" :show-after="delayNumber">
-            <img src="@/assets/del_up.png" height="34" width="34" alt="del_up"
-                 class="hover:opacity-70 cursor-pointer ml-2" @click="del(true)"/>
+            <el-button type="danger" size="small" :icon="SortUp" circle @click="del(true)"/>
           </el-tooltip>
           <el-tooltip effect="light" :content="t('newKeyValue.btnGroup.deleteFromFooter')" placement="bottom" :show-after="delayNumber">
-            <img src="@/assets/del_down.png" height="34" width="34" alt="del_down"
-                 class="hover:opacity-70 cursor-pointer ml-2" @click="del(false)"/>
+            <el-button type="danger" size="small" :icon="SortDown" circle @click="del(false)"/>
           </el-tooltip>
         </div>
         <el-tooltip effect="light" :content="t('newKeyValue.btnGroup.submit')" placement="bottom" :show-after="delayNumber">
@@ -33,31 +29,32 @@
     </div>
 
     <!-- table -->
-    <el-table
-      :data="searchState.isSearching ? searchState.values : state.values"
-      v-loading="state.loading"
-      height="700"
-      size="mini" border stripe
-      @cell-dblclick="edit"
-      style="width: 100%;">
-      <el-table-column type="index" width="50"/>
-      <el-table-column prop="value" label="Value">
-        <template #default="scope">
-          <div v-if="scope.row.id === state.targetID">
-            <el-input size="mini" v-model="scope.row.value" @blur="blurInput" placeholder="null" :rows="3"
-                      type="textarea"
-                      @change="inputChange(scope.row)"/>
-          </div>
-          <div v-else>
-            <div v-if="scope.row.value.length"
-                 :style="'color:' + SwitchColor(scope.row.type)">
-              {{ contentLimit(scope.row.value) }}
+    <div class="table-container">
+      <el-table
+        :data="searchState.isSearching ? searchState.values : state.values"
+        v-loading="state.loading"
+        size="mini" border stripe
+        @cell-dblclick="edit"
+        style="width: 100%;">
+        <el-table-column type="index" width="50"/>
+        <el-table-column prop="value" label="Value">
+          <template #default="scope">
+            <div v-if="scope.row.id === state.targetID">
+              <el-input size="mini" v-model="scope.row.value" @blur="blurInput" placeholder="null" :rows="3"
+                        type="textarea"
+                        @change="inputChange(scope.row)"/>
             </div>
-            <div class="text-gray-400 italic" v-else>null</div>
-          </div>
-        </template>
-      </el-table-column>
-    </el-table>
+            <div v-else>
+              <div v-if="scope.row.value.length"
+                   :style="'color:' + SwitchColor(scope.row.type)">
+                {{ contentLimit(scope.row.value) }}
+              </div>
+              <div class="text-gray-400 italic" v-else>null</div>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 
@@ -69,7 +66,7 @@ import { ElNotification } from 'element-plus'
 import { contentLimit } from '@/utils/contentLimit'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { Check } from '@element-plus/icons-vue'
+import { Check, RefreshRight, Search, Top, Bottom, SortUp, SortDown } from '@element-plus/icons-vue'
 import { FormatCommandField } from '@/utils/formatCommandField'
 import { useI18n } from 'vue-i18n'
 

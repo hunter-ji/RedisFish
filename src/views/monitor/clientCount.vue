@@ -57,7 +57,7 @@ const fetchData = async () => {
 const createInterval = () => {
   theInterval = setInterval(() => {
     fetchData()
-  }, 60000)
+  }, 30000)
 }
 const destroyInterval = () => {
   clearInterval(theInterval)
