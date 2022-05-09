@@ -82,7 +82,7 @@
 
 <script setup lang="ts">
 import { defineEmits, defineProps, PropType, reactive, watch, ref } from 'vue'
-import { commandObjectType, hashTableValueType, listTableValueType } from '@/views/valueContent/index'
+import { commandObjectType, listTableValueType } from '@/views/valueContent/index'
 import TopTab from './topTab.vue'
 import { SwitchColor } from '@/utils/switchColor'
 import { ElNotification } from 'element-plus'
@@ -119,7 +119,7 @@ const state: { values: listTableValueType[], ttl: number, oldTTL: number, target
   oldTTL: 0,
   targetID: 0,
   commands: [],
-  loading: false
+  loading: true
 })
 const searchState: { search: string, isSearching: boolean, values: listTableValueType[] } = reactive({
   search: '',

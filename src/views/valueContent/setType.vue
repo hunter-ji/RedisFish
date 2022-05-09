@@ -112,7 +112,7 @@ const state: { values: setTableValueType[], ttl: number, oldTTL: number, multipl
   multipleSelection: [],
   targetID: -1,
   commands: [],
-  loading: false
+  loading: true
 })
 const searchState: { search: string, isSearching: boolean, values: setTableValueType[] } = reactive({
   search: '',
@@ -173,7 +173,7 @@ const inputChange = (row: setTableValueType) => {
     row.isRepeat = true
     ElNotification({
       title: t('valueContent.notification.dataDuplicationTitle'),
-      message: `${row.value && row.value.length > 6 ? row.value.slice(0, 6) + '...' : row.value}t('valueContent.notification.dataDuplicationMessage')`,
+      message: row.value && row.value.length > 6 ? row.value.slice(0, 6) + '...' : row.value + t('valueContent.notification.dataDuplicationMessage'),
       showClose: false,
       duration: 5000
     })

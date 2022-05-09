@@ -130,7 +130,7 @@ const state: { values: zsetTableValueType[], ttl: number, oldTTL: number, multip
   targetID: -1,
   targetLabel: '',
   commands: [],
-  loading: false
+  loading: true
 })
 const searchState: { search: string, isSearching: boolean, values: zsetTableValueType[] } = reactive({
   search: '',
@@ -202,7 +202,7 @@ const inputChange = (row: zsetTableValueType, isField: boolean) => {
       row.isRepeat = true
       ElNotification({
         title: t('valueContent.notification.dataDuplicationTitle'),
-        message: `${row.field && row.field.length > 6 ? row.field.slice(0, 6) + '...' : row.field}t('valueContent.notification.dataDuplicationMessage')`,
+        message: row.field && row.field.length > 6 ? row.field.slice(0, 6) + '...' : row.field + t('valueContent.notification.dataDuplicationMessage'),
         showClose: false,
         duration: 5000
       })
