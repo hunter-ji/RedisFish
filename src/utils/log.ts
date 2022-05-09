@@ -21,9 +21,9 @@ export const clearLog = async (serverTab: serverTabType): Promise<void> => {
   fs.writeFileSync(storeFilePath, '')
 }
 
-export const setLog = async (serverTab: serverTabType, command: string, createAt: string): Promise<void> => {
+export const setLog = async (serverTab: serverTabType, command: string[], createAt: string): Promise<void> => {
   const storeFilePath = await genFilePath(serverTab)
-  await fs.appendFileSync(storeFilePath, `\r\n${createAt}###${command}`)
+  await fs.appendFileSync(storeFilePath, `\r\n${createAt}###${command.map((item: string) => item.includes(' ') ? `'${item}'` : item).join(' ')}`)
 }
 
 export const readLog = async (serverTab: serverTabType): Promise<string[]> => {

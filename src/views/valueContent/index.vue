@@ -121,7 +121,7 @@ const runCommand = async () => {
   for (let i = 0; i < state.commands.length; i++) {
     const command = state.commands[i].command
     state.commands[i].result = await client.sendCommand(command)
-    await setLog(props.serverTab, command.join(' '), dateFormat())
+    await setLog(props.serverTab, command, dateFormat())
   }
   await client.disconnect()
   state.runStatus = 2
