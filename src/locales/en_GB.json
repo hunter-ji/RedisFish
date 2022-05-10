@@ -127,10 +127,11 @@
       "deleteFromFooter": "delete from footer"
     },
     "notification": {
-      "infoTitle": "tip",
+      "infoTitle": "Tip",
       "dataDuplicationTitle": "data duplication",
       "dataDuplicationMessage": "Duplicate with existing data",
-      "emptyContentMessage": "No action to take"
+      "emptyContentMessage": "No action to take",
+      "copySuccessMessage": "Copy successfully"
     }
   }
 }

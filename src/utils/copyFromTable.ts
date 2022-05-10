@@ -7,6 +7,6 @@ const { toClipboard } = useClipboard()
 export const copyKey = async (text: string): Promise<void> => {
   if (store.getters.isCtrl) {
     await toClipboard(text)
-    ElMessage({ message: '复制成功', type: 'success' })
+    ElMessage({ message: 'Copy successfully', type: 'success' })
   }
 }

@@ -5,7 +5,7 @@
       <!--ttl-->
       <div class="w-1/5 flex flex-row items-center">
         <div class="text-sm mr-1">TTL(s)</div>
-        <el-input-number v-model="state.ttl" size="mini" controls-position="right" :min="-1"/>
+        <el-input-number v-model="state.ttl" size="small" controls-position="right" :min="-1"/>
       </div>
 
       <!--mode switch-->
@@ -101,7 +101,7 @@ const submit = async () => {
     ElNotification({
       title: t('newKeyValue.notification.infoTitle'),
       message: t('newKeyValue.notification.emptyContentMessage'),
-      showClose: false,
+      type: 'warning',
       duration: 2000
     })
   }

@@ -139,7 +139,7 @@ const submit = () => {
     ElNotification({
       title: t('consolePane.index.notification.title'),
       message: t('consolePane.index.notification.message'),
-      showClose: false,
+      type: 'warning',
       duration: 2000
     })
   }

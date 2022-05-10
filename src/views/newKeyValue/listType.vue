@@ -5,7 +5,7 @@
     <div class="w-full flex flex-row justify-between mb-4">
       <div class="w-1/5 flex flex-row items-center">
         <div class="text-sm mr-1">TTL(s)</div>
-        <el-input-number v-model="state.ttl" size="mini" controls-position="right" :min="-1"/>
+        <el-input-number v-model="state.ttl" size="small" controls-position="right" :min="-1"/>
       </div>
       <div class="w-64 flex flex-row items-center justify-end">
         <div class="mr-2 flex flex-row items-center">
@@ -33,14 +33,14 @@
       <el-table
         :data="searchState.isSearching ? searchState.values : state.values"
         v-loading="state.loading"
-        size="mini" border stripe
+        size="small" border stripe
         @cell-dblclick="edit"
         style="width: 100%;">
         <el-table-column type="index" width="50"/>
         <el-table-column prop="value" label="Value">
           <template #default="scope">
             <div v-if="scope.row.id === state.targetID">
-              <el-input size="mini" v-model="scope.row.value" @blur="blurInput" placeholder="null" :rows="3"
+              <el-input size="small" v-model="scope.row.value" @blur="blurInput" placeholder="null" :rows="3"
                         type="textarea"
                         @change="inputChange(scope.row)"/>
             </div>
@@ -159,7 +159,7 @@ const submit = () => {
     ElNotification({
       title: t('newKeyValue.notification.infoTitle'),
       message: t('newKeyValue.notification.emptyContentMessage'),
-      showClose: false,
+      type: 'warning',
       duration: 2000
     })
   }

@@ -3,7 +3,7 @@
     <el-table
       :data="props.result"
       height="420"
-      size="mini" border stripe
+      size="small" border stripe
       style="width: 100%;">
       <el-table-column type="index" width="50"/>
       <el-table-column prop="field" label="field"/>

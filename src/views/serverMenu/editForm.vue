@@ -1,29 +1,24 @@
 <template>
   <div>
     <el-form :model="state.form" label-width="100px">
-      <el-form-item :label="t('serverMenu.form.name')" required>
-        <el-input v-model="state.form.name" :placeholder="t('serverMenu.form.namePlaceholder')"/>
+      <el-form-item :label="t('serverMenu.form.name')">
+        <el-input v-model="state.form.name" :placeholder="t('serverMenu.form.namePlaceholder')" maxlength="30" show-word-limit/>
       </el-form-item>
-      <el-form-item :label="t('serverMenu.form.host')" required>
+      <el-form-item :label="t('serverMenu.form.host')">
         <el-input v-model="state.form.host" placeholder="192.168.1.10"/>
       </el-form-item>
-      <el-form-item :label="t('serverMenu.form.port')" required>
+      <el-form-item :label="t('serverMenu.form.port')">
         <el-input type="number" v-model="state.form.port" placeholder="6379" class="clear-number-input"/>
       </el-form-item>
-      <el-form-item :label="t('serverMenu.form.password')" required>
+      <el-form-item :label="t('serverMenu.form.password')">
         <el-input v-model="state.form.password" placeholder="username:password"/>
       </el-form-item>
       <el-form-item>
         <div class="flex flex-row items-center justify-between">
-          <div v-if="state.checkStatus === 1" style="color: #67C23A;" class="flex flex-row items-center">
-            <check class="w-4 h-4 mr-1" style="color: #67C23A;"/>
-            {{ t('serverMenu.form.successTip') }}
-          </div>
-          <div v-else-if="state.checkStatus === 2" style="color: #F56C6C;" class="flex flex-row items-center">
+          <div v-if="!state.isConnected" style="color: #F56C6C;" class="flex flex-row items-center">
             <close-bold class="w-4 h-4 mr-1" style="color: #F56C6C;"/>
             {{ t('serverMenu.form.name') }}
           </div>
-          <div v-else></div>
           <div class="flex flex-row items-center justify-end">
             <el-button @click="handleCancel()">{{ t('serverMenu.form.cancelBtn') }}</el-button>
             <el-button type="danger" @click="handleDel()">{{ t('serverMenu.form.deleteBtn') }}</el-button>
@@ -67,7 +62,7 @@
 import { defineEmits, defineProps, onMounted, PropType, reactive, ref, watch } from 'vue'
 import { serverType } from '@/utils/store'
 import { getClient } from '@/utils/redis'
-import { CloseBold, Check } from '@element-plus/icons-vue'
+import { CloseBold } from '@element-plus/icons-vue'
 import { useStore } from 'vuex'
 import { ElNotification } from 'element-plus/es'
 import { useI18n } from 'vue-i18n'
@@ -89,7 +84,7 @@ const props = defineProps({
 })
 const emit = defineEmits(['delete', 'cancel', 'submit'])
 const state: { isConnected: boolean, form: serverType, originFormName: string } = reactive({
-  isConnected: false,
+  isConnected: true,
   form: {
     id: 0,
     name: '',
@@ -129,7 +124,7 @@ const handleSubmit = async () => {
       ElNotification({
         title: t('serverMenu.notification.infoTitle'),
         message: t('serverMenu.notification.errorMessage'),
-        showClose: false,
+        type: 'error',
         duration: 3000
       })
       return
@@ -140,7 +135,7 @@ const handleSubmit = async () => {
   ElNotification({
     title: t('serverMenu.notification.infoTitle'),
     message: t('serverMenu.notification.editSuccessMessage'),
-    showClose: false,
+    type: 'success',
     duration: 2000
   })
 }

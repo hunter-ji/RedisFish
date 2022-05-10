@@ -30,7 +30,7 @@
       <el-table
         :data="state.commands"
         height="600"
-        size="mini" border stripe
+        size="small" border stripe
         style="width: 100%;">
         <el-table-column label="commands">
           <template #default="scope">
@@ -97,7 +97,7 @@ const handleCommand = (commands: commandObjectType[]) => {
     ElNotification({
       title: t('newKeyValue.index.notification.title'),
       message: t('newKeyValue.index.notification.message'),
-      showClose: false,
+      type: 'warning',
       duration: 2000
     })
     return
@@ -113,7 +113,7 @@ const runCommand = async () => {
   for (let i = 0; i < state.commands.length; i++) {
     const command = state.commands[i].command
     state.commands[i].result = await client.sendCommand(command)
-    await setLog(props.serverTab, command.join(' '), dateFormat())
+    await setLog(props.serverTab, command, dateFormat())
   }
   await client.disconnect()
   state.runStatus = 2

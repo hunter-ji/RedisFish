@@ -21,7 +21,7 @@
       <el-table
         :data="state.commands"
         height="600"
-        size="mini" border stripe
+        size="small" border stripe
         style="width: 100%;">
         <el-table-column label="commands">
           <template #default="scope">

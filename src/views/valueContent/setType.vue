@@ -8,14 +8,14 @@
     <div class="w-full flex flex-row justify-between mb-4">
       <div class="w-1/5 flex flex-row items-center">
         <div class="text-sm mr-1">TTL(s)</div>
-        <el-input-number v-model="state.ttl" size="mini" controls-position="right" :min="-1" />
+        <el-input-number v-model="state.ttl" size="small" controls-position="right" :min="-1" />
       </div>
       <div
         :class="searchState.search.length !== 0 ? 'w-3/5 transition-width duration-1000 ease-in-out delay-100' : 'w-2/5 transition-width duration-500 ease-in-out'">
         <el-input v-model="searchState.search" size="small" :placeholder="t('valueContent.searchInputPlaceholder')" :prefix-icon="Search" clearable
                   @keyup.enter="search"/>
       </div>
-      <div class="w-1/5 flex flex-row justify-end transition-width duration-200 ease-in delay-75">
+      <div class="w-1/5 flex flex-row justify-end items-center transition-width duration-200 ease-in delay-75">
         <transition name="slide-fade">
           <div class="flex flex-row items-center" style="margin-right: 10px;" v-if="!searchState.search.length">
             <el-tooltip effect="light" :content="t('valueContent.btnGroup.refresh')" placement="bottom" :show-after="delayNumber">
@@ -43,7 +43,7 @@
       <el-table
         :data="searchState.isSearching ? searchState.values : state.values"
         v-loading="state.loading"
-        size="mini" border stripe @selection-change="handleSelectionChange"
+        size="small" border stripe @selection-change="handleSelectionChange"
         @cell-dblclick="edit"
         @cell-contextmenu="handleContentDetail"
         style="width: 100%;">
@@ -52,7 +52,7 @@
         <el-table-column prop="value" label="Value">
           <template #default="scope">
             <div v-if="scope.row.id === state.targetID">
-              <el-input size="mini" v-model="scope.row.value" @blur="blurInput" placeholder="null" :rows="3" type="textarea"
+              <el-input size="small" v-model="scope.row.value" @blur="blurInput" placeholder="null" :rows="3" type="textarea"
                         @change="inputChange(scope.row)"/>
             </div>
             <div v-else>
@@ -174,7 +174,7 @@ const inputChange = (row: setTableValueType) => {
     ElNotification({
       title: t('valueContent.notification.dataDuplicationTitle'),
       message: row.value && row.value.length > 6 ? row.value.slice(0, 6) + '...' : row.value + t('valueContent.notification.dataDuplicationMessage'),
-      showClose: false,
+      type: 'error',
       duration: 5000
     })
   } else if (index === -1 && row.isRepeat) {
@@ -212,7 +212,7 @@ const submit = () => {
     ElNotification({
       title: t('valueContent.notification.infoTitle'),
       message: t('valueContent.notification.emptyContentMessage'),
-      showClose: false,
+      type: 'warning',
       duration: 2000
     })
   }

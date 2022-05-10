@@ -130,7 +130,8 @@
       "infoTitle": "提示",
       "dataDuplicationTitle": "数据重复",
       "dataDuplicationMessage": "与现有数据重复",
-      "emptyContentMessage": "没有可执行的操作"
+      "emptyContentMessage": "没有可执行的操作",
+      "copySuccessMessage": "复制成功"
     }
   }
 }

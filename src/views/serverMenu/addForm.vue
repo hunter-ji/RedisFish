@@ -1,13 +1,13 @@
 <template>
   <div>
     <el-form :model="state.form" label-width="100px">
-      <el-form-item :label="t('serverMenu.form.name')" required>
-        <el-input v-model="state.form.name" :placeholder="t('serverMenu.form.namePlaceholder')" maxlength="20" show-word-limit/>
+      <el-form-item :label="t('serverMenu.form.name')">
+        <el-input v-model="state.form.name" :placeholder="t('serverMenu.form.namePlaceholder')" maxlength="30" show-word-limit/>
       </el-form-item>
-      <el-form-item :label="t('serverMenu.form.host')" required>
+      <el-form-item :label="t('serverMenu.form.host')">
         <el-input v-model="state.form.host" placeholder="192.168.1.10"/>
       </el-form-item>
-      <el-form-item :label="t('serverMenu.form.port')" required>
+      <el-form-item :label="t('serverMenu.form.port')">
         <el-input type="number" v-model="state.form.port" placeholder="6379" class="clear-number-input"/>
       </el-form-item>
       <el-form-item :label="t('serverMenu.form.password')">
@@ -66,7 +66,7 @@
 import { defineEmits, defineProps, onMounted, PropType, reactive, ref } from 'vue'
 import { serverType } from '@/utils/store'
 import { getClient } from '@/utils/redis'
-import { CloseBold, Check, Paperclip } from '@element-plus/icons-vue'
+import { Check, Paperclip } from '@element-plus/icons-vue'
 import { ElNotification, ElButton } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import { remote } from 'electron'
@@ -137,7 +137,7 @@ const submit = async () => {
     ElNotification({
       title: t('serverMenu.notification.infoTitle'),
       message: t('serverMenu.notification.errorMessage'),
-      showClose: false,
+      type: 'error',
       duration: 3000
     })
     return
@@ -148,7 +148,7 @@ const submit = async () => {
   ElNotification({
     title: t('serverMenu.notification.infoTitle'),
     message: t('serverMenu.notification.addSuccessMessage'),
-    showClose: false,
+    type: 'success',
     duration: 2000
   })
 }

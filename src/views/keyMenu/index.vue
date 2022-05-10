@@ -14,34 +14,34 @@
           <transition name="slide-fade">
             <div class="flex flex-row items-center justify-end" v-if="!searchState.search.length" style="margin-right: 10px;">
               <el-tooltip effect="light" :content="t('keyMenu.btnGroup.monitor')" placement="bottom" :show-after="1000">
-                <el-button type="success" size="mini" :icon="DataLine" circle @click="handleMonitorToggle"/>
+                <el-button type="success" size="small" :icon="DataLine" circle @click="handleMonitorToggle"/>
               </el-tooltip>
             </div>
           </transition>
           <transition name="slide-fade">
             <div class="flex flex-row items-center justify-end" v-if="!searchState.search.length" style="margin-right: 10px;">
               <el-tooltip effect="light" :content="t('keyMenu.btnGroup.log')" placement="bottom" :show-after="1000">
-                <el-button type="primary" size="mini" :icon="Tickets" circle @click="dialogState.logShow = true"/>
+                <el-button type="primary" size="small" :icon="Tickets" circle @click="dialogState.logShow = true"/>
               </el-tooltip>
             </div>
           </transition>
           <transition name="slide-fade">
             <div class="flex flex-row items-center justify-end" v-if="!searchState.search.length" style="margin-right: 10px;">
               <el-tooltip effect="light" :content="t('keyMenu.btnGroup.sub')" placement="bottom" :show-after="1000">
-                <el-button type="warning" size="mini" :icon="Switch" circle @click="handlePsToggle"/>
+                <el-button type="warning" size="small" :icon="Switch" circle @click="handlePsToggle"/>
               </el-tooltip>
             </div>
           </transition>
           <transition name="slide-fade">
             <div class="flex flex-row items-center justify-end" v-if="!searchState.search.length" style="margin-right: 10px;">
               <el-tooltip effect="light" :content="t('keyMenu.btnGroup.refresh')" placement="bottom" :show-after="1000">
-                <el-button type="info" size="mini" :icon="RefreshRight" circle @click="fetchData"/>
+                <el-button type="info" size="small" :icon="RefreshRight" circle @click="fetchData"/>
               </el-tooltip>
             </div>
           </transition>
           <el-tooltip effect="light" :content="t('keyMenu.btnGroup.delete')" placement="bottom" :show-after="1000">
-            <el-button type="danger" size="mini" disabled :icon="Delete" circle v-if="!state.multipleSelection.length"/>
-            <el-button type="danger" size="mini" :icon="Delete" round class="flex flex-row items-center" @click="delKey" v-else>
+            <el-button type="danger" size="small" disabled :icon="Delete" circle v-if="!state.multipleSelection.length"/>
+            <el-button type="danger" size="small" :icon="Delete" round class="flex flex-row items-center" @click="delKey" v-else>
               ({{ state.multipleSelection.length }})
             </el-button>
           </el-tooltip>
@@ -49,7 +49,7 @@
       </div>
 
       <!--keys tale-->
-      <el-table :data="searchState.isSearching ? searchState.keysList : state.keysList" size="mini" height="90%" style="width: 100%;" stripe @cell-click="copyKey" @cell-dblclick="getValue"
+      <el-table :data="searchState.isSearching ? searchState.keysList : state.keysList" size="small" height="90%" style="width: 100%;" stripe @cell-click="copyKey" @cell-dblclick="getValue"
                 @selection-change="handleSelectionChange" class="pb-4" v-loading="state.loading">
         <el-table-column type="selection" width="50"/>
         <el-table-column prop="type" label="Type" width="70">

@@ -5,7 +5,7 @@
     <div class="w-full flex flex-row justify-between mb-4">
       <div class="w-1/5 flex flex-row items-center">
         <div class="text-sm mr-1">TTL(s)</div>
-        <el-input-number v-model="state.ttl" size="mini" controls-position="right" :min="-1"/>
+        <el-input-number v-model="state.ttl" size="small" controls-position="right" :min="-1"/>
       </div>
       <div class="w-1/5 flex flex-row justify-end transition-width duration-200 ease-in delay-75">
           <el-tooltip effect="light" :content="t('newKeyValue.btnGroup.add')" placement="bottom" :show-after="delayNumber">
@@ -29,7 +29,7 @@
       <el-table
         :data="searchState.isSearching ? searchState.values : state.values"
         v-loading="state.loading"
-        size="mini" border stripe @selection-change="handleSelectionChange"
+        size="small" border stripe @selection-change="handleSelectionChange"
         @cell-dblclick="edit"
         style="width: 100%;">
         <el-table-column type="selection" width="40"/>
@@ -37,7 +37,7 @@
         <el-table-column label="Field">
           <template #default="scope">
             <div v-if="scope.row.id === state.targetID && state.targetLabel === 'Field'">
-              <el-input size="mini" v-model="scope.row.field" @blur="blurInput" placeholder="null" :rows="3"
+              <el-input size="small" v-model="scope.row.field" @blur="blurInput" placeholder="null" :rows="3"
                         type="textarea"
                         @change="inputChange(scope.row, true)"/>
             </div>
@@ -53,7 +53,7 @@
         <el-table-column label="Value">
           <template #default="scope">
             <div v-if="scope.row.id === state.targetID && state.targetLabel === 'Value'">
-              <el-input size="mini" v-model="scope.row.value" @blur="blurInput" placeholder="null" :rows="3"
+              <el-input size="small" v-model="scope.row.value" @blur="blurInput" placeholder="null" :rows="3"
                         type="textarea"
                         @change="inputChange(scope.row, false)"/>
             </div>
@@ -141,7 +141,7 @@ const inputChange = (row: hashTableValueType, isField: boolean) => {
       ElNotification({
         title: t('newKeyValue.notification.infoTitle'),
         message: `${row.field && row.field.length > 6 ? row.field.slice(0, 6) + '...' : row.field}t('newKeyValue.notification.dataDuplicationMessage')`,
-        showClose: false,
+        type: 'error',
         duration: 5000
       })
     } else if (index === -1 && row.isRepeat) {
@@ -183,7 +183,7 @@ const submit = () => {
     ElNotification({
       title: t('newKeyValue.notification.infoTitle'),
       message: t('newKeyValue.notification.emptyContentMessage'),
-      showClose: false,
+      type: 'warning',
       duration: 2000
     })
   }
