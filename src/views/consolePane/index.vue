@@ -44,7 +44,7 @@
         <el-tab-pane
           v-for="(item, index) in outputState.outputTabs"
           :key="index"
-          :label="`t('consolePane.index.historyPaneLabel')${index+1}`"
+          :label="`${t('consolePane.index.historyPaneLabel')}${index+1}`"
           :name="`result${index+1}`"
           :closable="outputState.outputClosable"
         >
@@ -87,6 +87,7 @@ import ResultPane from './result.vue'
 import { useI18n } from 'vue-i18n'
 import CommandMode from './commandMode.vue'
 import { setLog } from '@/utils/log'
+import { handleCommandFormat } from '@/utils/cutsomCommandFormat'
 
 const { t } = useI18n()
 
@@ -159,7 +160,8 @@ const runCommands = async () => {
   outputState.outputTabs = []
 
   for (const item of clientState.commands) {
-    const res = await client.sendCommand(item.split(' '))
+    const commandArr = await handleCommandFormat(item)
+    const res = await client.sendCommand(commandArr)
     let result = res
     let resultData = ''
     if (res && res.length > 1 && res !== 'OK') {
@@ -185,7 +187,7 @@ const runCommands = async () => {
       createdAt: createAt
     })
 
-    await setLog(props.serverTab, item, createAt)
+    await setLog(props.serverTab, commandArr, createAt)
   }
 
   if (outputState.outputTabs.length) {

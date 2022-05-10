@@ -36,6 +36,7 @@ import { getClient } from '@/utils/redis'
 import { dateFormat } from '@/utils/formatTime'
 import { copyKey } from '@/utils/copyFromTable'
 import { setLog } from '@/utils/log'
+import { handleCommandFormat } from '@/utils/cutsomCommandFormat'
 
 const props = defineProps({
   serverTab: {
@@ -66,7 +67,9 @@ const handleRun = async () => {
   await client.connect()
   await client.sendCommand(['select', props.serverTab.db.slice(-1)])
 
-  const res = await client.sendCommand(key.split(' '))
+  const commandArr = await handleCommandFormat(key)
+
+  const res = await client.sendCommand(commandArr)
   if (!res || res === [] || res.length === 0) {
     results.push('nil')
   } else {
@@ -88,7 +91,7 @@ const handleRun = async () => {
     createAt: createAt
   })
 
-  await setLog(props.serverTab, key, createAt)
+  await setLog(props.serverTab, commandArr, createAt)
 }
 </script>
 

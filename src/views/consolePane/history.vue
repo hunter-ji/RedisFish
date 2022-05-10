@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <el-table :data="props.res" border style="width: 100%" height="400">
+  <div class="history-container">
+    <el-table :data="props.res" border style="width: 100%">
       <el-table-column prop="command" :label="t('consolePane.history.command')"/>
       <el-table-column prop="result" :label="t('consolePane.history.result')"/>
       <el-table-column prop="createdAt" :label="t('consolePane.history.createdAt')"/>
@@ -22,3 +22,10 @@ const props = defineProps({
   }
 })
 </script>
+
+<style scoped>
+.history-container {
+  height: 45vh;
+  overflow-y: auto;
+}
+</style>
