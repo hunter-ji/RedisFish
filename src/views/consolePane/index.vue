@@ -76,7 +76,6 @@ import { Check } from '@element-plus/icons-vue'
 import { defineProps, onMounted, PropType, reactive, ref, Ref } from 'vue'
 import ace from 'ace-builds'
 import 'ace-builds/webpack-resolver'
-import 'ace-builds/src-noconflict/theme-monokai'
 import { ElNotification } from 'element-plus'
 import { serverTabType } from '@/store/modules/serverList'
 import { getClient } from '@/utils/redis'
@@ -112,7 +111,7 @@ const consoleModeSelectOptions: { label: string, value: string }[] = [
 
 const state: { aceEditor: any, themePath: string } = reactive({
   aceEditor: null,
-  themePath: 'ace/theme/monokai'
+  themePath: 'ace/theme/gruvbox'
 })
 const clientState: { keyType: string, values: string[], ttl: number, commands: string[], historyCommands: historyCommandType[] } = reactive({
   keyType: '',

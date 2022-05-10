@@ -99,7 +99,7 @@ const handleRun = async () => {
 .command-content {
   /*height: 800px;*/
   height: calc(90vh - 110px);
-  background-color: #282828;
+  background-color: #32302f;
   color: #fbf1c7;
 }
 .command-input {

@@ -133,5 +133,18 @@
       "emptyContentMessage": "没有可执行的操作",
       "copySuccessMessage": "复制成功"
     }
+  },
+  "config": {
+    "title": "设置",
+    "tabGroup": {
+      "general": "常规",
+      "about": "关于"
+    },
+    "theme": {
+      "label": "主题",
+      "light": "浅色",
+      "dark": "深色",
+      "auto": "自动"
+    }
   }
 }

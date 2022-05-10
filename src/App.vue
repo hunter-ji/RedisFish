@@ -46,21 +46,22 @@ const checkCtrlEvent = () => {
     }
   })
 }
+const initTheme = () => {
+  store.dispatch('config/init')
+}
 
 onMounted(() => {
+  initTheme()
   fetchData()
   checkCtrlEvent()
 })
 </script>
 
 <style>
-.el-button {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
 body {
   font: 14px/1.5 "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
 }
+body.dark {
+   background: #282828;
+ }
 </style>

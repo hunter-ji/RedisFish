@@ -39,7 +39,7 @@
     <el-input v-model="state.val" :rows="30" type="textarea" v-show="editorModeState.mode === 'text'" @click="copyKey(state.val)"/>
 
     <!--ace-->
-    <div :id="`ace${aceID}`" v-show="editorModeState.mode === 'json'" style="border: 1px solid #DCDFE6;border-radius: 4px;" />
+    <div :id="`ace${aceID}`" v-show="editorModeState.mode === 'json'"/>
   </div>
 </template>
 
@@ -52,8 +52,6 @@ import { FormatCommandField } from '@/utils/formatCommandField'
 import ace from 'ace-builds'
 import { useI18n } from 'vue-i18n'
 import { copyKey } from '@/utils/copyFromTable'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { Check, RefreshRight } from '@element-plus/icons-vue'
 import { checkIsJSON } from '@/utils/checkIsJson'
 
@@ -85,6 +83,7 @@ const state: { val: string, oldVal: string, jsonVal: string, ttl: number, oldTTL
 })
 const aceState: { aceEditor: any, themePath: string, modePath: string } = reactive({
   aceEditor: null,
+  themePath: 'ace/theme/gruvbox',
   modePath: 'ace/mode/json'
 })
 const editorModeState: { mode: string } = reactive({
@@ -141,6 +140,7 @@ const initAceEditor = async () => {
     maxLines: 45, // 最大行数，超过会自动出现滚动条
     minLines: 40, // 最小行数，还未到最大行数时，编辑器会自动伸缩大小
     fontSize: 14, // 编辑器内字体大小
+    theme: aceState.themePath, // 默认设置的主题
     mode: aceState.modePath, // 默认设置的语言模式
     tabSize: 4 // 制表符设置为 4 个空格大小
   })

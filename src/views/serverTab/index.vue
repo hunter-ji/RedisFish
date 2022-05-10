@@ -5,6 +5,7 @@
       type="card"
       @tab-remove="removeTab"
       style="width: calc(100vw - 270px);"
+      v-show="data.length"
     >
       <el-tab-pane
         v-for="item in data"

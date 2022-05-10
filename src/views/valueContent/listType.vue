@@ -83,8 +83,6 @@ import TopTab from './topTab.vue'
 import { SwitchColor } from '@/utils/switchColor'
 import { ElNotification } from 'element-plus'
 import { contentLimit } from '@/utils/contentLimit'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { Check, RefreshRight, Search, Top, Bottom, SortUp, SortDown } from '@element-plus/icons-vue'
 import { FormatCommandField } from '@/utils/formatCommandField'
 import { useI18n } from 'vue-i18n'

@@ -11,7 +11,8 @@
 <script setup lang="ts">
 import ServerMenu from '../serverMenu/index.vue'
 import ServerTab from '../serverTab/index.vue'
-import Divider from '@/components/divider/index.vue'</script>
+import Divider from '@/components/divider/index.vue'
+</script>
 
 <style scoped>
 .container {

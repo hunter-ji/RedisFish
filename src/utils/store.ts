@@ -1,6 +1,7 @@
 import path from 'path'
 import { remote } from 'electron'
 import { writeFile, readFile, existsFile, mkdirFolder } from '@/utils/file'
+import { checkIsJSON } from '@/utils/checkIsJson'
 
 const storeFolderPath = path.join(remote.app.getPath('home'), '.myRedisClient')
 const storeFilePath = path.join(remote.app.getPath('home'), '.myRedisClient/.info')
@@ -26,7 +27,11 @@ export interface serverType {
 
 export const getStore = async (): Promise<serverType[]> => {
   const result = await readFile(storeFilePath)
-  return JSON.parse(result)
+  if (checkIsJSON(result)) {
+    return JSON.parse(result)
+  } else {
+    return []
+  }
 }
 
 export const initStoreFile = async (): Promise<void> => {

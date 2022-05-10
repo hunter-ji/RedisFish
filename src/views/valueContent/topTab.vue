@@ -26,4 +26,8 @@ const props = defineProps({
 .container {
   background-color: #f5f5f5;
 }
+
+body.dark .container {
+  background-color: #32302f;
+}
 </style>

@@ -30,7 +30,7 @@ const emit = defineEmits(['update', 'cancel'])
 const localMessage = ref('')
 const aceState: { aceEditor: any, themePath: string, modePath: string } = reactive({
   aceEditor: null,
-  themePath: 'ace/theme/monokai',
+  themePath: 'ace/theme/gruvbox',
   modePath: 'ace/mode/json'
 })
 const aceID: Ref<string> = ref('')

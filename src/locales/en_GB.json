@@ -133,5 +133,18 @@
       "emptyContentMessage": "No action to take",
       "copySuccessMessage": "Copy successfully"
     }
+  },
+  "config": {
+    "title": "Config",
+    "tabGroup": {
+      "general": "General",
+      "about": "About"
+    },
+    "theme": {
+      "label": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "auto": "Auto"
+    }
   }
 }

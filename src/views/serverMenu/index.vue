@@ -1,53 +1,56 @@
 <template>
   <div id="serverMenu">
-    <!-- menu header -->
-    <div class="flex flex-row items-center justify-between mb-2">
-      <div class="font-bold">{{ t('serverMenu.index.title') }}</div>
-      <el-tooltip effect="light" :content="t('serverMenu.index.addServerBtn')" placement="bottom" :show-after="1000">
-        <plus class="w-5 h-5 p-1 rounded cursor-pointer hover:text-white hover:bg-gray-300" @click="dialogState.addFormDialog = true" />
-      </el-tooltip>
-    </div>
+    <div class="h-full flex flex-col justify-between">
+      <div>
+        <!-- menu header -->
+        <div class="flex flex-row items-center justify-between mb-2">
+          <div class="font-bold">{{ t('serverMenu.index.title') }}</div>
+          <el-tooltip effect="light" :content="t('serverMenu.index.addServerBtn')" placement="bottom" :show-after="1000">
+            <plus class="w-5 h-5 p-1 rounded cursor-pointer hover:text-white hover:bg-gray-300" @click="dialogState.addFormDialog = true" />
+          </el-tooltip>
+        </div>
 
-    <!-- menu list -->
-    <div class="menu-list" v-if="state.serverList.length">
-      <div v-for="(item, index) in state.serverList" :key="index">
-        <div class="menu-list-item flex flex-row items-center rounded p-1 cursor-default" @click="clickServer(item, index)">
+        <!-- menu list -->
+        <div class="menu-list" v-if="state.serverList.length">
+          <div v-for="(item, index) in state.serverList" :key="index">
+            <div class="menu-list-item flex flex-row items-center rounded p-1 cursor-default" @click="clickServer(item, index)">
 
-          <!-- server menu server name -->
-          <div class="flex flex-row items-center justify-between w-full">
-            <!-- label click toggle -->
-            <div class="flex flex-row items-center">
-              <img src="@/assets/right.png"
-                   alt="icon"
-                   width="12"
-                   height="12"
-                   :class="{'icon': state.currentServerName === item.name}"/>
-              <div class="ml-2">{{ item.name }}</div>
+              <!-- server menu server name -->
+              <div class="flex flex-row items-center justify-between w-full">
+                <!-- label click toggle -->
+                <div class="flex flex-row items-center">
+                  <el-icon :class="{'icon-trans': state.currentServerName === item.name}"><arrow-right-bold /></el-icon>
+                  <div class="ml-2">{{ item.name }}</div>
+                </div>
+                <!-- server config btn -->
+                <setting class="w-4 h-4 cursor-pointer hover:text-white opacity-70" @click.stop="openEditFormDialog(item)" />
+              </div>
             </div>
-            <!-- server config btn -->
-            <setting class="w-4 h-4 cursor-pointer hover:text-white opacity-70" @click.stop="openEditFormDialog(item)" />
+            <!-- server menu server name end -->
+
+            <!-- server db list -->
+            <div class="menu-content flex flex-col ml-6" v-show="state.currentServerName === item.name">
+              <div class="menu-content-item p-1 rounded cursor-default"
+                   v-for="(childItem, childIndex) in item.children"
+                   :key="childIndex"
+                   @click="handleChildItemClick(item, childItem)"
+              >
+                {{ childItem }}
+              </div>
+            </div>
+            <!-- server db list end -->
+
           </div>
         </div>
-        <!-- server menu server name end -->
-
-        <!-- server db list -->
-          <div class="menu-content flex flex-col ml-6" v-show="state.currentServerName === item.name">
-            <div class="menu-content-item p-1 rounded cursor-default"
-                 v-for="(childItem, childIndex) in item.children"
-                 :key="childIndex"
-                 @click="handleChildItemClick(item, childItem)"
-            >
-              {{ childItem }}
-            </div>
+        <div v-else class="flex flex-col justify-center">
+          <div  class="text-center mt-6" style="color: #909399;">
+            {{ t('serverMenu.index.empty') }}
           </div>
-        <!-- server db list end -->
+        </div>
+      </div>
 
-      </div>
-    </div>
-    <div v-else class="flex flex-col justify-center">
-      <div  class="text-center mt-6" style="color: #909399;">
-        {{ t('serverMenu.index.empty') }}
-      </div>
+      <!-- config -->
+      <app-config />
     </div>
 
     <!-- addFormDialog -->
@@ -69,10 +72,11 @@ import { useStore } from 'vuex'
 import { onMounted, reactive } from 'vue'
 import { getClient } from '@/utils/redis'
 import { serverType, initStoreFile, getStore } from '@/utils/store'
-import { Setting, Plus } from '@element-plus/icons-vue'
+import { Setting, Plus, ArrowRightBold } from '@element-plus/icons-vue'
 import AddForm from './addForm.vue'
 import EditForm from './editForm.vue'
 import { useI18n } from 'vue-i18n'
+import AppConfig from '@/views/config/index.vue'
 
 const { t } = useI18n()
 
@@ -208,7 +212,7 @@ onMounted(async () => {
   background-color: rgba(199, 196, 196, 0.55);
 }
 
-.icon {
+.icon-trans {
   transform: rotate(90deg);
   transition: transform 500ms;
 }
