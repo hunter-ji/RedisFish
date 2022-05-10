@@ -1,5 +1,5 @@
 <template>
-  <div class="sub-content w-full h-full bg-white shadow rounded">
+  <div class="sub-content dark-bg2 w-full h-full bg-white shadow rounded">
     <!-- title -->
     <div class="sub-content-title flex flex-row justify-between items-center p-4">
       <div @click="copyKey(props.cardInfo.label)">{{ props.cardInfo.label }}</div>

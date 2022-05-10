@@ -63,5 +63,11 @@ body {
 }
 body.dark {
    background: #282828;
- }
+}
+body.dark div.dark-bg {
+  background-color: #1d2021;
+}
+body.dark div.dark-bg2 {
+  background-color: #32302f;
+}
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="channel-card flex flex-row justify-between items-center p-4 w-full my-1 bg-white rounded shadow cursor-pointer hover:opacity-70 hover:shadow-xl" :class="props.cardInfo.label === props.currentSubChannel ? 'shadow-xl bg-blue-50' : ''">
+  <div class="channel-card dark-bg2 flex flex-row justify-between items-center p-4 w-full my-1 bg-white rounded shadow cursor-pointer hover:opacity-70 hover:shadow-xl" :class="props.cardInfo.label === props.currentSubChannel ? 'shadow-xl bg-blue-50' : ''">
     <div>{{ props.cardInfo.label.length > 24 ? props.cardInfo.label.slice(0, 20) + '...' : props.cardInfo.label }}</div>
     <div class="point shadow-xl" :style="{ 'background-color': props.cardInfo.isSub ? '#67C23A' : ''}" />
   </div>

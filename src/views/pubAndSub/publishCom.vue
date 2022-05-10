@@ -1,5 +1,5 @@
 <template>
-  <div class="publish-container p-4 rounded bg-gray-50">
+  <div class="publish-container dark-bg p-4 rounded bg-gray-50">
     <!-- input -->
     <el-input type="textarea" rows="3" resize="none" v-model="state.message" />
 

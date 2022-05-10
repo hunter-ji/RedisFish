@@ -1,5 +1,5 @@
 <template>
-  <div class="sub-container flex flex-row items-center mb-4 bg-gray-50 rounded">
+  <div class="sub-container dark-bg flex flex-row items-center mb-4 bg-gray-50 rounded">
 
     <!-- channel container -->
     <div class="channel-container w-1/5 flex flex-col justify-between h-full">
