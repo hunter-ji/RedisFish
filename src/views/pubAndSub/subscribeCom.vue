@@ -83,7 +83,6 @@ const changeCardInfoSub = () => {
   state.subChannelList[index].isSub = !state.subChannelList[index].isSub
 }
 const getMessage = (message: subMessageType, channel: string) => {
-  console.log('getMessage : ', channel, message)
   const index = state.subChannelList.findIndex((item: subItemType) => item.label === channel)
   state.subChannelList[index].messages.push(message)
 }

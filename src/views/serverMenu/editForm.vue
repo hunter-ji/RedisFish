@@ -187,7 +187,6 @@ const openDialog = async (pathType: string) => {
 const fetchData = async () => {
   state.form = JSON.parse(JSON.stringify(props.form))
   state.originFormName = props.form.name
-  console.log('state.form : ', state.form)
   if (state.form.tls) {
     if (state.form.tls.tlsCertFilePath || state.form.tls.tlsKeyFilePath || state.form.tls.tlsCaCertFilePath) {
       checkList.value.push('TLS')

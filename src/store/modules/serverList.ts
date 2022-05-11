@@ -34,8 +34,6 @@ const mutations = {
   },
   delServerTabListWithServerName (state: stateType, serverName: string): void {
     state.serverTabList = state.serverTabList.filter((item: serverTabType) => {
-      console.log('item.name : ', item.name)
-      console.log('serverName : ', serverName)
       return item.name !== serverName
     })
   },

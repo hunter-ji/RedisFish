@@ -155,9 +155,7 @@ const submit = async () => {
 const ping = async () => {
   try {
     const client = getClient(state.form)
-    const res = await client.connect()
-    console.log('connect res : ', res)
-    client.on('error', (error: string) => console.log('on err : ', error))
+    await client.connect()
 
     const pingRes = await client.ping()
     if (pingRes === 'PONG') {
@@ -166,7 +164,6 @@ const ping = async () => {
 
     await client.disconnect()
   } catch (err) {
-    console.log('err : ', err)
     state.isConnected = false
   }
 }

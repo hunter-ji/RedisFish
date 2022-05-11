@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 import { subItemType } from '.'
-import { defineProps, PropType, watch, defineEmits, onBeforeUnmount, ref } from 'vue'
+import { defineProps, PropType, watch, defineEmits, ref } from 'vue'
 import { serverTabType } from '@/store/modules/serverList'
 import { getClient } from '@/utils/redis'
 import { timeFormat } from '@/utils/formatTime'
@@ -45,14 +45,11 @@ const fetchData = async () => {
 }
 const handleClose = async () => {
   await subscriber.unsubscribe(props.cardInfo.label)
-  // await subscriber.disconnect()
-  // await client.disconnect()
 }
 
 watch(props.cardInfo, async (first, second) => {
   if (first.label === second.label) {
     if (!lock.value && props.cardInfo.isSub) {
-      console.log('start : ', props.cardInfo.label)
       await fetchData()
       lock.value = true
     } else if (!props.cardInfo.isSub) {
@@ -60,10 +57,6 @@ watch(props.cardInfo, async (first, second) => {
       lock.value = true
     }
   }
-})
-
-onBeforeUnmount(async () => {
-  // await handleClose()
 })
 </script>
 

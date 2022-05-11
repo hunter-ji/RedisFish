@@ -117,7 +117,6 @@ const clickServer = (server: serverType, index: number) => {
 }
 const splitServerType = async (server: serverType, serverListIndex: number) => {
   const client = getClient(server)
-  client.on('error', (err: string) => console.log('Redis Client Error', err))
   await client.connect()
   /*
      # Keyspace
