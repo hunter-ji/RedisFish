@@ -146,5 +146,17 @@
       "dark": "深色",
       "auto": "自动"
     }
+  },
+  "contentDetail": {
+    "submit": "保存",
+    "cancel": "关闭"
+  },
+  "pubAndSub": {
+    "send": "发送",
+    "clear": "清空",
+    "inSub": "订阅中",
+    "startSub": "开始订阅",
+    "stopSub": "结束订阅",
+    "emptyMessage": "暂无消息"
   }
 }

@@ -49,7 +49,7 @@
       </div>
 
       <!--keys tale-->
-      <el-table :data="searchState.isSearching ? searchState.keysList : state.keysList" size="small" height="90%" style="width: 100%;" stripe @cell-click="copyKey" @cell-dblclick="getValue"
+      <el-table :data="searchState.isSearching ? searchState.keysList : state.keysList" size="small" height="90%" style="width: 100%;" stripe @cell-click="handleCopy" @cell-dblclick="getValue"
                 @selection-change="handleSelectionChange" class="pb-4" v-loading="state.loading">
         <el-table-column type="selection" width="50"/>
         <el-table-column prop="type" label="Type" width="70">
@@ -102,14 +102,12 @@ import { Delete, RefreshRight, Search, Tickets, DataLine, Switch } from '@elemen
 import KeyTab from '@/views/keyTab/index.vue'
 import { keyMenuType } from '@/views/valueContent/index'
 import { useI18n } from 'vue-i18n'
-import { ElMessage } from 'element-plus'
-import useClipboard from 'vue-clipboard3'
 import HistoryLog from '@/views/historyLog/index.vue'
 import { setLog } from '@/utils/log'
 import { dateFormat } from '@/utils/formatTime'
+import { copyKey } from '@/utils/copyFromTable'
 
 const { t } = useI18n()
-const { toClipboard } = useClipboard()
 
 const props = defineProps({
   serverTab: {
@@ -203,14 +201,8 @@ const fetchData = async () => {
   await client.disconnect()
   await changeLoading(false)
 }
-const copyKey = async (e: { label: string, value: number }) => {
-  if (store.getters.isCtrl) {
-    await toClipboard(e.label)
-    ElMessage({
-      message: '复制成功',
-      type: 'success'
-    })
-  }
+const handleCopy = async (e: { label: string, value: number }) => {
+  await copyKey(e.label)
 }
 const getValue = async (e: { label: string, value: number }) => {
   const { label } = e

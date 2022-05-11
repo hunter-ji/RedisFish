@@ -5,12 +5,12 @@
       <div @click="copyKey(props.cardInfo.label)">{{ props.cardInfo.label }}</div>
       <div class="flex flex-row justify-center items-center">
         <div class="point" :style="{ 'background-color': props.cardInfo.isSub ? '#67C23A' : ''}" />
-        <p class="text-gray-500 ml-2">{{ props.cardInfo.isSub ? '订阅中' : '' }}</p>
+        <p class="text-gray-500 ml-2">{{ props.cardInfo.isSub ? t('pubAndSub.inSub') : '' }}</p>
       </div>
       <div class="flex flex-row items-center">
-        <el-button size="small" @click="clear">清空</el-button>
-        <el-button type="success" size="small" @click="toggleSub" v-if="!props.cardInfo.isSub">开始订阅</el-button>
-        <el-button type="danger" size="small" @click="toggleSub" v-else>结束订阅</el-button>
+        <el-button size="small" @click="clear">t('pubAndSub.clear')</el-button>
+        <el-button type="success" size="small" @click="toggleSub" v-if="!props.cardInfo.isSub">{{ t('pubAndSub.startSub') }}</el-button>
+        <el-button type="danger" size="small" @click="toggleSub" v-else>{{ t('pubAndSub.stopSub') }}</el-button>
       </div>
     </div>
 
@@ -18,27 +18,31 @@
     <div class="sub-content-container">
       <div v-if="!props.cardInfo.messages.length" class="h-full flex flex-col justify-center items-center">
         <el-icon size="100" color="rgba(140, 147, 157, 0.33)"><chat-line-square /></el-icon>
-        <p style="color: rgba(140, 147, 157, 0.33);" class="mt-4">暂无消息</p>
+        <p style="color: rgba(140, 147, 157, 0.33);" class="mt-4">{{ t('pubAndSub.emptyMessage') }}</p>
       </div>
       <div v-for="(item, index) in props.cardInfo.messages" :key="index" v-else class="py-1">
         <p class="text-gray-500 font-sm px-4">{{ item.time }}</p>
-        <div class="sub-content-item py-2 px-4" v-if="!checkIsJSON(item.message)" @click="copyKey(item.message)">{{ formatJson(item.message) }}</div>
-        <json-viewer class="sub-content-item" :value="JSON.parse(item.message)" v-else @click="copyKey(item.message)" />
+        <div class="sub-content-item py-2 px-4" @click.left="copyKey(item.message)" @click.right="handleDetailShow(item.message)">{{ item.message }}</div>
       </div>
     </div>
+
+    <!-- content detail -->
+    <el-dialog v-model="contentDetailState.isShow" width="60%" center top="10vh">
+      <content-detail :message="contentDetailState.message" :is-read-only="true" @cancel="handleDetailCancel" v-if="contentDetailState.isShow" />
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps, PropType, defineEmits } from 'vue'
+import { defineProps, PropType, defineEmits, reactive } from 'vue'
 import { subItemType } from '@/views/pubAndSub/index'
 import { ElIcon } from 'element-plus'
 import { ChatLineSquare } from '@element-plus/icons-vue'
 import { copyKey } from '@/utils/copyFromTable'
-import { checkIsJSON } from '@/utils/checkIsJson'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import JsonViewer from 'vue-json-viewer'
+import ContentDetail from '@/components/contentDetail/index.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   cardInfo: {
@@ -48,19 +52,22 @@ const props = defineProps({
 })
 const emit = defineEmits(['toggleSub', 'clear'])
 
+const contentDetailState: { isShow: boolean, message: string } = reactive({
+  isShow: false,
+  message: ''
+})
+const handleDetailShow = (message: string) => {
+  contentDetailState.message = message
+  contentDetailState.isShow = true
+}
+const handleDetailCancel = () => {
+  contentDetailState.isShow = false
+}
 const toggleSub = async () => {
   emit('toggleSub')
 }
 const clear = async () => {
   emit('clear', props.cardInfo.label)
-}
-const formatJson = (message: string): string => {
-  const isJson = checkIsJSON(message)
-  if (isJson) {
-    console.log(JSON.stringify(JSON.parse(message), null, 2))
-    return JSON.stringify(JSON.parse(message), null, 2)
-  }
-  return message
 }
 </script>
 

@@ -47,7 +47,7 @@
         "cancel": "cancel",
         "run": "run",
         "running": "in progress",
-        "submit": "关闭"
+        "submit": "close"
       },
       "notification": {
         "title": "tip",
@@ -146,5 +146,17 @@
       "dark": "Dark",
       "auto": "Auto"
     }
+  },
+  "contentDetail": {
+    "submit": "save",
+    "cancel": "cancel"
+  },
+  "pubAndSub": {
+    "send": "send",
+    "clear": "clear",
+    "inSub": "subscribing",
+    "startSub": "start subscribing",
+    "stopSub": "end subscription",
+    "emptyMessage": "No news yet"
   }
 }

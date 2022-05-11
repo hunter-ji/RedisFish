@@ -22,7 +22,7 @@
         />
       </el-select>
 
-      <el-button type="primary" @click="publish">发送</el-button>
+      <el-button type="primary" @click="publish">{{ t('pubAndSub.send') }}</el-button>
     </div>
   </div>
 </template>
@@ -31,6 +31,9 @@
 import { defineProps, onMounted, PropType, reactive } from 'vue'
 import { serverTabType } from '@/store/modules/serverList'
 import { getClient } from '@/utils/redis'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   serverTab: {
@@ -62,8 +65,8 @@ const fetchData = async () => {
   await client.connect()
   await client.sendCommand(['select', props.serverTab.db.slice(-1)])
   const data = await client.sendCommand(['PUBSUB', 'CHANNELS'])
+  state.options = []
   if (data && data.length) {
-    state.options = []
     data.forEach((item: string) => {
       state.options.push({
         label: item,
@@ -71,6 +74,12 @@ const fetchData = async () => {
       })
     })
     state.channel = data[0]
+  } else {
+    state.options.push({
+      label: 'default',
+      value: 'default'
+    })
+    state.channel = 'default'
   }
   await client.disconnect()
 }

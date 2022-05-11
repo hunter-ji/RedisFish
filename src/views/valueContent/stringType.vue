@@ -25,10 +25,10 @@
 
       <!--btn group-->
       <div class="flex flex-row items-center justify-end">
-        <el-tooltip effect="light" content="刷新" placement="bottom" :show-after="delayNumber">
+        <el-tooltip effect="light" :content="t('valueContent.btnGroup.refresh')" placement="bottom" :show-after="delayNumber">
           <el-button type="info" size="small" :icon="RefreshRight" circle @click="refresh"/>
         </el-tooltip>
-        <el-tooltip effect="light" content="提交操作" placement="bottom" :show-after="delayNumber">
+        <el-tooltip effect="light" :content="t('valueContent.btnGroup.submit')" placement="bottom" :show-after="delayNumber">
           <el-button type="success" size="small" :icon="Check" circle @click="submit"/>
         </el-tooltip>
       </div>
@@ -147,9 +147,9 @@ const initAceEditor = async () => {
 }
 const handleAceUpdate = (message: string) => {
   if (checkIsJSON(message)) {
-    aceState.aceEditor.setValue(stringFormat(message))
+    aceState.aceEditor.setValue(stringFormat(message), -1)
   } else {
-    aceState.aceEditor.setValue(message)
+    aceState.aceEditor.setValue(message, -1)
   }
 }
 

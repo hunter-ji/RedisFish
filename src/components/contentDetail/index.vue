@@ -1,14 +1,21 @@
 <template>
   <div class="detail-container">
     <!--textarea-->
-    <el-input v-model="localMessage" :autosize="{ minRows: 20, maxRows: 30 }" type="textarea" v-show="!checkIsJSON(localMessage)" @click="copyKey(localMessage)"/>
+    <el-input
+      v-model="localMessage"
+      :autosize="{ minRows: 20, maxRows: 30 }"
+      type="textarea"
+      v-show="!checkIsJSON(localMessage)"
+      @click="copyKey(localMessage)"
+      :disabled="props.isReadOnly"
+    />
 
     <!--ace-->
     <div :id="`ace${aceID}`" v-show="checkIsJSON(localMessage)" />
 
     <div class="flex flex-row justify-end mt-2">
-      <el-button @click="handleCancel">关闭</el-button>
-      <el-button type="primary" @click="handleSubmit">保存</el-button>
+      <el-button @click="handleCancel">{{ t('contentDetail.cancel') }}</el-button>
+      <el-button type="primary" @click="handleSubmit" v-show="!props.isReadOnly">{{ t('contentDetail.submit') }}</el-button>
     </div>
   </div>
 </template>
@@ -18,11 +25,19 @@ import { onMounted, reactive, ref, Ref, defineProps, watch, defineEmits } from '
 import ace from 'ace-builds'
 import { copyKey } from '@/utils/copyFromTable'
 import { checkIsJSON } from '@/utils/checkIsJson'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   message: {
     type: String,
     required: true
+  },
+  isReadOnly: {
+    type: Boolean,
+    required: false,
+    default: false
   }
 })
 const emit = defineEmits(['update', 'cancel'])
@@ -42,9 +57,11 @@ const initAceEditor = async () => {
     maxLines: 40, // 最大行数，超过会自动出现滚动条
     minLines: 20, // 最小行数，还未到最大行数时，编辑器会自动伸缩大小
     fontSize: 14, // 编辑器内字体大小
+    theme: aceState.themePath, // 默认设置的主题
     mode: aceState.modePath, // 默认设置的语言模式
     tabSize: 4 // 制表符设置为 4 个空格大小
   })
+  aceState.aceEditor.setReadOnly(props.isReadOnly || false)
 }
 
 onMounted(async () => {
@@ -55,7 +72,7 @@ onMounted(async () => {
 
   if (checkIsJSON(localMessage.value)) {
     const jsonData = JSON.parse(localMessage.value)
-    aceState.aceEditor.setValue(JSON.stringify(jsonData, null, '\t'))
+    aceState.aceEditor.setValue(JSON.stringify(jsonData, null, '\t'), -1)
   }
 })
 const handleSubmit = () => {
@@ -77,7 +94,7 @@ watch(() => props.message, () => {
 watch(localMessage, () => {
   if (checkIsJSON(localMessage.value)) {
     const jsonData = JSON.parse(localMessage.value)
-    aceState.aceEditor.setValue(JSON.stringify(jsonData, null, '\t'))
+    aceState.aceEditor.setValue(JSON.stringify(jsonData, null, '\t'), -1)
   }
 })
 </script>
