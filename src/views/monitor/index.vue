@@ -1,6 +1,6 @@
 <template>
   <div class="Monitor p-4 w-full">
-    <div class="charts w-full flex flex-col justify-center items-center">
+    <div class="charts w-full flex flex-col justify-center items-center py-8">
       <cpu :server-tab="props.serverTab" class="mb-4" />
       <memory :server-tab="props.serverTab" class="mb-4" />
       <client-count :server-tab="props.serverTab" />
@@ -25,11 +25,9 @@ const props = defineProps({
 
 <style scoped>
 .Monitor {
-  //height: calc(90vh - 90px);
-  height: 90vh;
+  height: 85vh;
 }
 .charts {
-  //height: calc(90vh - 90px);
   height: 100%;
   overflow-y: auto;
 }

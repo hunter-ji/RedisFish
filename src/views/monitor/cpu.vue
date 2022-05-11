@@ -1,7 +1,7 @@
 <template>
   <div class="chart-container pb-4">
     <line-chart :data="state.dataList" y-formatter="" />
-    <div class="chart-title text-center text-sm text-gray-500">CPU使用量</div>
+    <div class="chart-title text-center text-sm text-gray-500">CPU消耗率(%)</div>
   </div>
 </template>
 
@@ -19,8 +19,9 @@ const props = defineProps({
   }
 })
 
-const state: { dataList: { x: string[], y: number[] } } = reactive({
-  dataList: { x: [], y: [] }
+const state: { dataList: { x: string[], y: number[] }, usedCpuSysBefore: number } = reactive({
+  dataList: { x: [], y: [] },
+  usedCpuSysBefore: 0
 })
 // eslint-disable-next-line no-undef
 let theInterval: NodeJS.Timer
@@ -40,9 +41,16 @@ const fetchData = async () => {
       if (tmpArr.length === 2) {
         const label = tmpArr[0]
         const value = tmpArr[1]
-        if (label === 'used_cpu_user') {
-          state.dataList.x.push(timeFormat())
-          state.dataList.y.push(value)
+        if (label === 'used_cpu_sys') {
+          if (!state.usedCpuSysBefore) {
+            state.usedCpuSysBefore = value
+          } else {
+            // 计算cpu消耗率
+            const result = ((value - state.usedCpuSysBefore) / 10) * 100
+            state.usedCpuSysBefore = value
+            state.dataList.x.push(timeFormat())
+            state.dataList.y.push(Number(result.toFixed(2)))
+          }
         }
       }
     }
@@ -53,7 +61,7 @@ const fetchData = async () => {
 const createInterval = () => {
   theInterval = setInterval(() => {
     fetchData()
-  }, 30000)
+  }, 10000)
 }
 const destroyInterval = () => {
   clearInterval(theInterval)
