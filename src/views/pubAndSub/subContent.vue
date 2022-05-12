@@ -8,7 +8,7 @@
         <p class="text-gray-500 ml-2">{{ props.cardInfo.isSub ? t('pubAndSub.inSub') : '' }}</p>
       </div>
       <div class="flex flex-row items-center">
-        <el-button size="small" @click="clear">t('pubAndSub.clear')</el-button>
+        <el-button size="small" @click="clear">{{ t('pubAndSub.clear') }}</el-button>
         <el-button type="success" size="small" @click="toggleSub" v-if="!props.cardInfo.isSub">{{ t('pubAndSub.startSub') }}</el-button>
         <el-button type="danger" size="small" @click="toggleSub" v-else>{{ t('pubAndSub.stopSub') }}</el-button>
       </div>

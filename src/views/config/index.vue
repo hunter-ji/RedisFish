@@ -1,13 +1,13 @@
 <template>
   <div>
-    <el-card shadow="hover" class="w-full cursor-pointer" @click="dialogState.isShow = !dialogState.isShow">
+    <el-card shadow="hover" :body-style="{padding: '8px'}" class="w-full cursor-pointer" @click="dialogState.isShow = !dialogState.isShow">
       <div class="flex flex-row justify-center items-center">
         <el-icon><setting /></el-icon>
-        <div class="ml-2">设置</div>
+        <div class="ml-2">{{ t('config.title') }}</div>
       </div>
     </el-card>
 
-    <el-dialog v-model="dialogState.isShow" width="30%" center top="10vh" :title="t('config.title')">
+    <el-dialog v-model="dialogState.isShow" width="40%" center top="10vh" :title="t('config.title')">
       <config-content v-if="dialogState.isShow" />
     </el-dialog>
   </div>
