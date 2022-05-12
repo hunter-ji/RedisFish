@@ -158,5 +158,12 @@
     "startSub": "开始订阅",
     "stopSub": "结束订阅",
     "emptyMessage": "暂无消息"
+  },
+  "monitor": {
+    "cpu": "CPU消耗率",
+    "memory": "内存使用量",
+    "clientCount": "已连接客户端数(个)和等待阻塞命令客户端数(个)",
+    "clientCountLegend1": "已连接客户端数",
+    "clientCountLegend2": "等待阻塞命令客户端数"
   }
 }

@@ -1,8 +1,8 @@
 <template>
-  <div class="Monitor p-4 w-full">
-    <div class="charts w-full flex flex-col justify-center items-center py-8">
-      <cpu :server-tab="props.serverTab" class="mb-4" />
-      <memory :server-tab="props.serverTab" class="mb-4" />
+  <div class="Monitor px-4 py-8 w-full">
+    <div class="charts w-full flex flex-col justify-center items-center">
+      <cpu :server-tab="props.serverTab" class="mb-2" />
+      <memory :server-tab="props.serverTab" class="mb-2" />
       <client-count :server-tab="props.serverTab" />
     </div>
   </div>
@@ -25,7 +25,7 @@ const props = defineProps({
 
 <style scoped>
 .Monitor {
-  height: 85vh;
+  height: 90vh;
 }
 .charts {
   height: 100%;

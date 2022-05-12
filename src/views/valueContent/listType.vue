@@ -59,7 +59,7 @@
             </div>
             <div v-else>
               <div v-if="scope.row.value.length"
-                   :style="'color:' + SwitchColor(scope.row.type)" @click="copyKey(scope.row.value)">
+                   :style="'color:' + SwitchColor(scope.row.type)" @click="copyKey(scope.row.value, t('valueContent.notification.copySuccessMessage'))">
                 {{ contentLimit(scope.row.value) }}
               </div>
               <div class="text-gray-400 italic" v-else>null</div>

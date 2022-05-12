@@ -1,7 +1,7 @@
 <template>
   <div class="chart-container pb-4">
     <line-chart :data="state.dataList" y-formatter="" />
-    <div class="chart-title text-center text-sm text-gray-500">CPU消耗率(%)</div>
+    <div class="chart-title text-center text-sm text-gray-500">{{ t('monitor.cpu') }}(%)</div>
   </div>
 </template>
 
@@ -11,6 +11,9 @@ import { defineProps, onBeforeUnmount, onMounted, PropType, reactive } from 'vue
 import { serverTabType } from '@/store/modules/serverList'
 import LineChart from './chart.vue'
 import { timeFormat } from '@/utils/formatTime'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   serverTab: {

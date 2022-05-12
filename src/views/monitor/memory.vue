@@ -1,7 +1,7 @@
 <template>
   <div class="chart-container pb-4">
     <line-chart :data="state.dataList" y-formatter="MB" />
-    <div class="chart-title text-center text-sm text-gray-500">内存使用量(MB)</div>
+    <div class="chart-title text-center text-sm text-gray-500">{{ t('monitor.memory') }}(MB)</div>
   </div>
 </template>
 
@@ -11,6 +11,9 @@ import { defineProps, onBeforeUnmount, onMounted, PropType, reactive } from 'vue
 import { serverTabType } from '@/store/modules/serverList'
 import LineChart from './chart.vue'
 import { timeFormat } from '@/utils/formatTime'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   serverTab: {
@@ -53,7 +56,7 @@ const fetchData = async () => {
 const createInterval = () => {
   theInterval = setInterval(() => {
     fetchData()
-  }, 30000)
+  }, 10000)
 }
 const destroyInterval = () => {
   clearInterval(theInterval)

@@ -12,12 +12,12 @@
       <div class="command-result py-4">
         <div class="command-result-item py-2" v-for="(item, index) in state.history" :key="index">
           <div class="command-result-item__time text-xs px-4"># {{ item.createAt }}</div>
-          <div class="command-result-item__command text-sm font-bold px-4 py-1 flex items-center justify-start" @click="copyKey(item.command)">
+          <div class="command-result-item__command text-sm font-bold px-4 py-1 flex items-center justify-start" @click="copyKey(item.command, t('valueContent.notification.copySuccessMessage'))">
             <p class="pr-2">{{ props.serverTab.name }} > </p>
             {{ item.command }}
           </div>
           <div class="command-result-item__result px-4" v-if="item.results && item.results[0] === 'nil'">(nil)</div>
-          <div class="command-result-item__result px-4 flex items-center" v-for="(item2, index2) in item.results" :key="index2" @click="copyKey(item2)" v-else>
+          <div class="command-result-item__result px-4 flex items-center" v-for="(item2, index2) in item.results" :key="index2" @click="copyKey(item2, t('valueContent.notification.copySuccessMessage'))" v-else>
             <div class="w-6 text-center">{{ index2 + 1 }})</div> {{ item2 }}
           </div>
         </div>
@@ -37,6 +37,9 @@ import { dateFormat } from '@/utils/formatTime'
 import { copyKey } from '@/utils/copyFromTable'
 import { setLog } from '@/utils/log'
 import { handleCommandFormat } from '@/utils/cutsomCommandFormat'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   serverTab: {

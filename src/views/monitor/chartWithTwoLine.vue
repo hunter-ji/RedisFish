@@ -1,6 +1,6 @@
 <template>
   <div class="lineChat">
-    <div :id="domID" style="width:1000px;height:250px;" />
+    <div :id="domID" class="e-chart" />
   </div>
 </template>
 
@@ -97,7 +97,3 @@ watch(props, () => {
   handleOption()
 })
 </script>
-
-<style scoped>
-
-</style>

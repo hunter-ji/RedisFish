@@ -202,7 +202,7 @@ const fetchData = async () => {
   await changeLoading(false)
 }
 const handleCopy = async (e: { label: string, value: number }) => {
-  await copyKey(e.label)
+  await copyKey(e.label, t('valueContent.notification.copySuccessMessage'))
 }
 const getValue = async (e: { label: string, value: number }) => {
   const { label } = e

@@ -24,9 +24,10 @@ module.exports = {
       nodeIntegration: true,
       disableMainProcessTypescript: false,
       mainProcessTypeChecking: false,
+      files: ['!node_modules'],
       build: {
-        productName: 'MyRedisDesktopManager',
-        appId: 'com.MyRedisDesktopManager.client',
+        productName: 'RedFish',
+        appId: 'com.RedFish.client',
         copyright: '© Kuari 2022',
         nsis: {
           oneClick: false,
@@ -37,7 +38,7 @@ module.exports = {
           installerHeaderIcon: 'build/icon.ico',
           createDesktopShortcut: true,
           createStartMenuShortcut: true,
-          shortcutName: 'MyRedisDesktopManager'
+          shortcutName: 'RedFish'
         },
         win: {
           icon: 'build/icon.ico',

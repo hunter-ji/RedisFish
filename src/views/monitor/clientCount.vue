@@ -1,7 +1,7 @@
 <template>
   <div class="chart-container pb-4">
     <line-chart :data="state.dataList" y-formatter="" />
-    <div class="chart-title text-center text-sm text-gray-500">连接个数和处理命令数</div>
+    <div class="chart-title text-center text-sm text-gray-500">{{ t('monitor.clientCount') }}</div>
   </div>
 </template>
 
@@ -11,6 +11,9 @@ import { defineProps, onBeforeUnmount, onMounted, PropType, reactive } from 'vue
 import { serverTabType } from '@/store/modules/serverList'
 import LineChart from './chartWithTwoLine.vue'
 import { timeFormat } from '@/utils/formatTime'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   serverTab: {
@@ -20,7 +23,7 @@ const props = defineProps({
 })
 
 const state: { dataList: { x: string[], yList: { y: number[], y2: number[] }, nameList: { y: string, y2: string } } } = reactive({
-  dataList: { x: [], yList: { y: [], y2: [] }, nameList: { y: '已连接客户端数', y2: '等待阻塞命令客户端数' } }
+  dataList: { x: [], yList: { y: [], y2: [] }, nameList: { y: t('monitor.clientCountLegend1'), y2: t('monitor.clientCountLegend2') } }
 })
 // eslint-disable-next-line no-undef
 let theInterval: NodeJS.Timer

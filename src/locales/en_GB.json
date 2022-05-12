@@ -158,5 +158,10 @@
     "startSub": "start subscribing",
     "stopSub": "end subscription",
     "emptyMessage": "No news yet"
+  },
+  "monitor": {
+    "cpu": "CPU consumption rate",
+    "memory": "memory usage",
+    "clientCount": "number of connected clients and number of clients waiting for blocking commands"
   }
 }

@@ -36,7 +36,7 @@
     </div>
 
     <!--textarea-->
-    <el-input v-model="state.val" :rows="30" type="textarea" v-show="editorModeState.mode === 'text'" @click="copyKey(state.val)"/>
+    <el-input v-model="state.val" :rows="30" type="textarea" v-show="editorModeState.mode === 'text'" @click="copyKey(state.val, t('valueContent.notification.copySuccessMessage'))"/>
 
     <!--ace-->
     <div :id="`ace${aceID}`" v-show="editorModeState.mode === 'json'"/>

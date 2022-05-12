@@ -22,6 +22,9 @@ import { initLogFile, readLog, clearLog } from '@/utils/log'
 import { defineProps, onMounted, PropType, reactive } from 'vue'
 import { serverTabType } from '@/store/modules/serverList'
 import { copyKey } from '@/utils/copyFromTable'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   serverTab: {
@@ -38,7 +41,7 @@ const fetchData = async () => {
 }
 const handleCopyLog = (logInfo: string) => {
   const arr = logInfo.split('###')
-  copyKey(arr[arr.length - 1])
+  copyKey(arr[arr.length - 1], t('valueContent.notification.copySuccessMessage'))
 }
 const handleClearLog = async () => {
   await clearLog(props.serverTab)
