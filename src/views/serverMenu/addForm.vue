@@ -14,21 +14,25 @@
         <el-input type="text" v-model="state.form.password" placeholder="username:password"/>
       </el-form-item>
       <el-form-item>
-        <div class="flex flex-row items-center justify-between">
-          <div v-if="state.isConnected" style="color: #67C23A;" class="flex flex-row items-center">
-            <check class="w-4 h-4 mr-1" style="color: #67C23A;"/>
-            {{ t('serverMenu.form.successTip') }}
-          </div>
-          <div v-else style="color: #909399;" class="flex flex-row items-center">
-            <paperclip class="w-4 h-4 mr-1" />
-            {{ t('serverMenu.form.defaultTip') }}
-          </div>
-          <div class="flex flex-row items-center justify-end">
-            <el-button @click="cancel()">{{ t('serverMenu.form.cancelBtn') }}</el-button>
-            <el-button type="success" @click="ping()">{{ t('serverMenu.form.testBtn') }}</el-button>
-            <el-button type="primary" @click="submit()">{{ t('serverMenu.form.saveBtn') }}</el-button>
-          </div>
-        </div>
+        <el-row justify="space-between" class="w-full">
+          <el-col :span="12">
+            <div v-if="state.isConnected" style="color: #67C23A;" class="flex flex-row items-center">
+              <check class="w-4 h-4 mr-1" style="color: #67C23A;"/>
+              {{ t('serverMenu.form.successTip') }}
+            </div>
+            <div v-else style="color: #909399;" class="flex flex-row items-center">
+              <paperclip class="w-4 h-4 mr-1" />
+              {{ t('serverMenu.form.defaultTip') }}
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="flex flex-row items-center justify-end">
+              <el-button @click="cancel()">{{ t('serverMenu.form.cancelBtn') }}</el-button>
+              <el-button type="success" @click="ping()">{{ t('serverMenu.form.testBtn') }}</el-button>
+              <el-button type="primary" @click="submit()">{{ t('serverMenu.form.saveBtn') }}</el-button>
+            </div>
+          </el-col>
+        </el-row>
       </el-form-item>
 
       <!-- check group -->

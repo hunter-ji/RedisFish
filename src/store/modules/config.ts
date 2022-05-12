@@ -3,7 +3,7 @@ import { configType, getConfig, setConfig } from '@/utils/configStore'
 import { handleThemeChange } from '@/utils/theme'
 
 const state: configType = {
-  theme: 1
+  theme: 3
 }
 
 const mutations = {

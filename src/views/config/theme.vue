@@ -16,7 +16,7 @@ import { useStore } from 'vuex'
 import { handleThemeChange } from '@/utils/theme'
 
 const { t } = useI18n()
-const radio = ref(1)
+const radio = ref(3)
 
 const store = useStore()
 
@@ -26,6 +26,6 @@ const handleChange = async (label: number) => {
 }
 
 onMounted(() => {
-  radio.value = store.getters.theme
+  radio.value = store.getters.theme || 3
 })
 </script>

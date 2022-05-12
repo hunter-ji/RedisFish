@@ -14,17 +14,21 @@
         <el-input v-model="state.form.password" placeholder="username:password"/>
       </el-form-item>
       <el-form-item>
-        <div class="flex flex-row items-center justify-between">
-          <div v-if="!state.isConnected" style="color: #F56C6C;" class="flex flex-row items-center">
-            <close-bold class="w-4 h-4 mr-1" style="color: #F56C6C;"/>
-            {{ t('serverMenu.form.name') }}
-          </div>
-          <div class="flex flex-row items-center justify-end">
-            <el-button @click="handleCancel()">{{ t('serverMenu.form.cancelBtn') }}</el-button>
-            <el-button type="danger" @click="handleDel()">{{ t('serverMenu.form.deleteBtn') }}</el-button>
-            <el-button type="primary" @click="handleSubmit()">{{ t('serverMenu.form.saveBtn') }}</el-button>
-          </div>
-        </div>
+        <el-row justify="space-between" class="w-full">
+          <el-col :span="12">
+            <div v-if="!state.isConnected" style="color: #F56C6C;" class="flex flex-row items-center">
+              <close-bold class="w-4 h-4 mr-1" style="color: #F56C6C;"/>
+              {{ t('serverMenu.form.name') }}
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="flex flex-row items-center justify-end">
+              <el-button @click="handleCancel()">{{ t('serverMenu.form.cancelBtn') }}</el-button>
+              <el-button type="danger" @click="handleDel()">{{ t('serverMenu.form.deleteBtn') }}</el-button>
+              <el-button type="primary" @click="handleSubmit()">{{ t('serverMenu.form.saveBtn') }}</el-button>
+            </div>
+          </el-col>
+        </el-row>
       </el-form-item>
 
       <!-- check group -->

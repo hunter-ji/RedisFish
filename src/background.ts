@@ -14,6 +14,7 @@ async function createWindow () {
   const win = new BrowserWindow({
     // width: 1600,
     // height: 1000,
+    autoHideMenuBar: true,
     width: screen.getPrimaryDisplay().workAreaSize.width,
     height: screen.getPrimaryDisplay().workAreaSize.height,
     webPreferences: {
