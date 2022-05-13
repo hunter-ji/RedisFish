@@ -15,21 +15,39 @@ jobs:
         uses: actions/checkout@v1
 
       - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: 16
 
-      - name: Build/release Electron app
-        uses: samuelmeuli/action-electron-builder@v1
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Build Electron App
+        env:
+          NODE_ENV: production
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        run: yarn build
+
+      - name: Cleanup Artifacts for Windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          npx rimraf "dist/!(*.exe)"
+
+      - name: Cleanup Artifacts for MacOS
+        if: matrix.os == 'macos-latest'
+        run: |
+          npx rimraf "dist/!(*.dmg)"
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3.0.0
         with:
-          # GitHub token, automatically provided to the action
-          # (No need to define this secret in the repo settings)
-          github_token: ${{ secrets.access_token }}
+          name: ${{ matrix.os }}
+          path: dist_electron
 
-          # If the commit is tagged with a version (e.g. "v1.0.0"),
-          # release the app after building
-          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
-
-- name: Electron Builder Action
-  uses: samuelmeuli/action-electron-builder@v1.6.0
-
+      - name: release
+        uses: softprops/action-gh-release@v0.1.14
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: "dist/**"
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
