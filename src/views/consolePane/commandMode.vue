@@ -71,8 +71,10 @@ const handleRun = async () => {
   await client.sendCommand(['select', props.serverTab.db.slice(-1)])
 
   const commandArr = await handleCommandFormat(key)
+  console.log('command Arr : ', commandArr)
 
   const res = await client.sendCommand(commandArr)
+  console.log('res : ', res)
   if (!res || res === [] || res.length === 0) {
     results.push('nil')
   } else {

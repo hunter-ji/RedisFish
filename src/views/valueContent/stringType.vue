@@ -152,6 +152,9 @@ const handleAceUpdate = (message: string) => {
     aceState.aceEditor.setValue(message, -1)
   }
 }
+const autoSwitchMode = () => {
+  editorModeState.mode = checkIsJSON(props.values[0]) ? 'json' : 'text'
+}
 
 onMounted(async () => {
   await genRandomAceID()
@@ -166,6 +169,7 @@ watch(props, () => {
   state.jsonVal = props.values[0]
 
   // handleAceUpdate(props.values[0])
+  autoSwitchMode()
 })
 
 watch(() => editorModeState.mode, async () => {

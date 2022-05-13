@@ -5,7 +5,11 @@ export const handleCommandFormat = async (command: string): Promise<string[]> =>
   let lock = false
   let sign = ''
   arr.forEach((item: string) => {
-    if (item.startsWith('\'') && !sign.length) {
+    if (item.startsWith('\'') && item.endsWith('\'') && !lock && !sign.length) {
+      newArr.push(item.replace(/(^'|'$)/g, ''))
+    } else if (item.startsWith('"') && item.endsWith('"') && !lock && !sign.length) {
+      newArr.push(item.replace(/(^"|"$)/g, ''))
+    } else if (item.startsWith('\'') && !sign.length) {
       lock = true
       sign = '\''
       tmpStr += `${item} `
