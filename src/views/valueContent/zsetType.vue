@@ -281,7 +281,7 @@ const handleDetailUpdate = (message: string) => {
   handleDetailCancel()
 }
 
-watch(searchState, () => {
+watch(() => searchState.search, () => {
   if (!searchState.search.length) searchState.isSearching = false
 })
 watch(props, () => {

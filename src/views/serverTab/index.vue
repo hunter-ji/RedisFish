@@ -43,7 +43,3 @@ watch(() => store.getters.currentServerTab, () => {
   state.activeTab = store.getters.currentServerTab
 })
 </script>
-
-<style scoped>
-
-</style>

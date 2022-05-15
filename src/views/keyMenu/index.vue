@@ -286,7 +286,7 @@ onMounted(async () => {
   await fetchData()
 })
 
-watch(searchState, () => {
+watch(() => searchState.search, () => {
   if (!searchState.search.length) {
     searchState.isSearching = false
     searchState.keysList = []
@@ -297,15 +297,12 @@ watch(searchState, () => {
 })
 </script>
 
-<style scoped>
+<style>
 .key-menu-container {
   height: calc(100vh - 65px);
   width: 100%;
   overflow-y: hidden;
 }
-</style>
-
-<style>
 .slide-fade-enter-active {
   transition: all 500ms ease-in;
 }
