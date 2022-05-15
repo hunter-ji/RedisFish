@@ -185,7 +185,7 @@ const fetchData = async () => {
     state.keysList.push({
       label: item,
       value: index,
-      type: type
+      type: typeof type === 'string' ? type : 'unknown'
     })
 
     // 处理分组前缀
@@ -240,7 +240,7 @@ const search = async () => {
     searchState.keysList.push({
       label: item,
       value: index,
-      type: type
+      type: typeof type === 'string' ? type : 'unknown'
     })
   }
   await client.disconnect()
@@ -297,27 +297,21 @@ watch(searchState, () => {
 })
 </script>
 
-<style>
+<style scoped>
 .key-menu-container {
   height: calc(100vh - 65px);
   width: 100%;
   overflow-y: hidden;
 }
+</style>
 
-.key-menu {
-  width: 400px;
-  min-width: 400px;
-  height: calc(100vh - 130px);
-}
-
+<style>
 .slide-fade-enter-active {
   transition: all 500ms ease-in;
 }
-
 .slide-fade-leave-active {
   transition: all 200ms ease-in;
 }
-
 .slide-fade-enter-from,
 .slide-fade-leave-to {
   transform: translateY(20px);
