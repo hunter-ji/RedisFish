@@ -1,9 +1,8 @@
 
-
+<p align="center">
 <img src="./build/icon.png" alt="logo" width="120" height="120" />
-
 <h3 style="text-align: center;">RedFish</h3>
-
+</p>
 
 
 ## 介绍
