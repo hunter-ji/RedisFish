@@ -1,7 +1,7 @@
-import { createClient, RedisClientType } from 'redis'
+import { createClient } from 'redis'
 import { serverType } from '@/utils/store'
 
-export const getClient = (data: serverType): RedisClientType => {
+export const getClient = (data: serverType): any => {
   if (data.tls?.tlsCaCertFile) {
     return createClient({
       password: data.password,

@@ -5,13 +5,6 @@ const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
 
 module.exports = {
   productionSourceMap: false,
-  chainWebpack: config => {
-    config.module.rule('pug')
-      .test(/\.pug$/)
-      .use('pug-html-loader')
-      .loader('pug-html-loader')
-      .end()
-  },
   configureWebpack: {
     plugins: [
       Components({
@@ -24,11 +17,11 @@ module.exports = {
       nodeIntegration: true,
       disableMainProcessTypescript: false,
       mainProcessTypeChecking: false,
-      files: ['!node_modules'],
       build: {
         productName: 'RedFish',
-        appId: 'com.RedFish.client',
+        appId: 'com.kuari.RedFish',
         copyright: '© Kuari 2022',
+        afterSign: 'build/notarize.js',
         nsis: {
           oneClick: false,
           allowElevation: true,
@@ -64,8 +57,22 @@ module.exports = {
             }
           ]
         },
+        mas: {
+          icon: 'build/icon.icns',
+          hardenedRuntime: true,
+          entitlements: 'electron-builder/entitlements.mas.plist',
+          entitlementsInherit: 'electron-builder/entitlements.mas.plist'
+        },
         mac: {
-          icon: 'build/icon.icns'
+          target: {
+            arch: ['x64', 'arm64'],
+            target: 'dmg'
+          },
+          icon: 'build/icon.icns',
+          hardenedRuntime: true,
+          entitlements: 'electron-builder/entitlements.plist',
+          entitlementsInherit: 'electron-builder/entitlements.plist',
+          provisioningProfile: 'electron-builder/comalibabaslobs.provisionprofile'
         },
         linux: {
           icon: 'build/icon.ico'

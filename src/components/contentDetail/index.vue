@@ -7,7 +7,7 @@
       type="textarea"
       v-show="!checkIsJSON(localMessage)"
       @click="copyKey(localMessage, t('valueContent.notification.copySuccessMessage'))"
-      disabled="props.isReadOnly"
+      :disabled="props.isReadOnly"
     />
 
     <!--ace-->
