@@ -22,6 +22,14 @@ module.exports = {
         appId: 'com.kuari.RedFish',
         copyright: '© Kuari 2022',
         afterSign: 'build/notarize.js',
+        publish: [
+          {
+            provider: 'github', // 打包上传到github
+            owner: 'Kuari', // 仓库所有者
+            repo: 'RedFish', // 仓库名称
+            releaseType: 'release' // 上传到github的版本类型（draft:草稿，prerelease:提前发行版，release:发行版）
+          }
+        ],
         nsis: {
           oneClick: false,
           allowElevation: true,
@@ -64,10 +72,12 @@ module.exports = {
           entitlementsInherit: 'electron-builder/entitlements.mas.plist'
         },
         mac: {
-          target: {
-            arch: ['x64', 'arm64'],
-            target: 'dmg'
-          },
+          target: [
+            {
+              target: 'dmg',
+              arch: 'universal'
+            }
+          ],
           icon: 'build/icon.icns',
           hardenedRuntime: true,
           entitlements: 'electron-builder/entitlements.plist',

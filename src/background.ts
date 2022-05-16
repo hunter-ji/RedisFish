@@ -2,6 +2,8 @@
 
 import { app, protocol, BrowserWindow, screen } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
+import { autoUpdater } from 'electron-updater'
+import log from 'electron-log'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Scheme must be registered before the app is ready
@@ -36,6 +38,9 @@ async function createWindow () {
     createProtocol('app')
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
+    log.transports.file.level = 'debug'
+    autoUpdater.logger = log
+    autoUpdater.checkForUpdatesAndNotify()
   }
 }
 

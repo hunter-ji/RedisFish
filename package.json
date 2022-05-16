@@ -1,6 +1,6 @@
 {
   "name": "RedFish",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "private": true,
   "author": "Kuari",
   "scripts": {
@@ -46,7 +46,9 @@
     "electron": "^13.0.0",
     "electron-builder": "^23.0.3",
     "electron-devtools-installer": "^3.1.0",
+    "electron-log": "^4.4.7",
     "electron-notarize": "^1.2.1",
+    "electron-updater": "^5.0.1",
     "element-plus": "^2.2.0",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.20.2",
