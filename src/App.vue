@@ -52,7 +52,7 @@ const initTheme = () => {
 
 onMounted(() => {
   initTheme()
-  fetchData()
+  // fetchData()
   checkCtrlEvent()
 })
 </script>

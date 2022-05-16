@@ -215,7 +215,7 @@ const inputChange = (row: hashTableValueType, isField: boolean) => {
 const del = () => {
   state.commands = []
   state.multipleSelection.forEach((item: hashTableValueType) => {
-    state.commands.push({ command: ['HDEL', FormatCommandField(props.keyName), FormatCommandField(item.value)] })
+    state.commands.push({ command: ['HDEL', FormatCommandField(props.keyName), FormatCommandField(item.oldField)] })
   })
   emit('delete', state.commands)
 }

@@ -56,7 +56,7 @@
     <!-- dialog -->
     <el-dialog v-model="dialog.show" :title="t('consolePane.index.dialog.title')" width="50%" center>
       <div>{{ t('consolePane.index.dialog.content') }}</div>
-      <div class="h-80 overflow-y-auto flex flex-col justify-start p-2 bg-gray-300 mt-2">
+      <div class="commands-dialog h-80 overflow-y-auto flex flex-col justify-start p-2 bg-gray-300 mt-2">
         <div class="p-2" v-for="(item, index) in clientState.commands" :key="index">{{ item }}</div>
       </div>
       <template #footer>
@@ -70,8 +70,6 @@
 </template>
 
 <script setup lang="ts">
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { Check } from '@element-plus/icons-vue'
 import { defineProps, onMounted, PropType, reactive, ref, Ref } from 'vue'
 import ace from 'ace-builds'
@@ -220,3 +218,9 @@ onMounted(async () => {
   })
 })
 </script>
+
+<style scoped>
+body.dark .commands-dialog {
+  background-color: #0a0a0a;
+}
+</style>

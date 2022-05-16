@@ -144,7 +144,7 @@ const inputChange = (row: zsetTableValueType, isField: boolean) => {
 const del = () => {
   state.commands = []
   state.multipleSelection.forEach((item: zsetTableValueType) => {
-    state.commands.push({ command: ['HDEL', FormatCommandField(props.keyName), item.value] })
+    state.commands.push({ command: ['HDEL', FormatCommandField(props.keyName), item.oldField] })
   })
 }
 const submit = () => {

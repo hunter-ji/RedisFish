@@ -62,7 +62,7 @@
 
       <!--pagination-->
       <el-pagination layout="prev, pager, next" :total="pageState.total" :page-size="pageState.pageSize"
-                     v-model:current-page="pageState.currentPage" @current-change="fetchData()"
+                     v-model:current-page="pageState.currentPage" @current-change="handlePageChange()"
                      class="py-2" v-show="!searchState.isSearching"
       />
       <el-pagination layout="prev, pager, next" :total="searchPageState.total" :page-size="searchPageState.pageSize"
@@ -118,7 +118,7 @@ const props = defineProps({
 
 const store = useStore()
 const client = getClient(props.serverTab)
-const state: { keysList: keyMenuType[], targetKey: string, multipleSelection: string[], loading: boolean } = reactive({
+const state: { keysList: keyMenuType[], targetKey: string, multipleSelection: keyMenuType[], loading: boolean } = reactive({
   keysList: [],
   targetKey: '',
   multipleSelection: [],
@@ -136,8 +136,8 @@ const dialogState: { show: boolean, logShow: boolean } = reactive({
   show: false,
   logShow: false
 })
-const pageState: { scanIndex: string, total: number, pageSize: number, currentPage: number } = reactive({
-  scanIndex: '0',
+const pageState: { scanIndexList: {[key: string]: string}, total: number, pageSize: number, currentPage: number } = reactive({
+  scanIndexList: { 1: '0' },
   total: 0,
   pageSize: 50,
   currentPage: 1
@@ -171,8 +171,11 @@ const fetchData = async () => {
   const keyspaceInfo: string = await client.sendCommand(['INFO', 'keyspace'])
   pageState.total = await getKeysLength(keyspaceInfo, dbIndex)
 
-  const scanResult: [string, string[]] = await client.sendCommand(['SCAN', pageState.scanIndex, 'COUNT', String(pageState.pageSize)])
-  pageState.scanIndex = scanResult[0]
+  const scanResult: [string, string[]] = await client.sendCommand(['SCAN', pageState.scanIndexList[1], 'COUNT', String(pageState.pageSize)])
+  if (!pageState.scanIndexList[2]) {
+    pageState.scanIndexList[2] = scanResult[0]
+    console.log(pageState.scanIndexList)
+  }
   const keys = scanResult[1]
 
   const groupList: string[] = []
@@ -201,6 +204,60 @@ const fetchData = async () => {
   await client.disconnect()
   await changeLoading(false)
 }
+const handlePageChange = async () => {
+  const dbIndex = props.serverTab.db.slice(-1)
+  await changeLoading(true)
+  state.keysList = []
+  await client.connect()
+  await client.sendCommand(['select', dbIndex])
+
+  const keyspaceInfo: string = await client.sendCommand(['INFO', 'keyspace'])
+  pageState.total = await getKeysLength(keyspaceInfo, dbIndex)
+
+  let scanResult = []
+  const pages = Object.keys(pageState.scanIndexList).length
+  const diffNumber = pageState.currentPage - pages
+  if (diffNumber >= 1) {
+    // If the user jumps and clicks
+    for (let i = 0; i < diffNumber; i++) {
+      scanResult = await client.sendCommand(['SCAN', pageState.scanIndexList[pages + i], 'COUNT', String(pageState.pageSize)])
+      if (!pageState.scanIndexList[pages + i + 1]) {
+        pageState.scanIndexList[pages + i + 1] = scanResult[0]
+      }
+    }
+  } else {
+    scanResult = await client.sendCommand(['SCAN', pageState.scanIndexList[pageState.currentPage], 'COUNT', String(pageState.pageSize)])
+    if (!pageState.scanIndexList[pageState.currentPage + 1]) {
+      pageState.scanIndexList[pageState.currentPage + 1] = scanResult[0]
+    }
+  }
+  const keys = scanResult[1]
+
+  const groupList: string[] = []
+  // keys.forEach((item: string, index: number) => {
+  for (let index = 0; index < keys.length; index++) {
+    const item = keys[index]
+
+    const type = await client.sendCommand(['type', item])
+    state.keysList.push({
+      label: item,
+      value: index,
+      type: typeof type === 'string' ? type : 'unknown'
+    })
+
+    // group filter
+    const preArr = item.split(':')
+    if (preArr.length >= 2) {
+      groupList.push(preArr[0])
+    }
+  }
+
+  const groupListSingle = [...new Set(groupList)]
+  groupState.list = groupListSingle.map((item: string) => ({ text: item, value: item }))
+
+  await client.disconnect()
+  await changeLoading(false)
+}
 const handleCopy = async (e: { label: string, value: number }) => {
   await copyKey(e.label, t('valueContent.notification.copySuccessMessage'))
 }
@@ -216,7 +273,7 @@ const addTab = async (targetName: string) => {
   })
   state.targetKey = targetName
 }
-const handleSelectionChange = (val: string[]) => {
+const handleSelectionChange = (val: keyMenuType[]) => {
   state.multipleSelection = val
 }
 const search = async () => {
@@ -231,7 +288,7 @@ const search = async () => {
   await client.sendCommand(['select', props.serverTab.db.slice(-1)])
 
   const scanResult: [string, string[]] = await client.sendCommand(['SCAN', searchPageState.scanIndex, 'MATCH', `*${searchState.search}*`, 'COUNT', String(searchPageState.pageSize)])
-  searchPageState.scanIndex = scanResult[0]
+  // searchPageState.scanIndex = scanResult[0]
   const keys = scanResult[1]
 
   for (let index = 0; index < keys.length; index++) {
@@ -255,24 +312,20 @@ const delKeyDialogSubmit = async () => {
   await client.connect()
   await client.sendCommand(['select', props.serverTab.db.slice(-1)])
   for (const item of state.multipleSelection) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     await client.sendCommand(['del', item.label])
     await store.dispatch('keyList/del', {
       serverLabel: `${props.serverTab.db} ${props.serverTab.name}`,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       key: item.label
     })
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    await setLog(props.serverTab, `del ${item.label}`, dateFormat())
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
+    await setLog(props.serverTab, [`del ${item.label}`], dateFormat())
     if (item.label === state.targetKey) state.targetKey = 'Console'
   }
   await client.disconnect()
-  await fetchData()
+  if (searchState.isSearching) {
+    await search()
+  } else {
+    await fetchData()
+  }
   await delKeyDialogCancel()
 }
 const handleMonitorToggle = async () => {
