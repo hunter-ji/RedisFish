@@ -1,13 +1,10 @@
 const html = document.documentElement
-const body = document.body
 
 const configLight = (): void => {
   html.classList.remove('dark')
-  body.classList.remove('dark')
 }
 const configDark = (): void => {
   html.classList.add('dark')
-  body.classList.add('dark')
 }
 const configAuto = (): void => {
   const currentHour = new Date().getHours()

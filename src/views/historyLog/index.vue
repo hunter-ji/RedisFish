@@ -5,7 +5,7 @@
       <div class="px-4" v-if="state.content.length === 0">
         (nil)
       </div>
-      <div class="log-item py-1" v-for="(item, index) in state.content" :key="index" @click="handleCopyLog(item)" v-else>
+      <div class="log-item py-1" v-for="(item, index) in state.content" :key="index" @click.meta.exact="handleCopyLog(item)" v-else>
         <div class="px-4">{{ item.replaceAll('###', ' - ') }}</div>
       </div>
     </div>

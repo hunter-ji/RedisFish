@@ -1,7 +1,7 @@
 <template>
   <div class="container px-4 py-2 w-full flex flex-row rounded">
     <div class="text-green-500 italic mr-2">{{ props.keyType }}</div>
-    <div @click="copyKey(props.keyName, t('valueContent.notification.copySuccessMessage'))">{{ props.keyName }}</div>
+    <div @click.meta.exact="copyKey(props.keyName, t('valueContent.notification.copySuccessMessage'))">{{ props.keyName }}</div>
   </div>
 </template>
 
@@ -30,7 +30,7 @@ const props = defineProps({
   background-color: #f5f5f5;
 }
 
-body.dark .container {
+html.dark .container {
   background-color: #32302f;
 }
 </style>

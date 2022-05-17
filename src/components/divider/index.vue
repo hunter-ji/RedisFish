@@ -11,7 +11,7 @@
 </style>
 
 <style>
-body.dark .divider {
+html.dark .divider {
   background-color: #636466;
 }
 </style>

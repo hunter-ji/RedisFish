@@ -49,7 +49,7 @@
       </div>
 
       <!--keys tale-->
-      <el-table :data="searchState.isSearching ? searchState.keysList : state.keysList" size="small" height="90%" style="width: 100%;" stripe @cell-click="handleCopy" @cell-dblclick="getValue"
+      <el-table :data="searchState.isSearching ? searchState.keysList : state.keysList" size="small" height="90%" style="width: 100%;" stripe @cell-dblclick="getValue"
                 @selection-change="handleSelectionChange" class="pb-4" v-loading="state.loading">
         <el-table-column type="selection" width="50"/>
         <el-table-column prop="type" label="Type" width="70">
@@ -57,7 +57,11 @@
             <div class="text-green-500 italic mr-2">{{ scope.row.type }}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="label" label="Key" width="280" :filters="groupState.list" :filter-method="handleKeyGroupFilter"/>
+        <el-table-column prop="label" label="Key" width="280" :filters="groupState.list" :filter-method="handleKeyGroupFilter">
+          <template #default="scope">
+            <div @click.meta.exact="copyKey(scope.row.label, t('valueContent.notification.copySuccessMessage'))">{{ scope.row.label }}</div>
+          </template>
+        </el-table-column>
       </el-table>
 
       <!--pagination-->
@@ -174,7 +178,6 @@ const fetchData = async () => {
   const scanResult: [string, string[]] = await client.sendCommand(['SCAN', pageState.scanIndexList[1], 'COUNT', String(pageState.pageSize)])
   if (!pageState.scanIndexList[2]) {
     pageState.scanIndexList[2] = scanResult[0]
-    console.log(pageState.scanIndexList)
   }
   const keys = scanResult[1]
 
@@ -257,9 +260,6 @@ const handlePageChange = async () => {
 
   await client.disconnect()
   await changeLoading(false)
-}
-const handleCopy = async (e: { label: string, value: number }) => {
-  await copyKey(e.label, t('valueContent.notification.copySuccessMessage'))
 }
 const getValue = async (e: { label: string, value: number }) => {
   const { label } = e

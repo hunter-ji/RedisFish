@@ -6,7 +6,7 @@
       :autosize="{ minRows: 20, maxRows: 30 }"
       type="textarea"
       v-show="!checkIsJSON(localMessage)"
-      @click="copyKey(localMessage, t('valueContent.notification.copySuccessMessage'))"
+      @click.meta.exact="copyKey(localMessage, t('valueContent.notification.copySuccessMessage'))"
       :disabled="props.isReadOnly"
     />
 

@@ -229,7 +229,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-body.dark .commands-dialog {
+html.dark .commands-dialog {
   background-color: #0a0a0a;
 }
 </style>

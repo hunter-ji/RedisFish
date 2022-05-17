@@ -2,7 +2,7 @@
   <div class="sub-content dark-bg2 w-full h-full bg-white shadow rounded">
     <!-- title -->
     <div class="sub-content-title flex flex-row justify-between items-center p-4">
-      <div @click="copyKey(props.cardInfo.label, t('valueContent.notification.copySuccessMessage'))">{{ props.cardInfo.label }}</div>
+      <div @click.meta.exact="copyKey(props.cardInfo.label, t('valueContent.notification.copySuccessMessage'))">{{ props.cardInfo.label }}</div>
       <div class="flex flex-row justify-center items-center">
         <div class="point" :style="{ 'background-color': props.cardInfo.isSub ? '#67C23A' : ''}" />
         <p class="text-gray-500 ml-2">{{ props.cardInfo.isSub ? t('pubAndSub.inSub') : '' }}</p>
@@ -22,7 +22,7 @@
       </div>
       <div v-for="(item, index) in props.cardInfo.messages" :key="index" v-else class="py-1">
         <p class="text-gray-500 font-sm px-4">{{ item.time }}</p>
-        <div class="sub-content-item py-2 px-4" @click.left="copyKey(item.message, t('valueContent.notification.copySuccessMessage'))" @click.right="handleDetailShow(item.message)">{{ item.message }}</div>
+        <div class="sub-content-item py-2 px-4" @click.left.meta.exact="copyKey(item.message, t('valueContent.notification.copySuccessMessage'))" @click.right="handleDetailShow(item.message)">{{ item.message }}</div>
       </div>
     </div>
 

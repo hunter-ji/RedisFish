@@ -29,23 +29,6 @@ const fetchData = () => {
 }
 
 const store = useStore()
-const checkCtrlEvent = () => {
-  // const sUserAgent = navigator.userAgent
-  const isWin = (navigator.platform === 'Win32') || (navigator.platform === 'Windows')
-  const isMac = (navigator.platform === 'Mac68K') || (navigator.platform === 'MacPPC') || (navigator.platform === 'Macintosh') || (navigator.platform === 'MacIntel')
-  document.addEventListener('keydown', (e: {keyCode: number}) => {
-    if ((e.keyCode === 17 && isWin) || (e.keyCode === 91 && isMac)) {
-      // isCtrl.value = true
-      store.commit('keyboardListen/setIsCtrl', true)
-    }
-  })
-  document.addEventListener('keyup', (e: {keyCode: number}) => {
-    if ((e.keyCode === 17 && isWin) || (e.keyCode === 91 && isMac)) {
-      // isCtrl.value = false
-      store.commit('keyboardListen/setIsCtrl', false)
-    }
-  })
-}
 const initTheme = () => {
   store.dispatch('config/init')
 }
@@ -53,7 +36,6 @@ const initTheme = () => {
 onMounted(() => {
   initTheme()
   fetchData()
-  checkCtrlEvent()
 })
 </script>
 
@@ -61,13 +43,16 @@ onMounted(() => {
 body {
   font: 14px/1.5 "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
 }
-body.dark {
+html {
+  background-color: #ffffff;
+}
+html.dark {
    background: #282828;
 }
-body.dark div.dark-bg {
+html.dark div.dark-bg {
   background-color: #1d2021;
 }
-body.dark div.dark-bg2 {
+html.dark div.dark-bg2 {
   background-color: #32302f;
 }
 </style>
