@@ -20,7 +20,7 @@ jobs:
           node-version: 16
 
       - name: Install OS Dependencies
-        run: snap install snapcraft --classic 
+        run: sudo snap install snapcraft --classic 
 
       - name: Install Node Dependencies
         run: yarn install
