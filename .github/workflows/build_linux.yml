@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
 
     steps:
       - name: Check out Git repository
@@ -19,7 +19,10 @@ jobs:
         with:
           node-version: 16
 
-      - name: Install Dependencies
+      - name: Install OS Dependencies
+	run: snap install snapcraft --classic
+
+      - name: Install Node Dependencies
         run: yarn install
 
       - name: Build Electron App
