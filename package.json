@@ -4,15 +4,10 @@
   "private": true,
   "author": "Kuari",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
     "electron:build": "vue-cli-service electron:build",
     "electron:build:m1": "vue-cli-service electron:build --arm64",
-    "electron:serve": "vue-cli-service electron:serve",
-    "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\"",
-    "postinstall": "electron-builder install-app-deps",
-    "postuninstall": "electron-builder install-app-deps"
+    "electron:build:publish": "vue-cli-service electron:build -p always",
+    "electron:serve": "vue-cli-service electron:serve"
   },
   "main": "background.js",
   "dependencies": {

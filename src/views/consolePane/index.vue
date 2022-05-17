@@ -55,10 +55,14 @@
 
     <!-- dialog -->
     <el-dialog v-model="dialog.show" :title="t('consolePane.index.dialog.title')" width="50%" center>
-      <div>{{ t('consolePane.index.dialog.content') }}</div>
-      <div class="commands-dialog h-80 overflow-y-auto flex flex-col justify-start p-2 bg-gray-300 mt-2">
-        <div class="p-2" v-for="(item, index) in clientState.commands" :key="index">{{ item }}</div>
-      </div>
+      <div class="mb-2">{{ t('consolePane.index.dialog.content') }}</div>
+      <el-table
+        :data="clientState.showCommands"
+        height="600"
+        size="small" border stripe
+        style="width: 100%;">
+        <el-table-column label="commands" prop="label"/>
+      </el-table>
       <template #footer>
       <span class="flex flex-row items-center justify-end">
         <el-button @click="dialog.show = false">{{ t('consolePane.index.dialog.cancelBtn') }}</el-button>
@@ -111,11 +115,12 @@ const state: { aceEditor: any, themePath: string } = reactive({
   aceEditor: null,
   themePath: 'ace/theme/gruvbox'
 })
-const clientState: { keyType: string, values: string[], ttl: number, commands: string[], historyCommands: historyCommandType[] } = reactive({
+const clientState: { keyType: string, values: string[], ttl: number, commands: string[], showCommands: { label: string }[], historyCommands: historyCommandType[] } = reactive({
   keyType: '',
   values: [],
   ttl: 0,
   commands: [],
+  showCommands: [],
   historyCommands: []
 })
 const outputState: { activeTab: string, historyClosable: boolean, outputClosable: boolean, outputTabs: outputPaneType[] } = reactive({
@@ -148,6 +153,10 @@ const client = getClient(props.serverTab)
 const handleCommand = async (commands: string[]) => {
   clientState.commands = []
   clientState.commands = commands
+  clientState.showCommands = []
+  commands.forEach((item: string) => {
+    clientState.showCommands.push({ label: item })
+  })
   dialog.show = true
 }
 const runCommands = async () => {

@@ -156,7 +156,7 @@
     "clear": "clear",
     "inSub": "subscribing",
     "startSub": "start subscribing",
-    "stopSub": "end subscription",
+    "stopSub": "stop subscription",
     "emptyMessage": "No news yet"
   },
   "monitor": {

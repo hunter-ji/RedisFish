@@ -17,76 +17,77 @@ module.exports = {
       nodeIntegration: true,
       disableMainProcessTypescript: false,
       mainProcessTypeChecking: false,
-      build: {
-        productName: 'RedFish',
-        appId: 'com.kuari.RedFish',
-        copyright: '© Kuari 2022',
-        afterSign: 'build/notarize.js',
-        publish: [
+      productName: 'RedFish',
+      appId: 'com.kuari.RedFish',
+      copyright: '© Kuari 2022',
+      afterSign: 'build/notarize.js',
+      publish: [
+        {
+          provider: 'github',
+          owner: 'Kuari',
+          repo: 'RedFish',
+          releaseType: 'draft'
+        }
+      ],
+      nsis: {
+        oneClick: false,
+        allowElevation: true,
+        allowToChangeInstallationDirectory: true,
+        installerIcon: 'build/icon.ico',
+        uninstallerIcon: 'build/icon.ico',
+        installerHeaderIcon: 'build/icon.ico',
+        createDesktopShortcut: true,
+        createStartMenuShortcut: true,
+        shortcutName: 'RedFish'
+      },
+      dmg: {
+        contents: [
           {
-            provider: 'github', // 打包上传到github
-            owner: 'Kuari', // 仓库所有者
-            repo: 'RedFish', // 仓库名称
-            releaseType: 'release' // 上传到github的版本类型（draft:草稿，prerelease:提前发行版，release:发行版）
+            x: 410,
+            y: 150,
+            type: 'link',
+            path: '/Applications'
+          },
+          {
+            x: 130,
+            y: 150,
+            type: 'file'
+          }
+        ]
+      },
+      mas: {
+        icon: 'build/icon.icns',
+        hardenedRuntime: true,
+        entitlements: 'electron-builder/entitlements.mas.plist',
+        entitlementsInherit: 'electron-builder/entitlements.mas.plist'
+      },
+      mac: {
+        target: [
+          {
+            target: 'dmg',
+            arch: 'universal'
+          },
+          {
+            target: 'zip',
+            arch: 'universal'
           }
         ],
-        nsis: {
-          oneClick: false,
-          allowElevation: true,
-          allowToChangeInstallationDirectory: true,
-          installerIcon: 'build/icon.ico',
-          uninstallerIcon: 'build/icon.ico',
-          installerHeaderIcon: 'build/icon.ico',
-          createDesktopShortcut: true,
-          createStartMenuShortcut: true,
-          shortcutName: 'RedFish'
-        },
-        win: {
-          icon: 'build/icon.ico',
-          requestedExecutionLevel: 'requireAdministrator',
-          target: [
-            {
-              target: 'nsis'
-            }
-          ]
-        },
-        dmg: {
-          contents: [
-            {
-              x: 410,
-              y: 150,
-              type: 'link',
-              path: '/Applications'
-            },
-            {
-              x: 130,
-              y: 150,
-              type: 'file'
-            }
-          ]
-        },
-        mas: {
-          icon: 'build/icon.icns',
-          hardenedRuntime: true,
-          entitlements: 'electron-builder/entitlements.mas.plist',
-          entitlementsInherit: 'electron-builder/entitlements.mas.plist'
-        },
-        mac: {
-          target: [
-            {
-              target: 'dmg',
-              arch: 'universal'
-            }
-          ],
-          icon: 'build/icon.icns',
-          hardenedRuntime: true,
-          entitlements: 'electron-builder/entitlements.plist',
-          entitlementsInherit: 'electron-builder/entitlements.plist',
-          provisioningProfile: 'electron-builder/comalibabaslobs.provisionprofile'
-        },
-        linux: {
-          icon: 'build/icon.ico'
-        }
+        icon: 'build/icon.icns',
+        hardenedRuntime: true,
+        entitlements: 'electron-builder/entitlements.plist',
+        entitlementsInherit: 'electron-builder/entitlements.plist',
+        provisioningProfile: 'electron-builder/comalibabaslobs.provisionprofile'
+      },
+      win: {
+        icon: 'build/icon.ico',
+        target: [
+          {
+            target: 'nsis'
+          }
+        ]
+      },
+      linux: {
+        icon: 'build/icon.ico'
       }
     },
     i18n: {
