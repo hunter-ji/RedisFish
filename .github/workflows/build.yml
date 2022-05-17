@@ -25,5 +25,5 @@ jobs:
       - name: Build Electron App
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: yarn build:publish
+        run: yarn electron:build:publish
 
