@@ -31,8 +31,8 @@ download: [releases](https://github.com/Kuari/RedFish/releases)
 * Graphical operation of publish/subscribe function
 * TLS
 * Dark mode
-* `Command/Windows + left mouse click` shortcut copy
-* `Right-click` the data to open the data magnification editor, including text and json modes
+* `Command/Ctrl + left mouse click` shortcut copy
+* `Right-click` the data to open the data zoom editor, including text and json modes
 * Multi-language support, support Chinese, English, automatically switch according to the system
 * Automatic update (currently only on mac)
 

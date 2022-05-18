@@ -36,7 +36,11 @@
     </div>
 
     <!--textarea-->
-    <el-input v-model="state.val" :rows="30" type="textarea" v-show="editorModeState.mode === 'text'" @click.meta.exact="copyKey(state.val, t('valueContent.notification.copySuccessMessage'))"/>
+    <el-input v-model="state.val" :rows="30" type="textarea"
+              v-show="editorModeState.mode === 'text'"
+              @click.left.meta.exact="copyKey(state.val, t('valueContent.notification.copySuccessMessage'))"
+              @click.left.ctrl.exact="copyKey(state.val, t('valueContent.notification.copySuccessMessage'))"
+    />
 
     <!--ace-->
     <div :id="`ace${aceID}`" v-show="editorModeState.mode === 'json'"/>

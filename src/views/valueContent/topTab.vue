@@ -1,7 +1,12 @@
 <template>
   <div class="container px-4 py-2 w-full flex flex-row rounded">
     <div class="text-green-500 italic mr-2">{{ props.keyType }}</div>
-    <div @click.meta.exact="copyKey(props.keyName, t('valueContent.notification.copySuccessMessage'))">{{ props.keyName }}</div>
+    <div
+      @click.left.meta="copyKey(props.keyName, t('valueContent.notification.copySuccessMessage'))"
+      @click.left.ctrl="copyKey(props.keyName, t('valueContent.notification.copySuccessMessage'))"
+    >
+      {{ props.keyName }}
+    </div>
   </div>
 </template>
 

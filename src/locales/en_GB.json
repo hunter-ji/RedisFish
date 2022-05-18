@@ -158,10 +158,10 @@
     },
     "hotKey": {
       "click": "left mouse click",
-      "RightClick": "right mouse click",
+      "rightClick": "right mouse click",
       "copyLabel": "Copy",
-      "viewLabel": "Data zoom editing",
-      "copyTip": "Use the command key (⌘) on Mac system keyboards and the Windows logo key (⊞) on Windows system keyboards"
+      "viewLabel": "Data zoom",
+      "copyTip": "Use the command key (⌘) on Mac keyboards and the Ctrl key on Windows/Linux keyboards"
     }
   },
   "contentDetail": {

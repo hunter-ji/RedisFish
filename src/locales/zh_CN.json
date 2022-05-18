@@ -161,7 +161,7 @@
       "rightClick": "鼠标右击",
       "copyLabel": "复制",
       "viewLabel": "数据放大编辑",
-      "copyTip": "在 Mac 系统键盘上使用command 键 (⌘), 在 Windows 系统键盘上使用Windows 徽标键 (⊞)"
+      "copyTip": "在Mac系统键盘上使用command键 (⌘), 在Windows/Linux系统键盘上使用Ctrl键"
     }
   },
   "contentDetail": {

@@ -2,7 +2,12 @@
   <div class="sub-content dark-bg2 w-full h-full bg-white shadow rounded">
     <!-- title -->
     <div class="sub-content-title flex flex-row justify-between items-center p-4">
-      <div @click.meta.exact="copyKey(props.cardInfo.label, t('valueContent.notification.copySuccessMessage'))">{{ props.cardInfo.label }}</div>
+      <div
+        @click.left.meta.exact="copyKey(props.cardInfo.label, t('valueContent.notification.copySuccessMessage'))"
+        @click.left.ctrl.exact="copyKey(props.cardInfo.label, t('valueContent.notification.copySuccessMessage'))"
+      >
+        {{ props.cardInfo.label }}
+      </div>
       <div class="flex flex-row justify-center items-center">
         <div class="point" :style="{ 'background-color': props.cardInfo.isSub ? '#67C23A' : ''}" />
         <p class="text-gray-500 ml-2">{{ props.cardInfo.isSub ? t('pubAndSub.inSub') : '' }}</p>

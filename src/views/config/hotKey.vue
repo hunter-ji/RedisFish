@@ -2,7 +2,7 @@
   <div class="hot-key-container w-full flex flex-col p-4">
     <div class="flex flex-row items-center w-full">
       <div class="w-28 font-bold">{{ t('config.hotKey.copyLabel') }}:</div>
-      <div><span class="btn">command / windows</span><span class="px-2">+</span><span class="btn">{{ t('config.hotKey.click') }}</span></div>
+      <div><span class="btn">Command / Ctrl</span><span class="px-2">+</span><span class="btn">{{ t('config.hotKey.click') }}</span></div>
     </div>
     <div class="flex flex-row items-center w-full mt-1 mb-4">
       <div class="w-32"></div>

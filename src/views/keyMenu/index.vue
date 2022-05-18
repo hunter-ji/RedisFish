@@ -59,7 +59,12 @@
         </el-table-column>
         <el-table-column prop="label" label="Key" width="280" :filters="groupState.list" :filter-method="handleKeyGroupFilter">
           <template #default="scope">
-            <div @click.meta.exact="copyKey(scope.row.label, t('valueContent.notification.copySuccessMessage'))">{{ scope.row.label }}</div>
+            <div
+              @click.left.meta.exact="copyKey(scope.row.label, t('valueContent.notification.copySuccessMessage'))"
+              @click.left.ctrl.exact="copyKey(scope.row.label, t('valueContent.notification.copySuccessMessage'))"
+            >
+              {{ scope.row.label }}
+            </div>
           </template>
         </el-table-column>
       </el-table>
