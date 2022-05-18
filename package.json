@@ -5,7 +5,7 @@
   "homepage": "https://github.com/Kuari/RedFish",
   "scripts": {
     "electron:build": "vue-cli-service electron:build",
-    "electron:build:m1": "vue-cli-service electron:build --arm64",
+    "electron:build:mac": "vue-cli-service electron:build --macos --arm64 --x64",
     "electron:build:publish": "vue-cli-service electron:build -p always",
     "electron:serve": "vue-cli-service electron:serve"
   },

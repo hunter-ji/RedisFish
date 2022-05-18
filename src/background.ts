@@ -15,10 +15,10 @@ async function createWindow () {
   // Create the browser window.
   const win = new BrowserWindow({
     autoHideMenuBar: true,
-    // width: screen.getPrimaryDisplay().workAreaSize.width,
-    // height: screen.getPrimaryDisplay().workAreaSize.height,
-    width: 1600,
-    height: 1000,
+    width: screen.getPrimaryDisplay().workAreaSize.width,
+    height: screen.getPrimaryDisplay().workAreaSize.height,
+    // width: 1600,
+    // height: 1000,
     webPreferences: {
       contextIsolation: false,
       nodeIntegration: true,
