@@ -138,6 +138,7 @@
     "title": "设置",
     "tabGroup": {
       "general": "常规",
+      "hotKey": "快捷键",
       "about": "关于"
     },
     "theme": {
@@ -145,6 +146,13 @@
       "light": "浅色",
       "dark": "深色",
       "auto": "自动"
+    },
+    "hotKey": {
+      "click": "鼠标左击",
+      "rightClick": "鼠标右击",
+      "copyLabel": "复制",
+      "viewLabel": "数据放大编辑",
+      "copyTip": "在 Mac 系统键盘上使用command 键 (⌘), 在 Windows 系统键盘上使用Windows 徽标键 (⊞)"
     }
   },
   "contentDetail": {

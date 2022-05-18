@@ -138,6 +138,7 @@
     "title": "Config",
     "tabGroup": {
       "general": "General",
+      "hotKey": "HotKey",
       "about": "About"
     },
     "theme": {
@@ -145,6 +146,13 @@
       "light": "Light",
       "dark": "Dark",
       "auto": "Auto"
+    },
+    "hotKey": {
+      "click": "left mouse click",
+      "RightClick": "right mouse click",
+      "copyLabel": "Copy",
+      "viewLabel": "Data zoom editing",
+      "copyTip": "Use the command key (⌘) on Mac system keyboards and the Windows logo key (⊞) on Windows system keyboards"
     }
   },
   "contentDetail": {

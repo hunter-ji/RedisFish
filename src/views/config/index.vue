@@ -24,6 +24,3 @@ const dialogState: { isShow: boolean } = reactive({
   isShow: false
 })
 </script>
-
-<style scoped>
-</style>
