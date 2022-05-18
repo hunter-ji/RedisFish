@@ -92,8 +92,7 @@ watch(props, () => {
 
 <style>
 div.e-chart {
-  max-width: 100%;
-  width: 100%;
+  width: 1000px;
   min-width: 800px;
   height: 250px;
 }

@@ -14,21 +14,20 @@ protocol.registerSchemesAsPrivileged([
 async function createWindow () {
   // Create the browser window.
   const win = new BrowserWindow({
-    // width: 1600,
-    // height: 1000,
     autoHideMenuBar: true,
-    width: screen.getPrimaryDisplay().workAreaSize.width,
-    height: screen.getPrimaryDisplay().workAreaSize.height,
+    // width: screen.getPrimaryDisplay().workAreaSize.width,
+    // height: screen.getPrimaryDisplay().workAreaSize.height,
+    width: 1600,
+    height: 1000,
     webPreferences: {
-
-      // Use pluginOptions.nodeIntegration, leave this alone
-      // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       contextIsolation: false,
       nodeIntegration: true,
       nodeIntegrationInWorker: true,
       enableRemoteModule: true
     }
   })
+
+  win.maximize()
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -37,10 +36,10 @@ async function createWindow () {
   } else {
     createProtocol('app')
     // Load the index.html when not in development
-    win.loadURL('app://./index.html')
+    await win.loadURL('app://./index.html')
     log.transports.file.level = 'debug'
     autoUpdater.logger = log
-    autoUpdater.checkForUpdatesAndNotify()
+    await autoUpdater.checkForUpdatesAndNotify()
   }
 }
 
