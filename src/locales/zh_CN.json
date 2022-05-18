@@ -99,7 +99,16 @@
       "errorMessage": "数据库名称重复"
     }
   },
-  "serverTab": {},
+  "serverTab": {
+    "emptyPage": {
+      "message0": "使用快捷键会更便捷呦",
+      "message1": "不如喝杯奶茶吧",
+      "message2": "吃个冰淇淋好像也不错",
+      "message3": "欢迎在Issues交流哦",
+      "message4": "要是吃个棒冰就好了",
+      "message5": "空空如也"
+    }
+  },
   "valueContent": {
     "index": {
       "runDialog": {

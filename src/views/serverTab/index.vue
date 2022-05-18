@@ -17,6 +17,9 @@
         <key-menu :server-tab="item" class="w-full" />
       </el-tab-pane>
     </el-tabs>
+
+    <!-- empty page -->
+    <empty-page v-if="!data.length"/>
   </div>
 </template>
 
@@ -25,6 +28,7 @@ import { computed, ComputedRef, reactive, watch } from 'vue'
 import { useStore } from 'vuex'
 import { serverTabType } from '@/store/modules/serverList'
 import KeyMenu from '@/views/keyMenu/index.vue'
+import EmptyPage from './emptyPage.vue'
 
 const store = useStore()
 const state: { activeTab: string, closable: boolean } = reactive({

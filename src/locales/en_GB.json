@@ -99,7 +99,16 @@
       "errorMessage": "Duplicate database name"
     }
   },
-  "serverTab": {},
+  "serverTab": {
+    "emptyPage": {
+      "message0": "It's easier to use shortcut keys",
+      "message1": "Why don't you have a cup of milk tea?",
+      "message2": "It would be nice to have an ice cream",
+      "message3": "Welcome to communicate in Issues",
+      "message4": "If only I had a popsicle",
+      "message5": "empty ~"
+    }
+  },
   "valueContent": {
     "index": {
       "runDialog": {
