@@ -17,7 +17,7 @@
     <!-- messages -->
     <div class="sub-content-container">
       <div v-if="!props.cardInfo.messages.length" class="h-full flex flex-col justify-center items-center">
-        <el-icon size="100" color="rgba(140, 147, 157, 0.33)"><chat-line-square /></el-icon>
+        <chat-line-square style="color:rgba(140, 147, 157, 0.33);width:6em;height:6em;" />
         <p style="color: rgba(140, 147, 157, 0.33);" class="mt-4">{{ t('pubAndSub.emptyMessage') }}</p>
       </div>
       <div v-for="(item, index) in props.cardInfo.messages" :key="index" v-else class="py-1">
