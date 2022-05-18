@@ -1,7 +1,7 @@
 <p align="center">
 <img src="./build/icon.png" alt="logo" width="120" height="120" />
 </p>
-<p align="center" style="font-size: 24px;">RedFish</p>
+<h3 align="center">RedFish</h3>
 
 
 
@@ -9,7 +9,7 @@
 
 `RedFish` is a convenient, cross-platform, data-focused Redis GUI client. I added some (think) fantastic ideas as much as I could, like right-clicking to zoom in on the data and editable features, and taking advice from more senior developers to improve it. Since `Beta 1.0.0`, after several months of intermittent development, many areas have been optimized, and even some functions include different processing methods, which can adapt to different operating habits, hoping to bring a better experience. Thanks to every user, if you have any feedback, I hope you can let me know.
 
-language: [简体中文](https://github.com/Kuari/RedFish/README.zh-CN.md) 英文
+language: [简体中文](https://github.com/Kuari/RedFish/blob/main/README.zh-CN.md) 英文
 
 download: [releases](https://github.com/Kuari/RedFish/releases)
 

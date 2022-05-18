@@ -1,7 +1,7 @@
 <p align="center">
 <img src="./build/icon.png" alt="logo" width="120" height="120" />
 </p>
-<p align="center" style="font-size: 24px;">RedFish</p>
+<h3 align="center">RedFish</h3>
 
 
 
