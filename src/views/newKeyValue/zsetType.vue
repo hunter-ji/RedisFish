@@ -30,7 +30,7 @@
         :data="state.values"
         v-loading="state.loading"
         size="small" border stripe @selection-change="handleSelectionChange"
-        @cell-dblclick="edit"
+        @cell-click="edit"
         style="width: 100%;">
         <el-table-column type="selection" width="40"/>
         <el-table-column type="index" width="50"/>

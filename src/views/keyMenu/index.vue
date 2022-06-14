@@ -52,7 +52,7 @@
       <el-table :data="searchState.isSearching ? searchState.keysList : state.keysList" size="small" height="90%" style="width: 100%;" stripe @cell-dblclick="getValue"
                 @selection-change="handleSelectionChange" class="pb-4" v-loading="state.loading">
         <el-table-column type="selection" width="50"/>
-        <el-table-column prop="type" label="Type" width="70">
+        <el-table-column prop="type" label="Type" width="70" :filters="groupState.typeFilterList" :filter-method="handleKeyTypeFilter">
           <template #default="scope">
             <div class="text-green-500 italic mr-2">{{ scope.row.type }}</div>
           </template>
@@ -70,13 +70,13 @@
       </el-table>
 
       <!--pagination-->
-      <el-pagination layout="prev, pager, next" :total="pageState.total" :page-size="pageState.pageSize"
+      <el-pagination layout="total, prev, pager, next" :total="pageState.total" :page-size="pageState.pageSize"
                      v-model:current-page="pageState.currentPage" @current-change="handlePageChange()"
-                     class="py-2" v-show="!searchState.isSearching" :hide-on-single-page="true"
+                     class="py-2" v-show="!searchState.isSearching" small="small" :hide-on-single-page="true"
       />
       <el-pagination layout="prev, pager, next" :total="searchPageState.total" :page-size="searchPageState.pageSize"
                      v-model:current-page="searchPageState.currentPage" @current-change="search()"
-                     class="py-2" v-show="searchState.isSearching" :hide-on-single-page="true"
+                     class="py-2" v-show="searchState.isSearching" small="small" :hide-on-single-page="true"
       />
 
     </div>
@@ -133,8 +133,9 @@ const state: { keysList: keyMenuType[], targetKey: string, multipleSelection: ke
   multipleSelection: [],
   loading: true
 })
-const groupState: { list: { text: string, value: string }[] } = reactive({
-  list: []
+const groupState: { list: { text: string, value: string }[], typeFilterList: { text: string, value: string }[] } = reactive({
+  list: [],
+  typeFilterList: []
 })
 const searchState: { keysList: keyMenuType[], search: string, isSearching: boolean } = reactive({
   keysList: [],
@@ -161,13 +162,21 @@ const searchPageState: { scanIndex: string, total: number, pageSize: number, cur
 const changeLoading = async (status: boolean) => {
   state.loading = status
 }
+const handleKeyTypeFilter = (value: string, row: keyMenuType): boolean => {
+  return row.type === value
+}
 const handleKeyGroupFilter = (value: string, row: keyMenuType): boolean => {
-  return row.label.startsWith(value + ':')
+  return row.label.startsWith(value)
 }
 const getKeysLength = async (keyspaceInfo: string, dbIndex: string): Promise<number> => {
   const keySpaceArr = keyspaceInfo.split('\r\n')
+  const dbNode = keySpaceArr[Number(dbIndex) + 1]
+  if (!dbNode) {
+    return 0
+  }
   // targetIndexDB db0:keys=1,expires=0,avg_ttl=0
-  const targetIndexDB = keySpaceArr[Number(dbIndex) + 1]
+  const targetIndexDB = dbNode
+  console.log(targetIndexDB)
   return Number(targetIndexDB.split(':')[1].split(',')[0].split('=')[1])
 }
 const fetchData = async () => {
@@ -180,34 +189,42 @@ const fetchData = async () => {
   const keyspaceInfo: string = await client.sendCommand(['INFO', 'keyspace'])
   pageState.total = await getKeysLength(keyspaceInfo, dbIndex)
 
-  const scanResult: [string, string[]] = await client.sendCommand(['SCAN', pageState.scanIndexList[1], 'COUNT', String(pageState.pageSize)])
-  if (!pageState.scanIndexList[2]) {
-    pageState.scanIndexList[2] = scanResult[0]
-  }
-  const keys = scanResult[1]
-
-  const groupList: string[] = []
-
-  // keys.forEach((item: string, index: number) => {
-  for (let index = 0; index < keys.length; index++) {
-    const item = keys[index]
-
-    const type = await client.sendCommand(['type', item])
-    state.keysList.push({
-      label: item,
-      value: index,
-      type: typeof type === 'string' ? type : 'unknown'
-    })
-
-    // 处理分组前缀
-    const preArr = item.split(':')
-    if (preArr.length >= 2) {
-      groupList.push(preArr[0])
+  if (pageState.total) {
+    const scanResult: [string, string[]] = await client.sendCommand(['SCAN', pageState.scanIndexList[1], 'COUNT', String(pageState.pageSize)])
+    if (!pageState.scanIndexList[2]) {
+      pageState.scanIndexList[2] = scanResult[0]
     }
-  }
+    const keys = scanResult[1]
 
-  const groupListSingle = [...new Set(groupList)]
-  groupState.list = groupListSingle.map((item: string) => ({ text: item, value: item }))
+    const groupList: string[] = []
+    const typeFilterList: string[] = []
+
+    for (let index = 0; index < keys.length; index++) {
+      const item = keys[index]
+
+      const type = await client.sendCommand(['type', item])
+      state.keysList.push({
+        label: item,
+        value: index,
+        type: typeof type === 'string' ? type : 'unknown'
+      })
+
+      // push type
+      typeFilterList.push(type)
+
+      // push pre string
+      const preArr = /[\da-z]+(?=[:\-_#=+])/.exec(item)
+      if (preArr && preArr.length >= 2) {
+        groupList.push(preArr[0])
+      }
+    }
+
+    const groupListSingle = [...new Set(groupList)]
+    groupState.list = groupListSingle.map((item: string) => ({ text: item, value: item }))
+
+    const typeFilterListSingle = [...new Set(typeFilterList)]
+    groupState.typeFilterList = typeFilterListSingle.map((item: string) => ({ text: item, value: item }))
+  }
 
   await client.disconnect()
   await changeLoading(false)
@@ -222,46 +239,54 @@ const handlePageChange = async () => {
   const keyspaceInfo: string = await client.sendCommand(['INFO', 'keyspace'])
   pageState.total = await getKeysLength(keyspaceInfo, dbIndex)
 
-  let scanResult = []
-  const pages = Object.keys(pageState.scanIndexList).length
-  const diffNumber = pageState.currentPage - pages
-  if (diffNumber >= 1) {
-    // If the user jumps and clicks
-    for (let i = 0; i < diffNumber; i++) {
-      scanResult = await client.sendCommand(['SCAN', pageState.scanIndexList[pages + i], 'COUNT', String(pageState.pageSize)])
-      if (!pageState.scanIndexList[pages + i + 1]) {
-        pageState.scanIndexList[pages + i + 1] = scanResult[0]
+  if (pageState.total) {
+    let scanResult = []
+    const pages = Object.keys(pageState.scanIndexList).length
+    const diffNumber = pageState.currentPage - pages
+    if (diffNumber >= 1) {
+      // If the user jumps and clicks
+      for (let i = 0; i < diffNumber; i++) {
+        scanResult = await client.sendCommand(['SCAN', pageState.scanIndexList[pages + i], 'COUNT', String(pageState.pageSize)])
+        if (!pageState.scanIndexList[pages + i + 1]) {
+          pageState.scanIndexList[pages + i + 1] = scanResult[0]
+        }
+      }
+    } else {
+      scanResult = await client.sendCommand(['SCAN', pageState.scanIndexList[pageState.currentPage], 'COUNT', String(pageState.pageSize)])
+      if (!pageState.scanIndexList[pageState.currentPage + 1]) {
+        pageState.scanIndexList[pageState.currentPage + 1] = scanResult[0]
       }
     }
-  } else {
-    scanResult = await client.sendCommand(['SCAN', pageState.scanIndexList[pageState.currentPage], 'COUNT', String(pageState.pageSize)])
-    if (!pageState.scanIndexList[pageState.currentPage + 1]) {
-      pageState.scanIndexList[pageState.currentPage + 1] = scanResult[0]
+    const keys = scanResult[1]
+
+    const groupList: string[] = []
+    const typeFilterList: string[] = []
+    for (let index = 0; index < keys.length; index++) {
+      const item = keys[index]
+
+      const type = await client.sendCommand(['type', item])
+      state.keysList.push({
+        label: item,
+        value: index,
+        type: typeof type === 'string' ? type : 'unknown'
+      })
+
+      // push type
+      typeFilterList.push(type)
+
+      // push pre string
+      const preArr = /[\da-z]+(?=[:\-_#=+])/.exec(item)
+      if (preArr && preArr.length >= 2) {
+        groupList.push(preArr[0])
+      }
     }
+
+    const groupListSingle = [...new Set(groupList)]
+    groupState.list = groupListSingle.map((item: string) => ({ text: item, value: item }))
+
+    const typeFilterListSingle = [...new Set(typeFilterList)]
+    groupState.typeFilterList = typeFilterListSingle.map((item: string) => ({ text: item, value: item }))
   }
-  const keys = scanResult[1]
-
-  const groupList: string[] = []
-  // keys.forEach((item: string, index: number) => {
-  for (let index = 0; index < keys.length; index++) {
-    const item = keys[index]
-
-    const type = await client.sendCommand(['type', item])
-    state.keysList.push({
-      label: item,
-      value: index,
-      type: typeof type === 'string' ? type : 'unknown'
-    })
-
-    // group filter
-    const preArr = item.split(':')
-    if (preArr.length >= 2) {
-      groupList.push(preArr[0])
-    }
-  }
-
-  const groupListSingle = [...new Set(groupList)]
-  groupState.list = groupListSingle.map((item: string) => ({ text: item, value: item }))
 
   await client.disconnect()
   await changeLoading(false)
@@ -322,7 +347,7 @@ const delKeyDialogSubmit = async () => {
       serverLabel: `${props.serverTab.db} ${props.serverTab.name}`,
       key: item.label
     })
-    await setLog(props.serverTab, [`del ${item.label}`], dateFormat())
+    await setLog(props.serverTab, ['del', item.label], dateFormat())
     if (item.label === state.targetKey) state.targetKey = 'Console'
   }
   await client.disconnect()
