@@ -125,7 +125,7 @@ const splitServerType = async (server: serverType, serverListIndex: number) => {
   */
   const keyspaceInfo = await client.sendCommand(['INFO', 'keyspace'])
   let keySpaceArr: string[] = []
-  if (keyspaceInfo && typeof keyspaceInfo !== 'string') {
+  if (String(keyspaceInfo).includes('db')) {
     keySpaceArr = keyspaceInfo.split('\r\n')
   } else {
     keySpaceArr = ['# Keyspace', 'db0:keys=0,expires=0,avg_ttl=0']

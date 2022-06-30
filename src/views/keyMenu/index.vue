@@ -72,11 +72,11 @@
       <!--pagination-->
       <el-pagination layout="total, prev, pager, next" :total="pageState.total" :page-size="pageState.pageSize"
                      v-model:current-page="pageState.currentPage" @current-change="handlePageChange()"
-                     class="py-2" v-show="!searchState.isSearching" small="small" :hide-on-single-page="true"
+                     class="py-2 mt-2" v-show="!searchState.isSearching" small="small" :hide-on-single-page="true"
       />
       <el-pagination layout="prev, pager, next" :total="searchPageState.total" :page-size="searchPageState.pageSize"
                      v-model:current-page="searchPageState.currentPage" @current-change="search()"
-                     class="py-2" v-show="searchState.isSearching" small="small" :hide-on-single-page="true"
+                     class="py-2 mt-2" v-show="searchState.isSearching" small="small" :hide-on-single-page="true"
       />
 
     </div>
@@ -170,13 +170,12 @@ const handleKeyGroupFilter = (value: string, row: keyMenuType): boolean => {
 }
 const getKeysLength = async (keyspaceInfo: string, dbIndex: string): Promise<number> => {
   const keySpaceArr = keyspaceInfo.split('\r\n')
-  const dbNode = keySpaceArr[Number(dbIndex) + 1]
-  if (!dbNode) {
+  const dbNode = keySpaceArr.filter((item: string) => item.startsWith(`db${Number(dbIndex)}`))
+  if (!dbNode.length) {
     return 0
   }
   // targetIndexDB db0:keys=1,expires=0,avg_ttl=0
-  const targetIndexDB = dbNode
-  console.log(targetIndexDB)
+  const targetIndexDB = dbNode[0]
   return Number(targetIndexDB.split(':')[1].split(',')[0].split('=')[1])
 }
 const fetchData = async () => {
@@ -213,8 +212,8 @@ const fetchData = async () => {
       typeFilterList.push(type)
 
       // push pre string
-      const preArr = /[\da-z]+(?=[:\-_#=+])/.exec(item)
-      if (preArr && preArr.length >= 2) {
+      const preArr = /[\da-zA-Z]+(?=[:\-_#=+])/.exec(item)
+      if (preArr && Object.keys(preArr).length >= 2) {
         groupList.push(preArr[0])
       }
     }
@@ -275,8 +274,8 @@ const handlePageChange = async () => {
       typeFilterList.push(type)
 
       // push pre string
-      const preArr = /[\da-z]+(?=[:\-_#=+])/.exec(item)
-      if (preArr && preArr.length >= 2) {
+      const preArr = /[\da-zA-Z]+(?=[:\-_#=+])/.exec(item)
+      if (preArr && Object.keys(preArr).length >= 2) {
         groupList.push(preArr[0])
       }
     }
