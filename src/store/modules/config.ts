@@ -3,12 +3,16 @@ import { configType, getConfig, setConfig } from '@/utils/configStore'
 import { handleThemeChange } from '@/utils/theme'
 
 const state: configType = {
-  theme: 3
+  theme: 3,
+  isVideoShow: 1,
+  language: 3
 }
 
 const mutations = {
   initConfig (state: configType, config: configType): void {
     state.theme = config.theme
+    state.isVideoShow = config.isVideoShow
+    state.language = config.language
     handleThemeChange(config.theme)
   },
   storeConfig (state: configType): void {
@@ -16,6 +20,12 @@ const mutations = {
   },
   updateTheme (state: configType, theme: number): void {
     state.theme = theme
+  },
+  updateVideoShow (state: configType, isVideoShow: number): void {
+    state.isVideoShow = isVideoShow
+  },
+  updateLanguage (state: configType, language: number): void {
+    state.language = language
   }
 }
 
@@ -24,8 +34,16 @@ const actions = {
     const configData = await getConfig()
     commit('initConfig', configData)
   },
-  async update ({ commit }: { commit: Commit }, theme: number): Promise<void> {
+  async updateTheme ({ commit }: { commit: Commit }, theme: number): Promise<void> {
     commit('updateTheme', theme)
+    commit('storeConfig')
+  },
+  async updateVideoShow ({ commit }: { commit: Commit }, isVideoShow: number): Promise<void> {
+    commit('updateVideoShow', isVideoShow)
+    commit('storeConfig')
+  },
+  async updateLanguage ({ commit }: { commit: Commit }, theme: number): Promise<void> {
+    commit('updateLanguage', theme)
     commit('storeConfig')
   }
 }

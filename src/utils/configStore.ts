@@ -8,6 +8,8 @@ const storeFilePath = path.join(remote.app.getPath('home'), '.myRedisClient/.con
 
 export interface configType {
   theme: number
+  isVideoShow: number
+  language: number
 }
 
 export const getConfig = async (): Promise<configType> => {
@@ -17,7 +19,9 @@ export const getConfig = async (): Promise<configType> => {
     return JSON.parse(result)
   } else {
     return {
-      theme: 1
+      theme: 3,
+      isVideoShow: 1,
+      language: 3
     }
   }
 }

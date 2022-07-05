@@ -47,7 +47,7 @@
         :data="searchState.isSearching ? searchState.values : state.values"
         v-loading="state.loading"
         size="small" border stripe
-        @cell-click="edit"
+        @cell-dblclick="edit"
         @cell-contextmenu="handleContentDetail"
         style="width: 100%;">
         <el-table-column type="index" width="50"/>

@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full w-full flex flex-col justify-center items-center">
+  <div class="h-full w-full flex flex-col justify-center items-center select-none">
     <div class="h-full w-full flex flex-col justify-center items-center" v-if="index === 0">
       <magic-stick style="color: rgba(140, 147, 157, 0.33);width: 6em;height: 6em;margin-bottom: 16px;" />
       <div style="color: rgba(140, 147, 157, 0.33);font-size: 20px;">{{ t('serverTab.emptyPage.message0') }}</div>

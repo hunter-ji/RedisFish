@@ -1,18 +1,24 @@
 <template>
-  <router-view/>
+  <div class="p-4 flex flex-row items-center">
+    <div class="w-40 font-bold">{{ t('config.language.label') }}:</div>
+    <el-radio-group v-model="radio" @change="handleChange">
+      <el-radio :label="1" class="w-20">{{ t('config.language.zh') }}</el-radio>
+      <el-radio :label="2" class="w-20">{{ t('config.language.en') }}</el-radio>
+      <el-radio :label="3" class="w-20">{{ t('config.language.auto') }}</el-radio>
+    </el-radio-group>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useStore } from 'vuex'
 
-const { locale } = useI18n()
+const { t, locale } = useI18n()
 const store = useStore()
 
-const initConfig = async () => {
-  await store.dispatch('config/init')
-}
+const radio = ref(3)
+
 const switchLanguageToZH = () => {
   locale.value = 'zh_CN'
 }
@@ -47,36 +53,12 @@ const handleLanguageSwitch = (label: number) => {
       switchLanguageToAuto()
   }
 }
-
-const fetchData = async () => {
-  let language = store.getters.language
-  if (!language) {
-    language = 3
-  }
-  console.log(language)
-  handleLanguageSwitch(language)
+const handleChange = async (label: number) => {
+  handleLanguageSwitch(label)
+  await store.dispatch('config/updateLanguage', label)
 }
 
-onMounted(async () => {
-  await initConfig()
-  await fetchData()
+onMounted(() => {
+  radio.value = store.getters.language || 3
 })
 </script>
-
-<style>
-body {
-  font: 14px/1.5 "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
-}
-html {
-  background-color: #ffffff;
-}
-html.dark {
-   background: #282828;
-}
-html.dark div.dark-bg {
-  background-color: #1d2021;
-}
-html.dark div.dark-bg2 {
-  background-color: #32302f;
-}
-</style>

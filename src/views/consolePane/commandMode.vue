@@ -5,7 +5,7 @@
       <!-- command input -->
       <div class="command-input p-2 flex flex-row items-center h-12">
         <el-icon><arrow-right-bold /></el-icon>
-        <input type="text" v-model="state.command" placeholder="回车以执行命令" class="w-full h-full pl-2" spellcheck="false" @keydown.enter="handleRun" />
+        <input type="text" v-model="state.command" :placeholder="t('consolePane.index.commandInputPlaceholder')" class="w-full h-full pl-2" spellcheck="false" @keydown.enter="handleRun" />
       </div>
 
       <!-- command result -->

@@ -3,8 +3,9 @@
     <!--textarea-->
     <el-input
       v-model="localMessage"
-      :autosize="{ minRows: 20, maxRows: 30 }"
+      rows="30"
       type="textarea"
+      resize="none"
       v-show="!checkIsJSON(localMessage)"
       @click.left.meta.exact="copyKey(localMessage, t('valueContent.notification.copySuccessMessage'))"
       @click.left.ctrl.exact="copyKey(localMessage, t('valueContent.notification.copySuccessMessage'))"

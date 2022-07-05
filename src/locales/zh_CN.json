@@ -5,6 +5,7 @@
       "checkBtn": "提交操作",
       "historyLabel": "执行历史",
       "historyPaneLabel": "执行结果",
+      "commandInputPlaceholder": "回车以执行命令",
       "dialog": {
         "title": "提示",
         "content": "将要执行如下命令：",
@@ -37,7 +38,8 @@
       "content": "将要删除所选key，是否执行？",
       "cancel": "取消",
       "submit": "执行"
-    }
+    },
+    "clearLog": "清空日志"
   },
   "keyTab": {},
   "newKeyValue": {
@@ -156,6 +158,17 @@
       "dark": "深色",
       "auto": "自动"
     },
+    "videoTutorial": {
+      "label": "显示视频教程",
+      "yes": "显示",
+      "no": "隐藏"
+    },
+    "language": {
+      "label": "语言",
+      "zh": "简体中文",
+      "en": "English",
+      "auto": "跟随系统"
+    },
     "hotKey": {
       "click": "鼠标左击",
       "rightClick": "鼠标右击",
@@ -182,5 +195,6 @@
     "clientCount": "已连接客户端数(个)和等待阻塞命令客户端数(个)",
     "clientCountLegend1": "已连接客户端数",
     "clientCountLegend2": "等待阻塞命令客户端数"
-  }
+  },
+  "videoTutorial": "视频教程"
 }

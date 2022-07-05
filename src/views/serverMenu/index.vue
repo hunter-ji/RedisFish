@@ -50,7 +50,10 @@
       </div>
 
       <!-- config -->
-      <app-config />
+      <div>
+        <video-tutorial />
+        <app-config />
+      </div>
     </div>
 
     <!-- addFormDialog -->
@@ -77,6 +80,7 @@ import AddForm from './addForm.vue'
 import EditForm from './editForm.vue'
 import { useI18n } from 'vue-i18n'
 import AppConfig from '@/views/config/index.vue'
+import VideoTutorial from '@/views/videoTutorial/index.vue'
 
 const { t } = useI18n()
 

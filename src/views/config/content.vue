@@ -11,7 +11,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import GeneralCom from './theme.vue'
+import GeneralCom from './general.vue'
 import HotKey from './hotKey.vue'
 import About from './about.vue'
 

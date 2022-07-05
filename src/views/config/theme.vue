@@ -1,10 +1,10 @@
 <template>
   <div class="p-4 flex flex-row items-center">
-    <div class="w-28 font-bold">{{ t('config.theme.label') }}:</div>
+    <div class="w-40 font-bold">{{ t('config.theme.label') }}:</div>
     <el-radio-group v-model="radio" @change="handleChange">
-      <el-radio :label="1">{{ t('config.theme.light') }}</el-radio>
-      <el-radio :label="2">{{ t('config.theme.dark') }}</el-radio>
-      <el-radio :label="3">{{ t('config.theme.auto') }}</el-radio>
+      <el-radio :label="1" class="w-20">{{ t('config.theme.light') }}</el-radio>
+      <el-radio :label="2" class="w-20">{{ t('config.theme.dark') }}</el-radio>
+      <el-radio :label="3" class="w-20">{{ t('config.theme.auto') }}</el-radio>
     </el-radio-group>
   </div>
 </template>
@@ -21,7 +21,7 @@ const radio = ref(3)
 const store = useStore()
 
 const handleChange = async (label: number) => {
-  await store.dispatch('config/update', label)
+  await store.dispatch('config/updateTheme', label)
   handleThemeChange(label)
 }
 

@@ -1,6 +1,7 @@
 <template>
   <div class="key-tab-container">
     <el-tabs
+      class="key-tabs"
       v-model="state.activeTab"
       type="card"
       @tab-remove="removeTab"
@@ -9,7 +10,7 @@
       style="width: calc(100vw - 680px);"
     >
       <!-- console tab -->
-      <el-tab-pane label="Console" name="Console" :closable="false">
+      <el-tab-pane label="Console" name="Console" :closable="false" class="console">
         <command-pane :server-tab="props.serverTab" />
       </el-tab-pane>
       <!-- monitor -->
@@ -158,3 +159,9 @@ watch(isPsOpen, () => {
   }
 })
 </script>
+
+<style>
+.key-tabs .el-tabs__item:nth-child(1) i {
+  opacity: 0;
+}
+</style>

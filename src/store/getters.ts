@@ -5,7 +5,9 @@ const getters = {
   keyTabList: (state: any) => state.keyList.keyTabList,
   monitorList: (state: any) => state.keyMenuAndTabBind.monitorList,
   psList: (state: any) => state.keyMenuAndTabBind.psList,
-  theme: (state: any) => state.config.theme
+  theme: (state: any) => state.config.theme,
+  isVideoShow: (state: any) => state.config.isVideoShow,
+  language: (state: any) => state.config.language
 }
 
 export default getters

@@ -46,7 +46,7 @@
         v-loading="state.loading"
         size="small" border stripe
         @selection-change="handleSelectionChange"
-        @cell-click="edit"
+        @cell-dblclick="edit"
         @cell-contextmenu="handleContentDetail"
         style="width: 100%;">
         <el-table-column type="selection" width="40"/>
