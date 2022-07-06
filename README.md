@@ -13,7 +13,7 @@
 
 ## Info
 
-`RedFish` is a convenient, cross-platform, data-focused Redis GUI client. I added some (think) fantastic ideas as much as I could, like right-clicking to zoom in on the data and editable features, and taking advice from more senior developers to improve it. Since `Beta 1.0.0`, after several months of intermittent development, many areas have been optimized, and even some functions include different processing methods, which can adapt to different operating habits, hoping to bring a better experience. 😄
+`RedFish` is a convenient, cross-platform, data-focused Redis GUI client. Since `Beta 1.0.0`, after several months of development, many areas have been optimized, and even some functions include different processing methods, which can adapt to different operating habits, hoping to bring a better experience. 
 
 language: [简体中文](https://github.com/Kuari/RedFish/blob/main/README.zh-CN.md) 英文
 
@@ -30,17 +30,22 @@ download: [releases](https://github.com/Kuari/RedFish/releases)
 * JSON auto format
 * JSON viewing and editing
 * key list paging query
-* The key list can be filtered by prefix grouping
+* The key list can be filtered by prefix grouping, support`:`, `-`, `_`, `#`, `=`, `+`
 * The console supports two different modes: single command execution and multi-command execution at the same time
 * Support log function, view execution command log
 * Database monitoring, supports cpu usage, memory usage, number of connected clients, number of clients waiting for blocking commands
 * Graphical operation of publish/subscribe function
 * TLS
 * Dark mode
-* `Command/Ctrl` + `left-click` shortcut copy
-* `Right-click` the data to open the data zoom editor, including text and json modes
 * Multi-language support, support Chinese, English, automatically switch according to the system
 * Automatic update (currently only on mac)
+
+
+
+## HotKey
+
+* **Copy**: `Command/Ctrl` + `left-click` shortcut copy
+* **Data Zoom**: `Right-click` the data to open the data zoom editor, including text and json modes, can be automatically recognized
 
 
 
@@ -57,9 +62,3 @@ download: [releases](https://github.com/Kuari/RedFish/releases)
 ![Screenshots](./Screenshots/Screenshots5.png)
 
 ![Screenshots](./Screenshots/Screenshots6.png)
-
-![Screenshots](./Screenshots/Screenshots7.png)
-
-![Screenshots](./Screenshots/Screenshots8.png)
-
-![Screenshots](./Screenshots/Screenshots9.png)

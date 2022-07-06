@@ -12,12 +12,18 @@ import { useI18n } from 'vue-i18n'
 import { VideoPlay } from '@element-plus/icons-vue'
 import { useStore } from 'vuex'
 import { shell } from 'electron'
+import { ElMessage } from 'element-plus'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const store = useStore()
 
 const jump = () => {
-  shell.openExternal('https://github.com/Kuari/RedFish')
+  console.log(locale.value)
+  if (locale.value === 'zh_CN') {
+    shell.openExternal('https://www.bilibili.com/video/BV1Wf4y1d7JZ?share_source=copy_web')
+  } else {
+    ElMessage({ message: 'Sorry, not online yet', type: 'info' })
+  }
 }
 </script>
 
