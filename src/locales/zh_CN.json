@@ -169,6 +169,14 @@
       "en": "English",
       "auto": "跟随系统"
     },
+    "keyMenuFilterSymbol": {
+      "label": "key前缀分割符"
+    },
+    "keyMenuStatus": {
+      "label": "key展示模式",
+      "group": "前缀分组",
+      "filter": "列表展示"
+    },
     "hotKey": {
       "click": "鼠标左击",
       "rightClick": "鼠标右击",

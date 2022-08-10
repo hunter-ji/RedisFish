@@ -7,9 +7,12 @@ const storeFolderPath = path.join(remote.app.getPath('home'), '.myRedisClient')
 const storeFilePath = path.join(remote.app.getPath('home'), '.myRedisClient/.config')
 
 export interface configType {
-  theme: number
+  theme: number // 1 light 2 dark 3 auto
   isVideoShow: number
-  language: number
+  language: number // 1 zh 2 en 3 auto
+  keyMenuStatus: number // 1 group 2 filter
+  keyMenuFilterSymbol: number // 1 : 2 _ 3 - 4 # 5 = 6 +
+  keyMenuFilterSymbolStr: string
 }
 
 export const getConfig = async (): Promise<configType> => {
@@ -21,7 +24,10 @@ export const getConfig = async (): Promise<configType> => {
     return {
       theme: 3,
       isVideoShow: 1,
-      language: 3
+      language: 3,
+      keyMenuStatus: 1,
+      keyMenuFilterSymbol: 1,
+      keyMenuFilterSymbolStr: ':'
     }
   }
 }
@@ -39,4 +45,23 @@ export const initConfigFile = async (): Promise<void> => {
 
 export const setConfig = (content: configType): void => {
   writeFile(storeFilePath, JSON.stringify(content))
+}
+
+export const transKeyMenuFilterSymbol = (keyMenuFilterSymbol: number): string => {
+  switch (keyMenuFilterSymbol) {
+    case 1:
+      return ':'
+    case 2:
+      return '_'
+    case 3:
+      return '-'
+    case 4:
+      return '#'
+    case 5:
+      return '='
+    case 6:
+      return '+'
+    default:
+      return ':'
+  }
 }

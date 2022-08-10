@@ -50,19 +50,15 @@
 
       <!--keys tale-->
       <el-table :data="searchState.isSearching ? searchState.keysList : state.keysList" size="small" height="90%" style="width: 100%;" stripe
-                @selection-change="handleSelectionChange" class="pb-4" v-loading="state.loading">
-        <el-table-column type="selection" width="50"/>
-        <el-table-column prop="type" label="Type" width="70" :filters="groupState.typeFilterList" :filter-method="handleKeyTypeFilter">
-          <template #default="scope">
-            <div class="text-green-500 italic mr-2">{{ scope.row.type }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="label" label="Key" width="280" :filters="groupState.list" :filter-method="handleKeyGroupFilter">
+                @selection-change="handleSelectionChange" class="pb-4" v-loading="state.loading" row-key="label"
+                :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+      >
+<!--        <el-table-column type="selection" width="50"/>-->
+        <el-table-column prop="label" label="Key" width="280">
           <template #default="scope">
             <div
               @click.left.meta.exact="copyKey(scope.row.label, t('valueContent.notification.copySuccessMessage'))"
               @click.left.ctrl.exact="copyKey(scope.row.label, t('valueContent.notification.copySuccessMessage'))"
-              @click.left.exact="getValue(scope.row.label)"
             >
               {{ scope.row.label }}
             </div>
@@ -110,7 +106,7 @@ import { getClient } from '@/utils/redis'
 import { useStore } from 'vuex'
 import { Delete, RefreshRight, Search, Tickets, DataLine, Switch } from '@element-plus/icons-vue'
 import KeyTab from '@/views/keyTab/index.vue'
-import { keyMenuType } from '@/views/valueContent/index'
+import { keyMenuType, keyMenuWithGroupType, keyMenuWithGroupChildType } from '@/views/valueContent/index'
 import { useI18n } from 'vue-i18n'
 import HistoryLog from '@/views/historyLog/index.vue'
 import { setLog } from '@/utils/log'
@@ -128,7 +124,7 @@ const props = defineProps({
 
 const store = useStore()
 const client = getClient(props.serverTab)
-const state: { keysList: keyMenuType[], targetKey: string, multipleSelection: keyMenuType[], loading: boolean } = reactive({
+const state: { keysList: keyMenuWithGroupType[], targetKey: string, multipleSelection: keyMenuType[], loading: boolean } = reactive({
   keysList: [],
   targetKey: '',
   multipleSelection: [],
@@ -162,12 +158,6 @@ const searchPageState: { scanIndex: string, total: number, pageSize: number, cur
 })
 const changeLoading = async (status: boolean) => {
   state.loading = status
-}
-const handleKeyTypeFilter = (value: string, row: keyMenuType): boolean => {
-  return row.type === value
-}
-const handleKeyGroupFilter = (value: string, row: keyMenuType): boolean => {
-  return row.label.startsWith(value)
 }
 const getKeysLength = async (keyspaceInfo: string, dbIndex: string): Promise<number> => {
   const keySpaceArr = keyspaceInfo.split('\r\n')
@@ -204,38 +194,54 @@ const fetchData = async () => {
     }
     const keys = scanResult[1]
 
-    const groupList: string[] = []
-    const typeFilterList: string[] = []
-
+    const otherGroupChildren: keyMenuWithGroupChildType[] = []
     for (let index = 0; index < keys.length; index++) {
-      const item = keys[index]
+      const key = keys[index]
 
-      const type = await client.sendCommand(['type', item])
-      state.keysList.push({
-        label: item,
-        value: index,
-        type: typeof type === 'string' ? type : 'unknown'
-      })
-
-      // push type
-      typeFilterList.push(type)
-
-      // push pre string
-      const preStr = await handleKeyMenuFilter(item)
+      // 遍历每一个key，是否有前缀
+      const preStr = await handleKeyMenuFilter(key)
       if (preStr !== '') {
-        groupList.push(preStr)
+        // 有前缀的
+        // 判断前缀是否存在，存在的放入子项，不存在的新建然后放入子项
+        const keysListIndex = state.keysList.findIndex((item: keyMenuWithGroupType) => item.label === preStr)
+        if (keysListIndex === -1) {
+          state.keysList.push({
+            label: preStr,
+            value: index,
+            count: 1,
+            hasChildren: true,
+            children: [{
+              label: key,
+              value: 0
+            }]
+          })
+        } else {
+          state.keysList[keysListIndex].children.push({
+            label: key,
+            value: state.keysList[keysListIndex].children.length
+          })
+        }
+      } else {
+        // 没有前缀的放入other分组
+        otherGroupChildren.push({
+          label: key,
+          value: otherGroupChildren.length
+        })
       }
     }
 
-    const groupListSingle = [...new Set(groupList)]
-    groupState.list = groupListSingle.map((item: string) => ({ text: item, value: item }))
-
-    const typeFilterListSingle = [...new Set(typeFilterList)]
-    groupState.typeFilterList = typeFilterListSingle.map((item: string) => ({ text: item, value: item }))
+    state.keysList.push({
+      label: 'other',
+      value: state.keysList.length,
+      hasChildren: true,
+      count: otherGroupChildren.length,
+      children: otherGroupChildren
+    })
   }
 
   await client.disconnect()
   await changeLoading(false)
+  console.log(state.keysList)
 }
 const handlePageChange = async () => {
   const dbIndex = props.serverTab.db.slice(-1)
@@ -271,16 +277,6 @@ const handlePageChange = async () => {
     const typeFilterList: string[] = []
     for (let index = 0; index < keys.length; index++) {
       const item = keys[index]
-
-      const type = await client.sendCommand(['type', item])
-      state.keysList.push({
-        label: item,
-        value: index,
-        type: typeof type === 'string' ? type : 'unknown'
-      })
-
-      // push type
-      typeFilterList.push(type)
 
       // push pre string
       const preStr = await handleKeyMenuFilter(item)

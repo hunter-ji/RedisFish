@@ -169,6 +169,14 @@
       "en": "English",
       "auto": "follow the system"
     },
+    "keyMenuFilterSymbol": {
+      "label": "key prefix separator"
+    },
+    "keyMenuStatus": {
+      "label": "key display mode",
+      "group": "prefix group",
+      "filter": "list display"
+    },
     "hotKey": {
       "click": "left mouse click",
       "rightClick": "right mouse click",

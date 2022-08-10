@@ -14,7 +14,8 @@
         :name="item.db + ' ' + item.name"
         :closable="state.closable"
       >
-        <key-menu :server-tab="item" class="w-full" />
+        <key-menu-with-group :server-tab="item" class="w-full" v-if="keyMenuStatus" />
+        <key-menu :server-tab="item" class="w-full" v-else />
       </el-tab-pane>
     </el-tabs>
 
@@ -28,6 +29,7 @@ import { computed, ComputedRef, reactive, watch } from 'vue'
 import { useStore } from 'vuex'
 import { serverTabType } from '@/store/modules/serverList'
 import KeyMenu from '@/views/keyMenu/index.vue'
+import KeyMenuWithGroup from '@/views/keyMenu/group.vue'
 import EmptyPage from './emptyPage.vue'
 
 const store = useStore()
@@ -39,6 +41,11 @@ const removeTab = (targetName: string) => {
   store.dispatch('serverList/delTab', targetName)
 }
 const data: ComputedRef<serverTabType[]> = computed(() => store.getters.serverTabList)
+
+const keyMenuStatus = computed(() => {
+  console.log(store.getters.keyMenuStatus)
+  return store.getters.keyMenuStatus === 1
+})
 
 watch(state, () => {
   store.commit('serverList/setCurrentServerTab', state.activeTab)

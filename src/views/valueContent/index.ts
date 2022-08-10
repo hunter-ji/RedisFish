@@ -4,6 +4,19 @@ export interface keyMenuType {
   type: string
 }
 
+export interface keyMenuWithGroupChildType {
+  label: string
+  value: number
+}
+
+export interface keyMenuWithGroupType {
+  label: string
+  value: number
+  count: number
+  hasChildren: boolean
+  children: keyMenuWithGroupChildType[]
+}
+
 export interface commandObjectType {
   command: string[]
   result?: string
