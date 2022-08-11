@@ -7,13 +7,14 @@ export interface keyMenuType {
 export interface keyMenuWithGroupChildType {
   label: string
   value: number
+  isKey: boolean
 }
 
 export interface keyMenuWithGroupType {
   label: string
   value: number
   count: number
-  hasChildren: boolean
+  isKey: boolean
   children: keyMenuWithGroupChildType[]
 }
 

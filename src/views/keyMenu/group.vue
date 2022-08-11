@@ -48,19 +48,30 @@
         </div>
       </div>
 
-      <!--keys tale-->
-      <el-table :data="searchState.isSearching ? searchState.keysList : state.keysList" size="small" height="90%" style="width: 100%;" stripe
-                @selection-change="handleSelectionChange" class="pb-4" v-loading="state.loading" row-key="label"
-                :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+      <!--keys table-->
+      <el-table
+        :data="searchState.isSearching ? searchState.keysList : state.keysList"
+        size="small" height="90%" style="width: 400px;"
+        class="group-key-menu pb-4"
+        v-loading="state.loading"
+        row-key="label"
+        :expand-row-keys="tableState.expands"
+        @selection-change="handleSelectionChange"
       >
-<!--        <el-table-column type="selection" width="50"/>-->
-        <el-table-column prop="label" label="Key" width="280">
+        <el-table-column type="selection" width="50" :selectable="handleSelect"/>
+        <el-table-column prop="label" label="Key" width="350">
           <template #default="scope">
             <div
               @click.left.meta.exact="copyKey(scope.row.label, t('valueContent.notification.copySuccessMessage'))"
               @click.left.ctrl.exact="copyKey(scope.row.label, t('valueContent.notification.copySuccessMessage'))"
+              @click.left.exact="getValue(scope.row.label, scope.row.isKey)"
+              v-if="scope.row.isKey"
+              class="cursor-default"
             >
               {{ scope.row.label }}
+            </div>
+            <div v-else class="cursor-default w-full" @click="handleExpand(scope.row)">
+              {{ `${scope.row.label} (${scope.row.count})` }}
             </div>
           </template>
         </el-table-column>
@@ -106,7 +117,7 @@ import { getClient } from '@/utils/redis'
 import { useStore } from 'vuex'
 import { Delete, RefreshRight, Search, Tickets, DataLine, Switch } from '@element-plus/icons-vue'
 import KeyTab from '@/views/keyTab/index.vue'
-import { keyMenuType, keyMenuWithGroupType, keyMenuWithGroupChildType } from '@/views/valueContent/index'
+import { keyMenuWithGroupType, keyMenuWithGroupChildType } from '@/views/valueContent/index'
 import { useI18n } from 'vue-i18n'
 import HistoryLog from '@/views/historyLog/index.vue'
 import { setLog } from '@/utils/log'
@@ -124,17 +135,14 @@ const props = defineProps({
 
 const store = useStore()
 const client = getClient(props.serverTab)
-const state: { keysList: keyMenuWithGroupType[], targetKey: string, multipleSelection: keyMenuType[], loading: boolean } = reactive({
+const state: { keysList: keyMenuWithGroupType[], originKeysList: string[], targetKey: string, multipleSelection: keyMenuWithGroupChildType[], loading: boolean } = reactive({
   keysList: [],
+  originKeysList: [],
   targetKey: '',
   multipleSelection: [],
   loading: true
 })
-const groupState: { list: { text: string, value: string }[], typeFilterList: { text: string, value: string }[] } = reactive({
-  list: [],
-  typeFilterList: []
-})
-const searchState: { keysList: keyMenuType[], search: string, isSearching: boolean } = reactive({
+const searchState: { keysList: keyMenuWithGroupChildType[], search: string, isSearching: boolean } = reactive({
   keysList: [],
   search: '',
   isSearching: false
@@ -155,6 +163,9 @@ const searchPageState: { scanIndex: string, total: number, pageSize: number, cur
   pageSize: 200,
   currentPage: 1,
   lock: false
+})
+const tableState: { expands: string[] } = reactive({
+  expands: []
 })
 const changeLoading = async (status: boolean) => {
   state.loading = status
@@ -177,10 +188,59 @@ const handleKeyMenuFilter = async (label: string): Promise<string> => {
   }
   return ''
 }
+const handleGroupKeys = async (keys: string[]) => {
+  state.keysList = []
+  const otherGroupChildren: keyMenuWithGroupChildType[] = []
+  for (let index = 0; index < keys.length; index++) {
+    const key = keys[index]
+
+    // traverse each key, whether there is a prefix
+    const preStr = await handleKeyMenuFilter(key)
+    if (preStr !== '') {
+      // prefixed
+      // determine whether the prefix exists, put it in the sub-item if it exists, create a new one if it does not exist, and then put it in the sub-item
+      const keysListIndex = state.keysList.findIndex((item: keyMenuWithGroupType) => item.label === preStr)
+      if (keysListIndex === -1) {
+        state.keysList.push({
+          label: preStr,
+          value: index + 1000,
+          count: 1,
+          isKey: false,
+          children: [{
+            label: key,
+            value: index,
+            isKey: true
+          }]
+        })
+      } else {
+        state.keysList[keysListIndex].children.push({
+          label: key,
+          value: index,
+          isKey: true
+        })
+        state.keysList[keysListIndex].count += 1
+      }
+    } else {
+      // put into the other group without a prefix
+      otherGroupChildren.push({
+        label: key,
+        value: index,
+        isKey: true
+      })
+    }
+  }
+
+  state.keysList.push({
+    label: 'other',
+    value: state.keysList.length,
+    count: otherGroupChildren.length,
+    isKey: false,
+    children: otherGroupChildren
+  })
+}
 const fetchData = async () => {
   const dbIndex = props.serverTab.db.slice(-1)
   await changeLoading(true)
-  state.keysList = []
   await client.connect()
   await client.sendCommand(['select', dbIndex])
 
@@ -193,60 +253,17 @@ const fetchData = async () => {
       pageState.scanIndexList[2] = scanResult[0]
     }
     const keys = scanResult[1]
+    state.originKeysList = keys
 
-    const otherGroupChildren: keyMenuWithGroupChildType[] = []
-    for (let index = 0; index < keys.length; index++) {
-      const key = keys[index]
-
-      // 遍历每一个key，是否有前缀
-      const preStr = await handleKeyMenuFilter(key)
-      if (preStr !== '') {
-        // 有前缀的
-        // 判断前缀是否存在，存在的放入子项，不存在的新建然后放入子项
-        const keysListIndex = state.keysList.findIndex((item: keyMenuWithGroupType) => item.label === preStr)
-        if (keysListIndex === -1) {
-          state.keysList.push({
-            label: preStr,
-            value: index,
-            count: 1,
-            hasChildren: true,
-            children: [{
-              label: key,
-              value: 0
-            }]
-          })
-        } else {
-          state.keysList[keysListIndex].children.push({
-            label: key,
-            value: state.keysList[keysListIndex].children.length
-          })
-        }
-      } else {
-        // 没有前缀的放入other分组
-        otherGroupChildren.push({
-          label: key,
-          value: otherGroupChildren.length
-        })
-      }
-    }
-
-    state.keysList.push({
-      label: 'other',
-      value: state.keysList.length,
-      hasChildren: true,
-      count: otherGroupChildren.length,
-      children: otherGroupChildren
-    })
+    await handleGroupKeys(keys)
   }
 
   await client.disconnect()
   await changeLoading(false)
-  console.log(state.keysList)
 }
 const handlePageChange = async () => {
   const dbIndex = props.serverTab.db.slice(-1)
   await changeLoading(true)
-  state.keysList = []
   await client.connect()
   await client.sendCommand(['select', dbIndex])
 
@@ -272,31 +289,18 @@ const handlePageChange = async () => {
       }
     }
     const keys = scanResult[1]
+    state.originKeysList = keys
 
-    const groupList: string[] = []
-    const typeFilterList: string[] = []
-    for (let index = 0; index < keys.length; index++) {
-      const item = keys[index]
-
-      // push pre string
-      const preStr = await handleKeyMenuFilter(item)
-      if (preStr !== '') {
-        groupList.push(preStr)
-      }
-    }
-
-    const groupListSingle = [...new Set(groupList)]
-    groupState.list = groupListSingle.map((item: string) => ({ text: item, value: item }))
-
-    const typeFilterListSingle = [...new Set(typeFilterList)]
-    groupState.typeFilterList = typeFilterListSingle.map((item: string) => ({ text: item, value: item }))
+    await handleGroupKeys(keys)
   }
 
   await client.disconnect()
   await changeLoading(false)
 }
-const getValue = async (label: string) => {
-  await addTab(label)
+const getValue = async (label: string, isKey: boolean) => {
+  if (isKey) {
+    await addTab(label)
+  }
 }
 const addTab = async (targetName: string) => {
   await store.dispatch('keyList/add', {
@@ -305,8 +309,8 @@ const addTab = async (targetName: string) => {
   })
   state.targetKey = targetName
 }
-const handleSelectionChange = (val: keyMenuType[]) => {
-  state.multipleSelection = val
+const handleSelectionChange = (val: keyMenuWithGroupChildType[]) => {
+  state.multipleSelection = val.filter((item: keyMenuWithGroupChildType) => item.isKey)
 }
 const search = async () => {
   searchState.isSearching = true
@@ -324,12 +328,10 @@ const search = async () => {
   const keys = scanResult[1]
 
   for (let index = 0; index < keys.length; index++) {
-    const item = keys[index]
-    const type = await client.sendCommand(['type', item])
     searchState.keysList.push({
-      label: item,
+      label: keys[index],
       value: index,
-      type: typeof type === 'string' ? type : 'unknown'
+      isKey: true
     })
   }
   await client.disconnect()
@@ -366,6 +368,16 @@ const handleMonitorToggle = async () => {
 const handlePsToggle = async () => {
   await store.dispatch('keyMenuAndTabBind/psToggle', props.serverTab)
 }
+const handleSelect = (row: { isKey: boolean }): boolean => {
+  return row.isKey
+}
+const handleExpand = (row: { label: string }) => {
+  if (tableState.expands.includes(row.label)) {
+    tableState.expands = tableState.expands.filter((item: string) => item !== row.label)
+  } else {
+    tableState.expands.push(row.label)
+  }
+}
 
 onMounted(async () => {
   await fetchData()
@@ -379,6 +391,10 @@ watch(() => searchState.search, () => {
       searchPageState.lock = false
     }
   }
+})
+
+watch(() => store.getters.keyMenuFilterSymbolStr, async () => {
+  await handleGroupKeys(state.originKeysList)
 })
 </script>
 
@@ -398,5 +414,16 @@ watch(() => searchState.search, () => {
 .slide-fade-leave-to {
   transform: translateY(20px);
   opacity: 0;
+}
+</style>
+
+<style scoped>
+/deep/ .el-table .cell {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+/deep/ .el-table__header-wrapper .el-checkbox {
+  display: none;
 }
 </style>

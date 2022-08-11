@@ -8,6 +8,7 @@ const getters = {
   theme: (state: any) => state.config.theme,
   isVideoShow: (state: any) => state.config.isVideoShow,
   language: (state: any) => state.config.language,
+  keyMenuFilterSymbol: (state: any) => state.config.keyMenuFilterSymbol,
   keyMenuFilterSymbolStr: (state: any) => state.config.keyMenuFilterSymbolStr,
   keyMenuStatus: (state: any) => state.config.keyMenuStatus
 }

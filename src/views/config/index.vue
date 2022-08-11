@@ -7,7 +7,7 @@
       </div>
     </el-card>
 
-    <el-dialog v-model="dialogState.isShow" width="40%" center top="10vh" :title="t('config.title')">
+    <el-dialog v-model="dialogState.isShow" width="50%" center top="10vh" :title="t('config.title')">
       <config-content v-if="dialogState.isShow" />
     </el-dialog>
   </div>
