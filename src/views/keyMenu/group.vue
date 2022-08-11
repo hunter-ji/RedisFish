@@ -418,12 +418,12 @@ watch(() => store.getters.keyMenuFilterSymbolStr, async () => {
 </style>
 
 <style scoped>
-/deep/ .el-table .cell {
+.group-key-menu:deep(.cell) {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
-/deep/ .el-table__header-wrapper .el-checkbox {
+.group-key-menu:deep(.el-table__header-wrapper .el-checkbox) {
   display: none;
 }
 </style>

@@ -45,7 +45,6 @@
         v-loading="state.loading"
         size="small" border stripe
         @selection-change="handleSelectionChange"
-        @cell-dblclick="edit"
         @cell-contextmenu="handleContentDetail"
         style="width: 100%;">
         <el-table-column type="selection" width="40"/>
@@ -55,13 +54,15 @@
             <div v-if="scope.row.id === state.targetID && state.targetLabel === 'Field'">
               <el-input size="small" v-model="scope.row.field" @blur="blurInput" placeholder="null" :rows="3"
                         type="textarea"
+                        :id="`z-set-row-input-${scope.row.id}`"
                         @change="inputChange(scope.row, true)"/>
             </div>
             <div v-else>
-              <div v-if="scope.row.field.length" :style="'color:' + SwitchColorWithRepeat(scope.row.isRepeat, scope.row.type)">
+              <div v-if="scope.row.field.length" :style="'color:' + SwitchColorWithRepeat(scope.row.isRepeat, scope.row.type)"
+                   @dblclick.left.exact="handleRowEdit(scope.row.id, 'Field')">
                 {{ contentLimit(scope.row.field) }}
               </div>
-              <div class="text-gray-400 italic" v-else>null</div>
+              <div class="text-gray-400 italic" v-else @dblclick.left.exact="handleRowEdit(scope.row.id, 'Field')">null</div>
             </div>
           </template>
         </el-table-column>
@@ -69,16 +70,18 @@
           <template #default="scope">
             <div v-if="scope.row.id === state.targetID && state.targetLabel === 'Value'">
               <el-input size="small" v-model="scope.row.value" @blur="blurInput" placeholder="null" type="number"
+                        :id="`z-set-row-input-${scope.row.id}`"
                         @change="inputChange(scope.row, false)"/>
             </div>
             <div v-else>
               <div v-if="scope.row.value.length" :style="'color:' + SwitchColor(scope.row.type)"
                    @click.left.meta.exact="copyKey(scope.row.value, t('valueContent.notification.copySuccessMessage'))"
                    @click.left.ctrl.exact="copyKey(scope.row.value, t('valueContent.notification.copySuccessMessage'))"
+                   @dblclick.left.exact="handleRowEdit(scope.row.id, 'Value')"
               >
                 {{ scope.row.value }}
               </div>
-              <div class="text-gray-400 italic" v-else>null</div>
+              <div class="text-gray-400 italic" v-else @dblclick.left.exact="handleRowEdit(scope.row.id, 'Value')">null</div>
             </div>
           </template>
         </el-table-column>
@@ -160,9 +163,16 @@ const refresh = () => {
 const handleSelectionChange = (val: zsetTableValueType[]) => {
   state.multipleSelection = val
 }
-const edit = (e: zsetTableValueType, cell: { label: string }) => {
-  state.targetID = e.id
-  state.targetLabel = cell.label
+const handleRowEdit = (id: number, label: string) => {
+  state.targetID = id
+  state.targetLabel = label
+  setTimeout(() => {
+    const dom = document.getElementById(`z-set-row-input-${id}`)
+    if (dom) {
+      console.log('dom : ', dom)
+      dom.focus()
+    }
+  }, 100)
 }
 const blurInput = () => {
   state.targetID = -1

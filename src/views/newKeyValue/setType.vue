@@ -29,7 +29,6 @@
         :data="state.values"
         v-loading="state.loading"
         size="small" border stripe @selection-change="handleSelectionChange"
-        @cell-dblclick="edit"
         style="width: 100%;">
         <el-table-column type="selection" width="40"/>
         <el-table-column type="index" width="50"/>
@@ -37,13 +36,17 @@
           <template #default="scope">
             <div v-if="scope.row.id === state.targetID">
               <el-input size="small" v-model="scope.row.value" @blur="blurInput" placeholder="null" :rows="3" type="textarea"
+                        :id="`set-row-input-${scope.row.id}`"
                         @change="inputChange(scope.row)"/>
             </div>
             <div v-else>
-              <div v-if="scope.row.value.length" :style="'color:' + SwitchColorWithRepeat(scope.row.isRepeat, scope.row.type)">
+              <div v-if="scope.row.value.length"
+                   :style="'color:' + SwitchColorWithRepeat(scope.row.isRepeat, scope.row.type)"
+                   @dblclick.left.exact="handleRowEdit(scope.row.id)"
+              >
                 {{ contentLimit(scope.row.value) }}
               </div>
-              <div class="text-gray-400 italic" v-else>null</div>
+              <div class="text-gray-400 italic" v-else @dblclick.left.exact="handleRowEdit(scope.row.id)">null</div>
             </div>
           </template>
         </el-table-column>
@@ -83,8 +86,14 @@ const state: { values: setTableValueType[], ttl: number, multipleSelection: setT
 const handleSelectionChange = (val: setTableValueType[]) => {
   state.multipleSelection = val
 }
-const edit = (e: setTableValueType) => {
-  state.targetID = e.id
+const handleRowEdit = (id: number) => {
+  state.targetID = id
+  setTimeout(() => {
+    const dom = document.getElementById(`set-row-input-${id}`)
+    if (dom) {
+      dom.focus()
+    }
+  }, 100)
 }
 const blurInput = () => {
   state.targetID = -1

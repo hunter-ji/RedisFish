@@ -47,7 +47,6 @@
         :data="searchState.isSearching ? searchState.values : state.values"
         v-loading="state.loading"
         size="small" border stripe
-        @cell-dblclick="edit"
         @cell-contextmenu="handleContentDetail"
         style="width: 100%;">
         <el-table-column type="index" width="50"/>
@@ -55,6 +54,7 @@
           <template #default="scope">
             <div v-if="scope.row.id === state.targetID">
               <el-input size="small" v-model="scope.row.value" @blur="blurInput" placeholder="null" :rows="3" type="textarea"
+                        :id="`list-row-input-${scope.row.id}`"
                         @change="inputChange(scope.row)"/>
             </div>
             <div v-else>
@@ -62,10 +62,11 @@
                    :style="'color:' + SwitchColor(scope.row.type)"
                    @click.left.meta.exact="copyKey(scope.row.value, t('valueContent.notification.copySuccessMessage'))"
                    @click.left.ctrl.exact="copyKey(scope.row.value, t('valueContent.notification.copySuccessMessage'))"
+                   @dblclick.left.exact="handleRowEdit(scope.row.id)"
               >
                 {{ contentLimit(scope.row.value) }}
               </div>
-              <div class="text-gray-400 italic" v-else>null</div>
+              <div class="text-gray-400 italic" v-else @dblclick.left.exact="handleRowEdit(scope.row.id)">null</div>
             </div>
           </template>
         </el-table-column>
@@ -139,8 +140,15 @@ const refresh = () => {
   state.values = []
   emit('refresh', true)
 }
-const edit = (e: listTableValueType) => {
-  state.targetID = e.id
+const handleRowEdit = (id: number) => {
+  state.targetID = id
+  setTimeout(() => {
+    const dom = document.getElementById(`list-row-input-${id}`)
+    if (dom) {
+      console.log('dom : ', dom)
+      dom.focus()
+    }
+  }, 100)
 }
 const blurInput = () => {
   state.targetID = 0
