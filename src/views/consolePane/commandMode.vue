@@ -38,7 +38,7 @@ import { ArrowRightBold } from '@element-plus/icons-vue'
 import { defineProps, PropType, reactive } from 'vue'
 import { commandHistoryItemType } from '.'
 import { serverTabType } from '@/store/modules/serverList'
-import { getClient } from '@/utils/redis'
+import { getClientWithDB } from '@/utils/redis'
 import { dateFormat } from '@/utils/formatTime'
 import { copyKey } from '@/utils/copyFromTable'
 import { setLog } from '@/utils/log'
@@ -54,7 +54,7 @@ const props = defineProps({
   }
 })
 
-const client = getClient(props.serverTab)
+const client = getClientWithDB(props.serverTab)
 const state: { command: string, history: commandHistoryItemType[] } = reactive({
   command: '',
   history: []
@@ -74,13 +74,10 @@ const handleRun = async () => {
   let results = []
 
   await client.connect()
-  await client.sendCommand(['select', props.serverTab.db.slice(-1)])
 
   const commandArr = await handleCommandFormat(key)
-  console.log('command Arr : ', commandArr)
 
   const res = await client.sendCommand(commandArr)
-  console.log('res : ', res)
   if (!res || res === [] || res.length === 0) {
     results.push('nil')
   } else {

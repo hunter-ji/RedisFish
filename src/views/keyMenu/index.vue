@@ -106,7 +106,7 @@
 <script setup lang="ts">
 import { defineProps, onMounted, PropType, reactive, watch } from 'vue'
 import { serverTabType } from '@/store/modules/serverList'
-import { getClient } from '@/utils/redis'
+import { getClientWithDB } from '@/utils/redis'
 import { useStore } from 'vuex'
 import { Delete, RefreshRight, Search, Tickets, DataLine, Switch } from '@element-plus/icons-vue'
 import KeyTab from '@/views/keyTab/index.vue'
@@ -127,7 +127,7 @@ const props = defineProps({
 })
 
 const store = useStore()
-const client = getClient(props.serverTab)
+const client = getClientWithDB(props.serverTab)
 const state: { keysList: keyMenuType[], targetKey: string, multipleSelection: keyMenuType[], loading: boolean } = reactive({
   keysList: [],
   targetKey: '',
@@ -171,7 +171,7 @@ const handleKeyGroupFilter = (value: string, row: keyMenuType): boolean => {
 }
 const getKeysLength = async (keyspaceInfo: string, dbIndex: string): Promise<number> => {
   const keySpaceArr = keyspaceInfo.split('\r\n')
-  const dbNode = keySpaceArr.filter((item: string) => item.startsWith(`db${Number(dbIndex)}`))
+  const dbNode = keySpaceArr.filter((item: string) => item.startsWith(dbIndex))
   if (!dbNode.length) {
     return 0
   }
@@ -188,14 +188,12 @@ const handleKeyMenuFilter = async (label: string): Promise<string> => {
   return ''
 }
 const fetchData = async () => {
-  const dbIndex = props.serverTab.db.slice(-1)
   await changeLoading(true)
   state.keysList = []
   await client.connect()
-  await client.sendCommand(['select', dbIndex])
 
   const keyspaceInfo: string = await client.sendCommand(['INFO', 'keyspace'])
-  pageState.total = await getKeysLength(keyspaceInfo, dbIndex)
+  pageState.total = await getKeysLength(keyspaceInfo, props.serverTab.db)
 
   if (pageState.total) {
     const scanResult: [string, string[]] = await client.sendCommand(['SCAN', pageState.scanIndexList[1], 'COUNT', String(pageState.pageSize)])
@@ -238,14 +236,9 @@ const fetchData = async () => {
   await changeLoading(false)
 }
 const handlePageChange = async () => {
-  const dbIndex = props.serverTab.db.slice(-1)
   await changeLoading(true)
   state.keysList = []
   await client.connect()
-  await client.sendCommand(['select', dbIndex])
-
-  const keyspaceInfo: string = await client.sendCommand(['INFO', 'keyspace'])
-  pageState.total = await getKeysLength(keyspaceInfo, dbIndex)
 
   if (pageState.total) {
     let scanResult = []
@@ -321,7 +314,6 @@ const search = async () => {
     searchPageState.lock = true
   }
   await client.connect()
-  await client.sendCommand(['select', props.serverTab.db.slice(-1)])
 
   const scanResult: [string, string[]] = await client.sendCommand(['SCAN', searchPageState.scanIndex, 'MATCH', `*${searchState.search}*`, 'COUNT', String(searchPageState.pageSize)])
   // searchPageState.scanIndex = scanResult[0]
@@ -346,7 +338,6 @@ const delKeyDialogCancel = async () => {
 }
 const delKeyDialogSubmit = async () => {
   await client.connect()
-  await client.sendCommand(['select', props.serverTab.db.slice(-1)])
   for (const item of state.multipleSelection) {
     await client.sendCommand(['del', item.label])
     await store.dispatch('keyList/del', {

@@ -55,7 +55,7 @@
 <script setup lang="ts">
 import { defineEmits, defineProps, PropType, reactive } from 'vue'
 import { serverTabType } from '@/store/modules/serverList'
-import { getClient } from '@/utils/redis'
+import { getClientWithDB } from '@/utils/redis'
 import StringType from './stringType.vue'
 import HashType from './hashType.vue'
 import ListType from './listType.vue'
@@ -90,7 +90,7 @@ const keyState: { keyType: string, keyName: string } = reactive({
   keyName: ''
 })
 
-const client = getClient(props.serverTab)
+const client = getClientWithDB(props.serverTab)
 
 const handleCommand = (commands: commandObjectType[]) => {
   if (!keyState.keyName.length) {
@@ -109,7 +109,6 @@ const handleCommand = (commands: commandObjectType[]) => {
 const runCommand = async () => {
   state.runStatus = 1
   await client.connect()
-  await client.sendCommand(['select', props.serverTab.db.slice(-1)])
   for (let i = 0; i < state.commands.length; i++) {
     const command = state.commands[i].command
     state.commands[i].result = await client.sendCommand(command)

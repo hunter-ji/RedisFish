@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import { getClient } from '@/utils/redis'
+import { getClientWithDB } from '@/utils/redis'
 import { defineProps, onBeforeUnmount, onMounted, PropType, reactive } from 'vue'
 import { serverTabType } from '@/store/modules/serverList'
 import LineChart from './chart.vue'
@@ -29,10 +29,9 @@ const state: { dataList: { x: string[], y: number[] }, usedCpuSysBefore: number 
 // eslint-disable-next-line no-undef
 let theInterval: NodeJS.Timer
 
-const client = getClient(props.serverTab)
+const client = getClientWithDB(props.serverTab)
 const fetchData = async () => {
   await client.connect()
-  await client.sendCommand(['select', props.serverTab.db.slice(-1)])
 
   const data = await client.sendCommand(['info', 'cpu'])
   const infoArr = data.split('\r\n')

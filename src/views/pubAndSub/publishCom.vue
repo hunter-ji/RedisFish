@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import { defineProps, onMounted, PropType, reactive } from 'vue'
 import { serverTabType } from '@/store/modules/serverList'
-import { getClient } from '@/utils/redis'
+import { getClientWithDB } from '@/utils/redis'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -42,7 +42,7 @@ const props = defineProps({
   }
 })
 
-const client = getClient(props.serverTab)
+const client = getClientWithDB(props.serverTab)
 const publisher = client.duplicate()
 const state: { message: string, channel: string, options: {label: string, value: string}[] } = reactive({
   message: '',
@@ -63,7 +63,6 @@ const publish = async () => {
 }
 const fetchData = async () => {
   await client.connect()
-  await client.sendCommand(['select', props.serverTab.db.slice(-1)])
   const data = await client.sendCommand(['PUBSUB', 'CHANNELS'])
   state.options = []
   if (data && data.length) {

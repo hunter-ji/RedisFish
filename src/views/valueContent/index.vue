@@ -47,7 +47,7 @@
 <script setup lang="ts">
 import { defineProps, onMounted, PropType, reactive } from 'vue'
 import { serverTabType } from '@/store/modules/serverList'
-import { getClient } from '@/utils/redis'
+import { getClientWithDB } from '@/utils/redis'
 import StringType from './stringType.vue'
 import HashType from './hashType.vue'
 import ListType from './listType.vue'
@@ -82,12 +82,11 @@ const state: { keyType: string, values: string[], ttl: number, commands: command
 const dialog = reactive({
   show: false
 })
-const client = getClient(props.serverTab)
+const client = getClientWithDB(props.serverTab)
 const fetchData = async () => {
   state.values = []
   await client.connect()
 
-  await client.sendCommand(['select', props.serverTab.db.slice(-1)])
   state.keyType = await client.sendCommand(['type', props.targetKey])
 
   if (state.keyType === 'string') {
@@ -117,7 +116,6 @@ const handleCommand = async (commands: commandObjectType[]) => {
 const runCommand = async () => {
   state.runStatus = 1
   await client.connect()
-  await client.sendCommand(['select', props.serverTab.db.slice(-1)])
   for (let i = 0; i < state.commands.length; i++) {
     const command = state.commands[i].command
     state.commands[i].result = await client.sendCommand(command)

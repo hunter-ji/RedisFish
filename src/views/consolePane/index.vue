@@ -80,7 +80,7 @@ import ace from 'ace-builds'
 import 'ace-builds/webpack-resolver'
 import { ElNotification } from 'element-plus'
 import { serverTabType } from '@/store/modules/serverList'
-import { getClient } from '@/utils/redis'
+import { getClientWithDB } from '@/utils/redis'
 import { historyCommandType, outputPaneType } from '@/views/consolePane/index'
 import { dateFormat } from '@/utils/formatTime'
 import HistoryPane from './history.vue'
@@ -149,7 +149,7 @@ const submit = () => {
 const dialog = reactive({
   show: false
 })
-const client = getClient(props.serverTab)
+const client = getClientWithDB(props.serverTab)
 const handleCommand = async (commands: string[]) => {
   clientState.commands = []
   clientState.commands = commands
@@ -162,7 +162,6 @@ const handleCommand = async (commands: string[]) => {
 const runCommands = async () => {
   dialog.show = false
   await client.connect()
-  await client.sendCommand(['select', props.serverTab.db.slice(-1)])
   outputState.outputTabs = []
 
   for (const item of clientState.commands) {

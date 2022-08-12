@@ -40,7 +40,7 @@ import { subItemType, subMessageType } from '.'
 import { Plus } from '@element-plus/icons-vue'
 import SubChannelCard from './subChannelCard.vue'
 import SubContent from './subContent.vue'
-import { getClient } from '@/utils/redis'
+import { getClientWithDB } from '@/utils/redis'
 
 const props = defineProps({
   serverTab: {
@@ -91,10 +91,9 @@ const clearMessage = (channel: string) => {
   state.subChannelList[index].messages = []
 }
 
-const client = getClient(props.serverTab)
+const client = getClientWithDB(props.serverTab)
 const fetchData = async () => {
   await client.connect()
-  await client.sendCommand(['select', props.serverTab.db.slice(-1)])
   const data = await client.sendCommand(['PUBSUB', 'CHANNELS'])
   if (data && data.length) {
     state.subChannelList = []
