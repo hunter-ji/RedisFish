@@ -1,23 +1,29 @@
 <p align="center">
 <img src="./build/icon.png" alt="logo" width="120" height="120" />
 </p>
-<h3 align="center">RedFish</h3>
+<h3 align="center">RedisFish</h3>
 
 <p align="center">
-  <img src="https://img.shields.io/github/v/release/Kuari/RedFish.svg" alt="release" />
+  <img src="https://img.shields.io/github/v/release/Kuari/RedisFish.svg" alt="release" />
   <img src="https://img.shields.io/badge/PRs-welcome-brightgreen" alt="RPs" />
-  <img src="https://img.shields.io/github/downloads/Kuari/RedFish/total" alt="downloads" />
+  <img src="https://img.shields.io/github/downloads/Kuari/RedisFish/total" alt="downloads" />
 </p>
 
 
 
 ## Info
 
-`RedFish` is a convenient, cross-platform, data-focused Redis GUI client. Since `Beta 1.0.0`, after several months of development, many areas have been optimized, and even some functions include different processing methods, which can adapt to different operating habits, hoping to bring a better experience. 
+`RedisFish` is a convenient, cross-platform, data-focused Redis GUI client🌈🌈🌈. Maybe you will like it.
 
-language: [简体中文](https://github.com/Kuari/RedFish/blob/main/README.zh-CN.md) 英文
+Since `v 1.0.0`, I have received a lot of useful feedback from friends, thank you very much!
 
-download: [releases](https://github.com/Kuari/RedFish/releases)
+> Formerly RedFish, renamed due to the same name
+
+
+
+language: [简体中文](https://github.com/Kuari/RedisFish/blob/main/README.zh-CN.md) English
+
+download: [releases](https://github.com/Kuari/RedisFish/releases)
 
 
 
@@ -30,7 +36,8 @@ download: [releases](https://github.com/Kuari/RedFish/releases)
 * JSON auto format
 * JSON viewing and editing
 * key list paging query
-* The key list can be filtered by prefix grouping, support`:`, `-`, `_`, `#`, `=`, `+`
+* The key list can be filtered by prefix grouping, support`:`, `-`, `_`, `#`, `=`, `+`, select in settings
+* The key list supports two different modes: the list is displayed directly and classified into folders according to the prefix, which can be switched in the settings.
 * The console supports two different modes: single command execution and multi-command execution at the same time
 * Support log function, view execution command log
 * Database monitoring, supports cpu usage, memory usage, number of connected clients, number of clients waiting for blocking commands
@@ -62,3 +69,7 @@ download: [releases](https://github.com/Kuari/RedFish/releases)
 ![Screenshots](./Screenshots/Screenshots5.png)
 
 ![Screenshots](./Screenshots/Screenshots6.png)
+
+![Screenshots](./Screenshots/Screenshots7.png)
+
+![Screenshots](./Screenshots/Screenshots8.png)

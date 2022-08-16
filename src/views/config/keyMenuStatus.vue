@@ -14,7 +14,7 @@ import { useI18n } from 'vue-i18n'
 import { useStore } from 'vuex'
 
 const { t } = useI18n()
-const radio = ref(1)
+const radio = ref(2)
 
 const store = useStore()
 
@@ -23,6 +23,6 @@ const handleChange = async (label: number) => {
 }
 
 onMounted(() => {
-  radio.value = store.getters.keyMenuStatus || 1
+  radio.value = store.getters.keyMenuStatus || 2
 })
 </script>

@@ -53,7 +53,6 @@ const fetchData = async () => {
   if (!language) {
     language = 3
   }
-  console.log(language)
   handleLanguageSwitch(language)
 }
 

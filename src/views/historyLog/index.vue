@@ -14,7 +14,7 @@
 
     <!-- btn -->
     <div class="flex justify-end pt-2">
-      <el-button type="success" @click="handleClearLog" :disabled="state.content.length === 0">{{ t('keyMenu.clearLog') }}</el-button>
+      <el-button type="success" @click="handleClearLog" :disabled="state.content.length === 0">{{ t('keyMenu.logDialog.clearLog') }}</el-button>
     </div>
   </div>
 </template>

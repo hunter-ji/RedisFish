@@ -18,7 +18,6 @@ const { t, locale } = useI18n()
 const store = useStore()
 
 const jump = () => {
-  console.log(locale.value)
   if (locale.value === 'zh_CN') {
     shell.openExternal('https://www.bilibili.com/video/BV1Wf4y1d7JZ?share_source=copy_web')
   } else {

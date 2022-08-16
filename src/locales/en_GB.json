@@ -39,7 +39,10 @@
       "cancel": "cancel",
       "submit": "run"
     },
-    "clearLog": "clear"
+    "logDialog": {
+      "title": "log",
+      "clearLog": "clear"
+    }
   },
   "keyTab": {},
   "newKeyValue": {

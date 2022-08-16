@@ -43,7 +43,6 @@ const removeTab = (targetName: string) => {
 const data: ComputedRef<serverTabType[]> = computed(() => store.getters.serverTabList)
 
 const keyMenuStatus = computed(() => {
-  console.log(store.getters.keyMenuStatus)
   return store.getters.keyMenuStatus === 1
 })
 

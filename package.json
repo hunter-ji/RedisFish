@@ -1,8 +1,8 @@
 {
-  "name": "RedFish",
+  "name": "RedisFish",
   "version": "1.0.2",
   "author": "Kuari",
-  "homepage": "https://github.com/Kuari/RedFish",
+  "homepage": "https://github.com/Kuari/RedisFish",
   "scripts": {
     "electron:build": "vue-cli-service electron:build",
     "electron:build:mac": "vue-cli-service electron:build --macos --arm64 --x64",

@@ -97,7 +97,7 @@
     </el-dialog>
 
     <!-- history log -->
-    <el-dialog v-model="dialogState.logShow" :title="t('keyMenu.delDialog.title')" width="60%" center top="10vh">
+    <el-dialog v-model="dialogState.logShow" :title="t('keyMenu.logDialog.title')" width="60%" center top="10vh">
       <history-log :server-tab="props.serverTab" v-if="dialogState.logShow" />
     </el-dialog>
   </div>

@@ -17,15 +17,15 @@ module.exports = {
       nodeIntegration: true,
       disableMainProcessTypescript: false,
       mainProcessTypeChecking: false,
-      productName: 'RedFish',
-      appId: 'com.kuari.RedFish',
+      productName: 'RedisFish',
+      appId: 'com.kuari.RedisFish',
       copyright: '© Kuari 2022',
       afterSign: 'build/notarize.js',
       publish: [
         {
           provider: 'github',
           owner: 'Kuari',
-          repo: 'RedFish',
+          repo: 'RedisFish',
           releaseType: 'draft'
         }
       ],
@@ -38,7 +38,7 @@ module.exports = {
         installerHeaderIcon: 'build/icon.ico',
         createDesktopShortcut: true,
         createStartMenuShortcut: true,
-        shortcutName: 'RedFish'
+        shortcutName: 'RedisFish'
       },
       dmg: {
         contents: [

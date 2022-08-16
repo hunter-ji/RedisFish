@@ -97,7 +97,6 @@ const handleRowEdit = (id: number) => {
   setTimeout(() => {
     const dom = document.getElementById(`list-row-input-${id}`)
     if (dom) {
-      console.log('dom : ', dom)
       dom.focus()
     }
   }, 100)

@@ -6,7 +6,7 @@ const state: configType = {
   theme: 3,
   isVideoShow: 1,
   language: 3,
-  keyMenuStatus: 1,
+  keyMenuStatus: 2,
   keyMenuFilterSymbol: 1,
   keyMenuFilterSymbolStr: ':'
 }

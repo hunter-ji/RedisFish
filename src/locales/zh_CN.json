@@ -39,7 +39,10 @@
       "cancel": "取消",
       "submit": "执行"
     },
-    "clearLog": "清空日志"
+    "logDialog": {
+      "title": "日志",
+      "clearLog": "清空日志"
+    }
   },
   "keyTab": {},
   "newKeyValue": {

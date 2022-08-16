@@ -119,7 +119,6 @@ const handleRowEdit = (id: number, label: string) => {
   setTimeout(() => {
     const dom = document.getElementById(`hash-row-input-${id}`)
     if (dom) {
-      console.log('dom : ', dom)
       dom.focus()
     }
   }, 100)
