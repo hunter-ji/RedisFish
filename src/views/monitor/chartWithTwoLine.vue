@@ -72,14 +72,24 @@ const handleOption = async () => {
         type: 'line',
         smooth: true,
         showSymbol: false,
-        name: props.data.nameList.y
+        name: props.data.nameList.y,
+        lineStyle: {
+          width: 2,
+          shadowColor: 'rgba(168,167,167,0.4)',
+          shadowBlur: 4
+        }
       },
       {
         data: props.data.yList.y2,
         type: 'line',
         smooth: true,
         showSymbol: false,
-        name: props.data.nameList.y2
+        name: props.data.nameList.y2,
+        lineStyle: {
+          width: 2,
+          shadowColor: 'rgba(168,167,167,0.4)',
+          shadowBlur: 4
+        }
       }
     ]
   }

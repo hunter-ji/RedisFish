@@ -36,7 +36,7 @@
     </div>
 
     <!--textarea-->
-    <el-input v-model="state.val" :rows="30" type="textarea"
+    <el-input v-model="state.val" :rows="37" type="textarea" resize="none"
               v-show="editorModeState.mode === 'text'"
               @click.left.meta.exact="copyKey(state.val, t('valueContent.notification.copySuccessMessage'))"
               @click.left.ctrl.exact="copyKey(state.val, t('valueContent.notification.copySuccessMessage'))"
@@ -141,12 +141,13 @@ const genRandomAceID = async () => {
 }
 const initAceEditor = async () => {
   aceState.aceEditor = ace.edit(`ace${aceID.value}`, {
-    maxLines: 45, // 最大行数，超过会自动出现滚动条
-    minLines: 40, // 最小行数，还未到最大行数时，编辑器会自动伸缩大小
-    fontSize: 14, // 编辑器内字体大小
-    theme: aceState.themePath, // 默认设置的主题
-    mode: aceState.modePath, // 默认设置的语言模式
-    tabSize: 4 // 制表符设置为 4 个空格大小
+    maxLines: 42,
+    minLines: 42,
+    fontSize: 14,
+    theme: aceState.themePath,
+    mode: aceState.modePath,
+    tabSize: 4,
+    showPrintMargin: false
   })
 }
 const handleAceUpdate = (message: string) => {

@@ -71,6 +71,11 @@ const handleOptions = async () => {
         data: props.data.y,
         type: 'line',
         smooth: true,
+        lineStyle: {
+          width: 2,
+          shadowColor: 'rgba(168,167,167,0.4)',
+          shadowBlur: 4
+        },
         showSymbol: false
       }
     ]
