@@ -77,11 +77,18 @@ const handleRun = async () => {
 
   const commandArr = await handleCommandFormat(key)
 
-  const res = await client.sendCommand(commandArr)
+  const res = await client.sendCommand(commandArr).catch((err) => {
+    const { name, message } = err
+    return { error: { name, message } }
+  })
+
   if (!res || res === [] || res.length === 0) {
     results.push('nil')
   } else {
-    if (typeof res === 'string') {
+    if (res.error) {
+      const { name, message } = res.error
+      results.push(`${name}: ${message}`)
+    } else if (typeof res === 'string') {
       results.push(res)
     } else {
       results = res
